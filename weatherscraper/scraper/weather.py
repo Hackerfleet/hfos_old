@@ -7,7 +7,9 @@
 
 import urllib.request
 import time
+import os
 
+from weatherscraper.logging import log
 
 def download(url, targetname):
     """Copy the contents of a file from a given URL
@@ -21,7 +23,11 @@ def download(url, targetname):
     localFile.close()
 
 
-def createPage():
+def createPage(place="./"):
+    """Gets all the content and (a little bit awkwardly) assembles some blobs of html.
+    """
+
+    log("Getting content")
     local_weather = urllib.request.urlopen('http://www.wetter24.de/wetter/berlin-alexanderplatz/10389.html')
     full_src_local_weather = local_weather.read().decode()
 
@@ -87,7 +93,7 @@ def createPage():
     rainradar_url = 'http://wind.met.fu-berlin.de/loops/radar_100/R.NEW.gif'
     rainradar_name = 'rainradar.gif'
     print('starting download procedure of rain-radar using ', rainradar_url)
-    download(rainradar_url, rainradar_name)
+    download(rainradar_url, place + rainradar_name)
 
     '''
     solarweather_txt_url = 'http://www.swpc.noaa.gov/ftpdir/lists/particle/Gs_part_5m.txt'
@@ -100,9 +106,11 @@ def createPage():
     solar_img_end = snippet_solar.find('">', solar_img_begin)
     solar_img = 'http://sdo.gsfc.nasa.gov' + snippet_solar[solar_img_begin:solar_img_end]
     print('starting download procedure of solar weather image', solar_img)
-    download(solar_img, 'solar_img.jpg')
+    download(solar_img, place + 'solar_img.jpg')
 
-    fobj = open("weather.html", "w")
+    log("Writing html to '%s'" % (os.path.abspath("weather.html")))
+
+    fobj = open(place + "weather.html", "w")
     fobj.write(
         """<!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -165,6 +173,7 @@ computer says this is the footer and noooooo
  """)
     fobj.close()
 
+    log("html closed.")
 
 if __name__ == '__main__':
     createPage()

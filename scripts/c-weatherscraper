@@ -1,0 +1,6 @@
+#!/usr/bin/python
+
+from weatherscraper.scraper.weather import createPage
+
+createPage()
+
