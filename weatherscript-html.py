@@ -1,3 +1,5 @@
+# thanks to kristall, who helped me big time in learning python and who teached me line-by-line how to write this script. Everything that appears unprofessionally in this script has been grown on my madness and has nothing to do with kristalls ingenuity and teaching.
+
 #!/usr/bin/env python3
 
 import urllib.request
