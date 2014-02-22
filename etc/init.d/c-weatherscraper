@@ -8,6 +8,8 @@ from weatherscraper.daemon import Daemon
 from weatherscraper.scraper.weather import createPage
 from weatherscraper.logging import log
 
+from weatherscraper.components import weatherScraper
+
 try:
     config = json.load(open("/etc/c-weatherscraper/config.json"))
 except IOError:
@@ -23,11 +25,8 @@ class MyDaemon(Daemon):
         log("Running at interval of '%i' seconds." % interval)
         log("Outputting to '%s'." % config['place'])
 
-        while True:
-            log("Snapshotting c-weather page")
-            createPage(config['place'])
-            time.sleep(interval)
-
+        scraper = weatherScraper()
+        scraper.run()
 
 if __name__ == "__main__":
     daemon = MyDaemon('/var/run/c-weatherscraper.pid',

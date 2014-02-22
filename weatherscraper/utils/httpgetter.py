@@ -122,4 +122,3 @@ class HTTPGetter(threadedcomponent):
                 self.send(urldata, "outbox")
 
             time.sleep(0.1)
-            yield 1
