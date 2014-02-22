@@ -2,3 +2,5 @@ rainradar.gif
 solar_img.jpg
 weather.html
 build
+dist
+*.egg-info

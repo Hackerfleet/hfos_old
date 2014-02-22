@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 
-from distutils.core import setup    
+from setuptools import setup
 import os
 
 def is_package(path):
@@ -47,5 +47,12 @@ setup(name = "c-weatherscraper",
       long_description = """
 Weatherscraper grabs some relevant data from the web and assembles a well designed HTML5 page to render the
 current weather situation for a given area on web clients.
-"""
+""",
+      dependency_links = ['https://github.com/Hackerfleet/axon/archive/master.zip#egg=Axon-1.7.0',
+                          'https://github.com/Hackerfleet/kamaelia/archive/master.zip#egg=Kamaelia-1.1.2',
+                         ],
+      install_requires = ['CherryPy>=3.2.2',
+                          'Axon>=1.7.0',
+                          'Kamaelia>=1.1.2',
+                          ]
       )
