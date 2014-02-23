@@ -9,9 +9,9 @@ class DictTemplater(AdaptiveCommsComponent):
     """
 
 
-    def __init__(self, template, update=True):
+    def __init__(self, templater, update=True):
         super(DictTemplater, self).__init__()
-        self.template = template
+        self.templater = templater
         self.update = update
         self.values = {}
 
@@ -34,7 +34,7 @@ class DictTemplater(AdaptiveCommsComponent):
                 else:
                     self.values = data
 
-                self.send(self.template.format(**self.values), "outbox")
+                self.send(self.templater.render(self.values), "outbox")
 
             self.pause()
             yield 1

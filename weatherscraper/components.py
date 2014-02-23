@@ -7,7 +7,11 @@ from Kamaelia.Chassis.Pipeline import Pipeline
 from Kamaelia.Util.Clock import CheapAndCheerfulClock as SimpleClock
 from Kamaelia.Util.Console import ConsoleEchoer
 from Kamaelia.Util.Filter import Filter
+from Kamaelia.Util.PureTransformer import PureTransformer
+from Kamaelia.File.WholeFileWriter import WholeFileWriter
 
+from weatherscraper.utils.dict import DictTemplater
+from weatherscraper.utils.templater import MakoTemplater
 from weatherscraper.utils.httpgetter import HTTPGetter
 from weatherscraper.filters.webfilter import Wetter24Filter, NasaSDOFilter
 
@@ -33,10 +37,16 @@ def weatherScraper():
                             interval=23,
                             filter=NasaSDOFilter()
         ),
-
+        DT=DictTemplater(templater=MakoTemplater('weather')),
+        PT=PureTransformer(lambda x: ['/tmp/weather.html', x]),
         CE=ConsoleEchoer(),
+        WFW=WholeFileWriter(),
         linkages={
-            ("W24", "outbox"): ("CE", "inbox"),
-            ("NSDOIMG", "outbox"): ("CE", "inbox")
+            ("W24", "outbox"): ("DC", "inbox"),
+            ("NSDOIMG", "outbox"): ("DC", "inbox"),
+            ("BP", "outbox") : ("F", "inbox"),
+            ("F", "outbox") : ("DT", "inbox"),
+            ("DT", "outbox") : ("PT", "inbox"),
+            ("PT", "outbox") : ("CE", "inbox")
         }
     )

@@ -55,6 +55,7 @@ current weather situation for a given area on web clients.
       install_requires = ['CherryPy>=3.2.2',
                           'Axon>=1.7.0',
                           'Kamaelia>=1.1.2',
-                          'Pynmea>=0.3.0'
+                          'Pynmea>=0.3.0',
+                          'Mako>=0.9.1'
                           ]
       )
