@@ -9,7 +9,7 @@ from Kamaelia.Util.Console import ConsoleEchoer
 from Kamaelia.Util.Filter import Filter
 
 from weatherscraper.utils.httpgetter import HTTPGetter
-from weatherscraper.filters import Wetter24Filter, NasaSDOFilter
+from weatherscraper.filters.webfilter import Wetter24Filter, NasaSDOFilter
 
 
 def siteScraper(url, interval, filter):

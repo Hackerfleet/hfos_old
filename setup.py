@@ -50,9 +50,11 @@ current weather situation for a given area on web clients.
 """,
       dependency_links = ['https://github.com/Hackerfleet/axon/archive/master.zip#egg=Axon-1.7.0',
                           'https://github.com/Hackerfleet/kamaelia/archive/master.zip#egg=Kamaelia-1.1.2',
+                          'https://github.com/Hackerfleet/pynmea/archive/master.zip#egg=Pynmea-0.3.0'
                          ],
       install_requires = ['CherryPy>=3.2.2',
                           'Axon>=1.7.0',
                           'Kamaelia>=1.1.2',
+                          'Pynmea>=0.3.0'
                           ]
       )
