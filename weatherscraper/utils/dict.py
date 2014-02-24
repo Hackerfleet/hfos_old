@@ -4,6 +4,125 @@ from Axon.Component import component
 from Axon.AdaptiveCommsComponent import AdaptiveCommsComponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
+class TupleToDict(component):
+    """
+    Converts incoming tuples into dictionaries according
+    to a given key.
+    """
+
+    Inboxes = { "inbox"   : "Items",
+                "control" : "Shutdown signalling",
+              }
+    Outboxes = { "outbox" : "Items tagged with a sequence number, in the form (seqnum, item)",
+                 "signal" : "Shutdown signalling",
+               }
+
+    def __init__(self, keys):
+        super(TupleToDict, self).__init__()
+        self.keys = []
+
+    def finished(self):
+        while self.dataReady("control"):
+            msg = self.recv("control")
+            if type(msg) in (producerFinished, shutdownMicroprocess):
+                self.send(msg, "signal")
+                return True
+        return False
+
+    def main(self):
+        """Main loop."""
+
+        while not self.finished():
+            while not self.dataReady("inbox"):
+                self.pause()
+                yield 1
+            data = self.recv("inbox")
+
+            assert (len(data) == len(self.keys))
+
+            result = {}
+            for i, key in enumerate(self.keys):
+                result[key] = data[i]
+            self.send(result, "outbox")
+
+
+class DictCollator(component):
+    """
+    Collects incoming key/value pairs or dicts and
+    merges them upon producerFinished
+    """
+
+    Inboxes = { "inbox"   : "Items",
+                "control" : "Shutdown signalling",
+              }
+    Outboxes = { "outbox" : "Items tagged with a sequence number, in the form (seqnum, item)",
+                 "signal" : "Shutdown signalling",
+               }
+
+    def __init__(self):
+        super(DictCollator, self).__init__()
+        self.collation = {}
+
+    def finished(self):
+        while self.dataReady("control"):
+            msg = self.recv("control")
+            if type(msg) in (producerFinished, shutdownMicroprocess):
+                self.send(msg, "signal")
+                return True
+        return False
+
+    def main(self):
+        """Main loop."""
+
+        while not self.finished():
+            while not self.dataReady("inbox"):
+                self.pause()
+                yield 1
+            data = self.recv("inbox")
+
+            if type(data) == dict:
+                self.collation.update(data)
+            elif type(data) in ([], ()):
+                self.collation.update({data[0]: data[1]})
+            self.send(self.collation, "outbox")
+
+class WaitForDict(component):
+    """
+    """
+
+    Inboxes = { "inbox"   : "Items",
+                "control" : "Shutdown signalling",
+              }
+    Outboxes = { "outbox" : "Items tagged with a sequence number, in the form (seqnum, item)",
+                 "signal" : "Shutdown signalling",
+               }
+
+    def __init__(self, keys):
+        super(WaitForDict, self).__init__()
+        self.keys = keys
+
+    def finished(self):
+        while self.dataReady("control"):
+            msg = self.recv("control")
+            if type(msg) in (producerFinished, shutdownMicroprocess):
+                self.send(msg, "signal")
+                return True
+        return False
+
+    def main(self):
+        """Main loop."""
+
+        while not self.finished():
+            if self.dataReady("inbox"):
+                data = self.recv("inbox")
+
+                if type(data) == dict and all(k in data for k in self.keys):
+                    self.send(data, "outbox")
+            self.pause()
+            yield 1
+
+
+
 class DictTemplater(AdaptiveCommsComponent):
     """
     """

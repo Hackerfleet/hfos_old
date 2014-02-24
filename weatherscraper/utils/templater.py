@@ -13,7 +13,9 @@ class SimpleTemplater(object):
 class MakoTemplater(object):
 
     templatestore = TemplateLookup(directories=['/home/riot/src/c-weatherscraper/weatherscraper/templates'],
-                                   strict_undefined=True)
+                                   strict_undefined=True,
+                                   input_encoding='UTF8',
+                                   )
 
     def __init__(self, template):
         try:
@@ -22,4 +24,4 @@ class MakoTemplater(object):
             print("Can't find template '%s.html' in templatefolder." % template)
 
     def render(self, input):
-        return self.template.render(**input)
+        return self.template.render(**input).encode("UTF-8")

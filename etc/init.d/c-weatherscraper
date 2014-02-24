@@ -4,10 +4,10 @@ import time
 import sys
 import json
 
-from weatherscraper.daemon import Daemon
-from weatherscraper.scraper.weather import createPage
-from weatherscraper.logging import log
+from Axon.Scheduler import scheduler
 
+from weatherscraper.daemon import Daemon
+from weatherscraper.logging import log
 from weatherscraper.components import weatherScraper
 
 try:
@@ -25,8 +25,9 @@ class MyDaemon(Daemon):
         log("Running at interval of '%i' seconds." % interval)
         log("Outputting to '%s'." % config['place'])
 
-        scraper = weatherScraper()
-        scraper.run()
+        weatherScraper(location=config['place'], interval=interval)
+        scheduler.run.runThreads()
+
 
 if __name__ == "__main__":
     daemon = MyDaemon('/var/run/c-weatherscraper.pid',

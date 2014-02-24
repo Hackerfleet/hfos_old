@@ -45,7 +45,7 @@ class Wetter24Filter(object):
 
 
 class NasaSDOFilter(object):
-    """Filters out interesting info from wetter24.de"""
+    """Filters our the image link and sends that on"""
 
     def filter(self, newtext):
         snippet_solar_begin = newtext.find('<h1>AIA 094, 335, 193</h1>')
@@ -54,4 +54,4 @@ class NasaSDOFilter(object):
         solar_img_end = snippet_solar.find('">', solar_img_begin)
         solar_img = 'http://sdo.gsfc.nasa.gov' + snippet_solar[solar_img_begin:solar_img_end]
 
-        return {'url_image_nasa_sdo': solar_img}
+        return solar_img

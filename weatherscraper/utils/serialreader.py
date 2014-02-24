@@ -51,8 +51,6 @@ class Serialport(threadedcomponent):
         return False
 
     def main(self):
-        # TODO: Implement writing from standard inbox
-
         while not self.finished():
             if self.port and self.port.isOpen() and self.listening:
                 self.buf = self.buf + str(self.port.read(self.port.inWaiting()))
@@ -101,6 +99,7 @@ class Serialport(threadedcomponent):
             return False
 
     def _write(self, args):
+        """Don't even look at me."""
         if not "w" in self.mode or not self.port:
             return False
 

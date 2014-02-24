@@ -7,6 +7,7 @@ import socket
 import time
 
 from Axon.ThreadedComponent import threadedcomponent
+from Axon.Ipc import producerFinished, shutdownMicroprocess
 
 __author__ = 'riot'
 
@@ -21,10 +22,9 @@ class HTTPGetter(threadedcomponent):
         "signal": ""
     }
 
-    def __init__(self, url, proxy=False, useragent=False, timeout=30, postdata=None, extraheaders=None, realm=False,
-                 username=False, password=False, decode=True):
+    def __init__(self, proxy=False, useragent=False, timeout=30, postdata=None, extraheaders=None, realm=False,
+                 username=False, password=False, decode=False):
         super(HTTPGetter, self).__init__()
-        self.url = url
         self.proxy = proxy
         self.useragent = useragent
         self.timeout = timeout
@@ -42,7 +42,7 @@ class HTTPGetter(threadedcomponent):
             authhandler = urllib.request.HTTPBasicAuthHandler()
 
             authhandler.add_password(realm=realm,
-                                     uri=url,
+                                     # TODO: Doesn't this need the URI?
                                      user=username,
                                      passwd=password)
 
@@ -67,26 +67,29 @@ class HTTPGetter(threadedcomponent):
         if extraheaders:
             headers.update(extraheaders)
 
-        self._req = urllib.request.Request(url=url, headers=headers)
+        self.headers = headers
 
     def finished(self):
         while self.dataReady("control"):
             msg = self.recv("control")
-            if isinstance(msg, producerFinished) or isinstance(msg, shutdownMicroprocess):
+            if type(msg) in (producerFinished, shutdownMicroprocess):
                 self.send(msg, "signal")
                 return True
         return False
 
-    def geturldata(self):
+    def geturldata(self, url):
         """Gets the configured webpage and transmits it via outbox.
         """
 
         content = ""
         connection = None
 
+        print("gettin url: '%s" % url)
+
         # Open connection
         try:
-            connection = urllib.request.urlopen(self._req, timeout=self.timeout)
+            request = urllib.request.Request(url=url, headers=self.headers)
+            connection = urllib.request.urlopen(request, timeout=self.timeout)
         except (urllib.error.ContentTooShortError,
                 urllib.error.HTTPError,
                 urllib.error.URLError,
@@ -109,16 +112,19 @@ class HTTPGetter(threadedcomponent):
 
         return content
 
+
+
     def main(self):
         """Await input signal, then run our job, as long as we're not finished.
         """
 
         while not self.finished():
-            if self.dataReady("inbox"):
-                self.recv("inbox")
-                # Data format: True
-                urldata = self.geturldata()
-                # Data format: [OK/Error,message]
-                self.send(urldata, "outbox")
+            while not self.dataReady("inbox"):
+                time.sleep(0.1)
 
-            time.sleep(0.1)
+            url = self.recv("inbox")
+
+            urldata = self.geturldata(url)
+            self.send(urldata, "outbox")
+
+            time.sleep(0.1)  # We're threaded, so its safe to wait
