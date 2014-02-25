@@ -9,6 +9,7 @@ from Kamaelia.Chassis.Graphline import Graphline
 from Kamaelia.Util.Clock import SimpleClock
 from Kamaelia.Util.Filter import Filter
 from Kamaelia.File.WholeFileWriter import WholeFileWriter
+from Kamaelia.File.Writing import SimpleFileWriter
 from Kamaelia.File.Reading import SimpleReader
 from Kamaelia.Util.Stringify import Stringify
 from Kamaelia.Util.Collate import Collate
@@ -20,6 +21,8 @@ from weatherscraper.utils.dict import DictTemplater
 from weatherscraper.utils.templater import MakoTemplater
 from weatherscraper.utils.httpgetter import HTTPGetter
 from weatherscraper.filters.webfilter import Wetter24Filter, NasaSDOFilter
+from weatherscraper.parsers.grib import GribParser
+from weatherscraper.utils.Timer import TimerInjector, TimerSummary
 
 
 def siteScraper(url, interval, filterclass):
@@ -88,6 +91,30 @@ def addtime(x):
               'minute': time.gmtime()[4],
               'seconds': time.gmtime()[5]})
     return x
+
+def gribAnalyzer():
+    print("Na?")
+
+    ticktick = Pipeline(SimpleClock(1),
+                        TriggeredSource("Tick"),
+                        ConsoleEchoer()
+    ).activate()
+
+    analyzer = Pipeline(DataSource([(52.31, 13.23)]),
+                        GribParser('/tmp/berlin.grb'),
+                        ConsoleEchoer()
+    ).activate()
+
+
+def gribGetter():
+
+    downloader = Pipeline(
+        DataSource(["http://api.met.no/weatherapi/gribfiles/1.0/?area=north_europe;content=weather;content_type=application/octet-stream;"]),
+        HTTPGetter(),
+        SimpleFileWriter('/tmp/gribdata_north_europe.grb'),
+
+    )
+
 
 
 def weatherScraper(location='/tmp/test', interval=600):

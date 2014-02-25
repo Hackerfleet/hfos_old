@@ -22,7 +22,7 @@ from Kamaelia.Util.PureTransformer import PureTransformer
 
 from Kamaelia.Util.Backplane import Backplane, PublishTo, SubscribeTo
 
-from weatherscraper.components import weatherSaver, weatherScraper
+from weatherscraper.components import weatherSaver, weatherScraper, gribGetter, gribAnalyzer
 
 def test_nmeaPublisher():
 
@@ -78,5 +78,5 @@ def test_nmeaPublisher():
     Backplane("NMEA").run()
 
 if __name__ == '__main__':
-    weatherScraper()
+    gribAnalyzer()
     scheduler.run.runThreads()
