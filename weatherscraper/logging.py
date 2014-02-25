@@ -10,13 +10,11 @@ def log(*what):
     global start
     count += 1
 
-    msg = time.asctime()
-    msg += " : "
     now = time.time() - start
-    msg += str(now)
-    msg += " : "
-    msg += str(count)
-    msg += " : "
+    msg = "[%s] : %.5f : %s :" % ((time.asctime(),
+                                         now,
+                                         count)
+    )
 
     for thing in what:
         msg += " "

@@ -6,6 +6,8 @@ from Axon.Ipc import producerFinished, shutdownMicroprocess
 from pynmea.streamer import NMEAStream
 import time
 
+from weatherscraper.logging import log
+
 import pygrib
 
 class GribParser(threadedcomponent):
@@ -45,8 +47,10 @@ class GribParser(threadedcomponent):
             if self.dataReady("inbox"):
                 data = self.recv("inbox")
                 lat, lon = data
-                print(data)
+
                 result = []
+
+                log("Parsing grib for coords '%f:%f" % (lat, lon))
 
                 for no, grb in enumerate(self.gribdata):
                     glat, glon = grb.latlons()

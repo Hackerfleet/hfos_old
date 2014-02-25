@@ -131,10 +131,10 @@ def createPage(place="./"):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <script src="./c-beam_files/jquery.min.js"></script>
-    <script src="./c-beam_files/bootstrap-dropdown.js"></script>
-    <link href="./c-beam_files/cyborg.css" rel="stylesheet" type="text/css">
-    <script src="./c-beam_files/bootstrap.js"></script>
+    <script src="./static/jquery.min.js"></script>
+    <script src="./static/bootstrap-dropdown.js"></script>
+    <link href="./static/cyborg.css" rel="stylesheet" type="text/css">
+    <script src="./static/bootstrap.js"></script>
     <link href="https://c-beam.cbrp3.c-base.org/static/c-base-bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="https://c-beam.cbrp3.c-base.org/static/c-base-bootstrap/css/bootstrap.custom.css" rel="stylesheet">
     <!-- link rel="shortcut icon" href="ico/favicon.ico" -->
@@ -168,7 +168,7 @@ def createPage(place="./"):
 computer says this is the footer and noooooo 
     </footer> 
   </div> <!-- container --> 
-<script src="./c-beam_files/html5slider.js"></script> 
+<script src="./static/html5slider.js"></script>
 </body></html> 
  """)
     fobj.close()

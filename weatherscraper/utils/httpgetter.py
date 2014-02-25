@@ -9,6 +9,8 @@ import time
 from Axon.ThreadedComponent import threadedcomponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
+from weatherscraper.logging import log
+
 __author__ = 'riot'
 
 class HTTPGetter(threadedcomponent):
@@ -84,7 +86,7 @@ class HTTPGetter(threadedcomponent):
         content = ""
         connection = None
 
-        print("gettin url: '%s" % url)
+        log("Fetching url: '%s" % url)
 
         # Open connection
         try:

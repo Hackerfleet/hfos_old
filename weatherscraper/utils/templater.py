@@ -3,6 +3,8 @@ __author__ = 'riot'
 from mako.lookup import TemplateLookup
 from mako.exceptions import TemplateLookupException
 
+from weatherscraper.logging import log
+
 class SimpleTemplater(object):
     def __init__(self, template):
         self.template = template
@@ -21,7 +23,7 @@ class MakoTemplater(object):
         try:
             self.template = self.templatestore.get_template(template + ".html")
         except TemplateLookupException:
-            print("Can't find template '%s.html' in templatefolder." % template)
+            log("Can't find template '%s.html' in templatefolder." % template)
 
     def render(self, input):
         return self.template.render(**input).encode("UTF-8")

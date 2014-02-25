@@ -22,17 +22,17 @@ from weatherscraper.utils.templater import MakoTemplater
 from weatherscraper.utils.httpgetter import HTTPGetter
 from weatherscraper.filters.webfilter import Wetter24Filter, NasaSDOFilter
 from weatherscraper.parsers.grib import GribParser
-from weatherscraper.utils.Timer import TimerInjector, TimerSummary
+from weatherscraper.server.cherrypy import WebGate
 
 
-def siteScraper(url, interval, filterclass):
+def siteScraper(url, interval, filterclass, decode=True):
     """Constructs a sitescraper containing a SimpleClock, TriggeredSource, HTTPGetter and Filter"""
 
     return Pipeline(SimpleClock(interval),
                     TriggeredSource(url),
-                    HTTPGetter(decode=True),
+                    HTTPGetter(decode=decode),
                     Filter(filterclass)
-                    )
+    )
 
 
 def siteDebugger(filename, interval, filterclass):
@@ -61,7 +61,7 @@ def fileDownloader(url, target, interval):
                     HTTPGetter(),
                     PureTransformer(function=lambda x: [target, x]),
                     WholeFileWriter()
-                    )
+    )
 
 
 def weatherSaver():
@@ -92,8 +92,8 @@ def addtime(x):
               'seconds': time.gmtime()[5]})
     return x
 
+
 def gribAnalyzer():
-    print("Na?")
 
     ticktick = Pipeline(SimpleClock(1),
                         TriggeredSource("Tick"),
@@ -107,14 +107,13 @@ def gribAnalyzer():
 
 
 def gribGetter():
-
     downloader = Pipeline(
-        DataSource(["http://api.met.no/weatherapi/gribfiles/1.0/?area=north_europe;content=weather;content_type=application/octet-stream;"]),
+        DataSource([
+            "http://api.met.no/weatherapi/gribfiles/1.0/?area=north_europe;content=weather;content_type=application/octet-stream;"]),
         HTTPGetter(),
         SimpleFileWriter('/tmp/gribdata_north_europe.grb'),
 
     )
-
 
 
 def weatherScraper(location='/tmp/test', interval=600):
@@ -124,36 +123,53 @@ def weatherScraper(location='/tmp/test', interval=600):
         SimpleClock(interval),
         TriggeredSource("http://wind.met.fu-berlin.de/loops/radar_100/R.NEW.gif"),
         HTTPGetter(),
-        PureTransformer(function=lambda x: [location + "/rainradar.gif", x]),
-    ).activate()
+        PureTransformer(function=lambda x: ["rainradar.gif", x]),
+    )  #.activate()
 
     nasa_sdo = Pipeline(
         siteScraper("http://sdo.gsfc.nasa.gov/data/",
                     interval=interval,
                     filterclass=NasaSDOFilter()
-                    ),
+        ),
         HTTPGetter(),
-        PureTransformer(function=lambda x: [location + "/nasa_sdo.jpg", x]),
-    ).activate()
+        PureTransformer(function=lambda x: ["nasa_sdo.jpg", x]),
+    )  #.activate()
 
     w24 = Pipeline(
         siteScraper("http://www.wetter24.de/wetter/berlin-alexanderplatz/10389.html",
                     interval=interval,
-                    filterclass=Wetter24Filter()
-                    ),
+                    filterclass=Wetter24Filter(),
+                    decode=False
+        ),
         PureTransformer(function=addtime),
         DictTemplater(templater=MakoTemplater('weather')),
-        PureTransformer(function=lambda x: [location + "/weather.html", x]),
+        PureTransformer(function=lambda x: ["weather.html", x]),
     ).activate()
 
-    Graphline(RR=rainradar,
-                       NSDO=nasa_sdo,
-                       W24=w24,
-                       WFW=WholeFileWriter(),
-                       CE=ConsoleEchoer(),
-                       linkages= {
-                           ("RR", "outbox") : ("WFW", "inbox"),
-                           ("NSDO", "outbox") : ("WFW", "inbox"),
-                           ("W24", "outbox"): ("WFW", "inbox")
-                       }
+    # filewriter = Graphline(RR=rainradar,
+    #                        NSDO=nasa_sdo,
+    #                        W24=w24,
+    #                        LOCN=PureTransformer(function=lambda x: [location + "/" + x[0], x[1]]),
+    #                        WFW=WholeFileWriter(),
+    #                        #CE=ConsoleEchoer(),
+    #                        linkages={
+    #                            ("RR", "outbox"): ("LOCN", "inbox"),
+    #                            ("NSDO", "outbox"): ("LOCN", "inbox"),
+    #                            ("W24", "outbox"): ("LOCN", "inbox"),
+    #                            ("LOCN", "outbox"): ("WFW", "inbox")
+    #                        }
+    # )  #.activate()
+
+    webwriter = Graphline(RR=rainradar,
+                          NSDO=nasa_sdo,
+                          W24=w24,
+                          IMGLOCN=PureTransformer(function=lambda x: ["images/" + x[0], x[1]]),
+                          WG=WebGate(),
+                          #CE=ConsoleEchoer(),
+                          linkages={
+                              ("RR", "outbox"): ("IMGLOCN", "inbox"),
+                              ("NSDO", "outbox"): ("IMGLOCN", "inbox"),
+                              ("IMGLOCN", "outbox"): ("WG", "inbox"),
+                              ("W24", "outbox"): ("WG", "inbox")
+                          }
     ).activate()

@@ -6,9 +6,12 @@ class Wetter24Filter(object):
 
     # TODO: Make sure, unicode is handled correctly
     # TODO: Strip of unnecessary data
+    # TODO: switch to regexps instead of trivial index slicing method
 
     def filter(self, newtext):
-        local_weather = newtext[newtext.find('head_ww'):newtext.find('hPa<') + 4]
+        string = str(newtext, encoding="UTF8")
+
+        local_weather = string[string.find('head_ww'):string.find('hPa<') + 4]
 
         condition_zahl = local_weather.find('head_ww')
         condition_begin = local_weather.find('alt="', condition_zahl) + 5

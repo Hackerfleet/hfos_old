@@ -5,6 +5,7 @@ import serial
 from Axon.ThreadedComponent import threadedcomponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
+from weatherscraper.logging import log
 
 class Serialport(threadedcomponent):
     """Serialport, either listening, writing or even both!"""
@@ -38,7 +39,7 @@ class Serialport(threadedcomponent):
         self.port = None
 
         if autoconnect:
-            print("Connecting")
+            log("Connecting serialport '%s'" % device)
             self._connect()
 
 
@@ -79,12 +80,12 @@ class Serialport(threadedcomponent):
                                       )
                                       
             self.port.flush()
-            print("YAY!")
+            ("YAY!")
             return True
         
         except Exception as error:
-            msg = "Failed to open device: %s" % error
-            print(msg)
+
+            log("Failed to open device: %s" % error)
             self.port = None
             return False
 
@@ -113,6 +114,5 @@ class Serialport(threadedcomponent):
                 self.port.write("\n")
             return True
         except Exception as error:
-            msg = "Failed to write: %s" % error
-            print(msg)
+            log("Failed to write: %s" % error)
             return False
