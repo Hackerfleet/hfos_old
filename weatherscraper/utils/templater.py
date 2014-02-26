@@ -19,11 +19,17 @@ class MakoTemplater(object):
                                    input_encoding='UTF8',
                                    )
 
-    def __init__(self, template):
+    def loadTemplate(self):
         try:
-            self.template = self.templatestore.get_template(template + ".html")
+            self.template = self.templatestore.get_template(self.templatename + ".html")
         except TemplateLookupException:
-            log("Can't find template '%s.html' in templatefolder." % template)
+            log("Can't find template '%s.html' in templatefolder." % self.templatename)
+
+
+    def __init__(self, template):
+        self.templatename = template
+        self.loadTemplate()
 
     def render(self, input):
+        self.loadTemplate()
         return self.template.render(**input).encode("UTF-8")

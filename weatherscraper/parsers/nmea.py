@@ -5,6 +5,9 @@ from Axon.Ipc import producerFinished, shutdownMicroprocess
 from pynmea.streamer import NMEAStream
 import time
 
+from weatherscraper.logging import log
+
+
 class NMEAParser(component):
     """Parses raw data (e.g. from a serialport) for NMEA data and
     sends single sentences out.
@@ -48,23 +51,29 @@ class NMEAParser(component):
             del(nmeadata['nmea_sentence'])
             nmeadata['time'] = sen_time
             nmeadata['type'] = sentence.sen_type
-            sentences.append(nmeadata)
-        return sentences
+            #sentences.append(nmeadata)
+            self.send(nmeadata, "outbox")
+
+        #return sentences
 
     def main(self):
         """Main loop."""
 
         while not self.finished():
+            while not self.anyReady():
+                self.pause()
+                yield 1
+
             while self.dataReady("inbox"):
                 data = self.recv("inbox")
 
                 if len(data) > 0:
                     if data[-1] != "\n":
                         data += "\n"
-                    result = self._parse(data)
+                    self._parse(data)
+#
+#                    if result:
+#                        for sentence in result:
+#                            self.send(sentence, "outbox")
+                yield 1
 
-                    if result:
-                        self.send(result, "outbox")
-
-            self.pause()
-            yield 1

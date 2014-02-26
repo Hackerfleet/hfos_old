@@ -108,9 +108,9 @@ def createPage(place="./"):
     print('starting download procedure of solar weather image', solar_img)
     download(solar_img, place + 'solar_img.jpg')
 
-    log("Writing html to '%s'" % (os.path.abspath("weather.html")))
+    log("Writing html to '%s'" % (os.path.abspath("weather_c-base.html")))
 
-    fobj = open(place + "weather.html", "w")
+    fobj = open(place + "weather_c-base.html", "w")
     fobj.write(
         """<!DOCTYPE html>
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">

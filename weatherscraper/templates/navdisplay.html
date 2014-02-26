@@ -1,11 +1,50 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-    <title>Current Navigation Data</title>
-</head>
-<body>
-<div id="true_course">${true_course}</div>
-<div id="spd_over_grnd">${spd_over_grnd}</div>
-</body>
-</html>
+<%inherit file="base.html" />
+        <%block name="title">Navigation Display</%block>
+        <%block name="header">
+    <meta http-equiv="refresh" content="2" />
+    <style type="text/css">
+        #compass {
+  width: 380px;
+  height: 380px;
+  background-image:url('/static/icons/iconmonstr-compass-6-icon.svg');
+  background-size: 100% auto;
+  position: relative;
+}
+#arrow {
+  width: 360px;
+  height: ${spd_over_grnd}px;
+  background-color:#F00;
+  position: absolute;
+  top: 180px;
+  left: 10px;
+  -webkit-transform:rotate(${float(true_course)-90}deg);
+  -moz-transform:rotate(${float(true_course)-90}deg);
+  -o-transform:rotate(${float(true_course)-90}deg);
+  -ms-transform:rotate(${float(true_course)-90}deg);
+
+  -moz-transition: all 1s ease;
+  -webkit-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
+}
+
+#compass:hover #arrow {
+  -webkit-transform:rotate(0deg);
+  -moz-transform:rotate(0deg);
+  -o-transform:rotate(0deg);
+  -ms-transform:rotate(0deg);
+}
+
+#navdata {
+        font-size: xx-large;
+}
+    </style>
+        </%block>
+
+<div id="compass">
+    <div id="arrow"></div>
+</div>
+<div id="navdata">
+    <div id="true_course">Current course: ${true_course}&deg;</div>
+    <div id="spd_over_grnd">Current Speed: ${spd_over_grnd} knots</div>
+</div>

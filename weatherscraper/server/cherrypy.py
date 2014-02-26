@@ -1,7 +1,7 @@
 __author__ = 'riot'
 
 from Axon.Component import component
-from Axon.Ipc import shutdownMicroprocess
+from Axon.Ipc import producerFinished, shutdownMicroprocess
 
 import cherrypy
 from cherrypy import Tool
@@ -12,24 +12,56 @@ import types
 
 from weatherscraper.logging import log
 
+# TODO: other types than redirect? Make special types more clear/safe to detect (than just making them a dict)
+endpoints = {'': {'redirect': "index.html"},
+             '404': "No document found.",
+             '500': "Server error"
+}
+
+def registerEndpoint(path, content):
+    endpoints[path] = content
+
+class WebStore(component):
+
+    def finished(self):
+        while self.dataReady("control"):
+            msg = self.recv("control")
+            if type(msg) in (producerFinished, shutdownMicroprocess):
+                self.send(msg, "signal")
+                return True
+        return False
+
+
+    def main(self):
+        while not self.finished():
+            while not self.anyReady():
+                self.pause()
+                yield 1
+
+            if self.dataReady("inbox"):
+                data = self.recv("inbox")
+                endpoint, content = data
+                log("WebStore: registering endpoint '%s'" % endpoint)
+
+                registerEndpoint(endpoint, content)
+
 
 class WebGate(component):
     """Cherrypy based Web Gateway Component for user interaction."""
 
-    directory_name = "WebGate"
 
-    class WebClient(object):
+    class WebClient(component):
         def __init__(self, gateway):
             self.gateway = gateway
-            self.endpoints = {}
+            self.endpoints = endpoints
             self.responses = {}
 
-            self.endpoints['404'] = "No document found."
+
 
         @cherrypy.expose
         def default(self, *args):
             """
-            Loader deliverably to give clients our loader javascript.
+            All client requests pipe through here.
             """
             path = cherrypy.request.path_info.lstrip("/")
             # self.gateway.loginfo("Client connected from '%s:%s'." % (cherrypy.request.remote.ip,
@@ -41,14 +73,13 @@ class WebGate(component):
 
             if path in self.endpoints:
                 #page = "<html>" + self.header + "<body>" + self.endpoints[path]() + "</body></html>"
-                return self.endpoints[path]
+                target = self.endpoints[path]
+                if isinstance(target, dict):
+                    target = self.endpoints[target['redirect']]
+
+                return target
             else:
                 return self.endpoints['404']
-
-        def registerEndpoint(self, path, content):
-            log("Endpoint registered:", path)
-            self.endpoints[path] = content
-            return True
 
         # def defer(self, request):
         #     # TODO: Needs a timeout and error checking etc.
@@ -113,9 +144,6 @@ class WebGate(component):
     #     self.send(msg, "signal")
 
 
-    def _registerEndpoint(self, path, content):
-        return self.webclient.registerEndpoint(path=path, content=content)
-
     def __init__(self, debug=True, port=8055, serverenabled=True, staticdir=None):
         super(WebGate, self).__init__()
 
@@ -126,6 +154,10 @@ class WebGate(component):
             self.staticdir = os.path.join(os.path.dirname(__file__), '../../static')
         else:
             self.staticdir = staticdir
+
+        index = self.staticdir + "/index.html"
+        if os.path.exists(index):
+            registerEndpoint("index.html", open(index, "r").read())
 
         self.clients = []
 
@@ -149,10 +181,8 @@ class WebGate(component):
                 yield 1
 
             if self.dataReady("inbox"):
-                data = self.recv("inbox")
-                endpoint, content = data
-
-                self.webclient.registerEndpoint(endpoint, content)
+                data = self.recv()
+                log(data)
 
 
     def _ev_client_connect(self):
@@ -197,4 +227,3 @@ class WebGate(component):
 
         cherrypy.engine.start()
         return True # TODO: Make sure we really started it..
-

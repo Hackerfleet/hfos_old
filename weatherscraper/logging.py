@@ -19,7 +19,6 @@ def log(*what):
     for thing in what:
         msg += " "
         msg += str(thing)
-    msg += "\n"
 
     try:
         f = open(logfile, "a")

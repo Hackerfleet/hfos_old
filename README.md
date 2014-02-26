@@ -1,5 +1,7 @@
 c-weatherscraper
 ================
+The beast evolves.
+
 This package scrapes a german website to read the current weather at the base of the main antenna of c-base. Also it
 scrapes the Website from TU and downloads the most current rainradar-image.
 
@@ -33,6 +35,7 @@ Afterwards you'll have to install the Python packages manually:
 Configuration
 =============
 Lives in `/etc/c-weatherscraper/config.json` after installation.
+
 `{
   "interval": "600",
   "place": "/tmp/"

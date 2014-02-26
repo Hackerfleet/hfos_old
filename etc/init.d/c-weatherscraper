@@ -8,7 +8,7 @@ from Axon.Scheduler import scheduler
 
 from weatherscraper.daemon import Daemon
 from weatherscraper.logging import log
-from weatherscraper.components import weatherScraper
+from weatherscraper.components import build_system
 
 try:
     config = json.load(open("/etc/c-weatherscraper/config.json"))
@@ -25,7 +25,8 @@ class MyDaemon(Daemon):
         log("Running at interval of '%i' seconds." % interval)
         log("Outputting to '%s'." % config['place'])
 
-        weatherScraper(location=config['place'], interval=interval)
+        build_system()
+        #weatherScraper(location=config['place'], interval=interval)
         scheduler.run.runThreads()
 
 
