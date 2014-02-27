@@ -20,6 +20,7 @@ from Kamaelia.Util.PureTransformer import PureTransformer
 from Kamaelia.Util.Backplane import Backplane, PublishTo, SubscribeTo
 from Kamaelia.Util.Fanout import Fanout
 
+from weatherscraper.utils.serialport import SerialReader
 from weatherscraper.utils.httpgetter import HTTPGetter
 from weatherscraper.filters.webfilter import Wetter24Filter, NasaSDOFilter
 from weatherscraper.parsers.grib import GribParser
@@ -185,7 +186,7 @@ def build_weatherScraper(interval=600, template="weather", location=None):
         ).activate()
 
 
-def build_nmeaPublisher():
+def build_nmeaPublisher(debug=True):
     """builds the nmea bus backplane and publishers
 
     Caution: Currently in debug mode (operates without serial but datasource)
@@ -232,10 +233,9 @@ def build_nmeaPublisher():
                                  "$GPRMC,162614,A,5230.5900,N,01322.3900,E,10.0,90.0,131006,1.2,E,A*13",
                                  ""], loop=True),
         ).activate()
-
+    log("Backplane: Debug: ", debug)
     nmeaPublisher = Pipeline(
-        debugSource(),
-        #Serialport('/dev/ttyUSB0'),
+        debugSource() if debug else SerialReader('/dev/ttyUSB0'),
         NMEAParser(),
         PublishTo("NMEA")
     ).activate()
@@ -349,11 +349,11 @@ def build_ticktock():
     ).activate()
 
 
-def build_system(online=True):
+def build_system(online=True, debug=True):
     #build_ticktock()
     build_webgate()
     build_about()
     build_nmeaSubscribers()
-    build_nmeaPublisher()
+    build_nmeaPublisher(debug)
     if online:
         build_weatherScraper()

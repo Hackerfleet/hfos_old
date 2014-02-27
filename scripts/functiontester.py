@@ -5,5 +5,5 @@ from weatherscraper.components import build_system
 
 if __name__ == '__main__':
     #weatherScraper()
-    build_system(online=False)
+    build_system(online=False, debug=True)
     scheduler.run.runThreads()

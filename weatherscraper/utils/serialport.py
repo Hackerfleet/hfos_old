@@ -7,8 +7,8 @@ from Axon.Ipc import producerFinished, shutdownMicroprocess
 
 from weatherscraper.logging import log
 
-class Serialport(threadedcomponent):
-    """Serialport, either listening, writing or even both!"""
+class SerialReader(threadedcomponent):
+    """SerialReader, either listening, writing or even both!"""
 
     Inboxes = {
         "inbox": "When signalled, downloads the configured url and sends it to the outbox. ",
@@ -22,7 +22,7 @@ class Serialport(threadedcomponent):
 
     def __init__(self, device, mode="r", speed=9600, bytesize=8, parity='N', stopbits=1, autoconnect=True,
                  xonxoff=0, buffersize=100):
-        super(Serialport, self).__init__()
+        super(SerialReader, self).__init__()
         self.device = device
         self.mode = mode
         self.speed = speed
