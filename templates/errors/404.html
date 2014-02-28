@@ -1,0 +1,24 @@
+<%inherit file="../base.html" />
+        <%block name="title">About...</%block>
+        <%block name="header">
+    <meta http-equiv="refresh" content="30" />
+    <style type="text/css">
+        #links {
+            text-align: left;
+            width: 20%;
+        }
+    </style>
+        </%block>
+
+<div id="compass">
+</div>
+<div id="error">
+    <H1>Page not found</H1>
+    <div id="errordetails">
+        <img src="/static/images/error.png" />
+        <br />
+        Sorry, the requested module is apparently not available.
+        <br />
+        <a href="/"><img src="/static/icons/iconmonstr-home-4-icon.svg" width="32" height="32"/>Return to the main menu</a>
+    </div>
+</div>

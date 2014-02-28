@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <style type="text/css">
+      body {
+        padding-top: 10px;
+      }
+      .tabelle {
+    width: 100%;
+    }
+      .solar {
+    color:#FFFFFF;
+    background-color:#333333;
+    }
+    </style>
+    <title>c-beam</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="./static/js/jquery.min.js"></script>
+    <script src="./static/js/bootstrap-dropdown.js"></script>
+    <link href="./static/css/cyborg.css" rel="stylesheet" type="text/css">
+    <script src="./static/js/bootstrap.js"></script>
+    <!-- No scripts from the outer world for now.
+    <link href="https://c-beam.cbrp3.c-base.org/static/c-base-bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="https://c-beam.cbrp3.c-base.org/static/c-base-bootstrap/css/bootstrap.custom.css" rel="stylesheet">
+    <!-- End no scripts -->
+    <link rel="shortcut icon" href="./static/icons/favicon.ico">
+</head>
+<body>
+  <div class="container">
+    <h1>nerdctrl status monitor</h1>
+    <hr><p></p>
+    <table class="tabelle">
+        <tr>
+            <td valign="top">
+                <p><b>WEATHER CONDITIONS</b><br />
+                captured at: ${day}.${month}.${year} ${hour}:${minute} h ${seconds}sec <br />
+                captured at base of main-antenna </p>
+                <p>
+                Bedingungen: <b> ${condition} </b> <br />
+                Temperature <b> ${temperature} °C</b> <br />
+                Wind from <b> ${wind_dir} </b> <br />
+                Wind with <b> ${wind_speed} </b> <br />
+                Pressure <b> ${pressure} </b> </p>
+            </td>
+                <td><img src="images/rainradar.gif" alt="Regenradar"></td>
+                <td><img src="images/nasa_sdo.jpg" alt="Sonne, live" width="500px"></td>
+
+        </tr>
+    </table>
+    <footer class="row"> 
+        computer says this is the footer and noooooo
+    </footer> 
+  </div> <!-- container --> 
+<script src="./static/html5slider.js"></script> 
+</body>
+</html> 
