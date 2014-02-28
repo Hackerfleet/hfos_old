@@ -47,6 +47,10 @@ Place:      Folder to write out the html set to.
 
 Contributors
 ============
-Johannes 'ijon' Rundfeldt <ijon@hackerfleet.org>
-Heiko 'riot' Weinen <riot@hackerfleet.org>
-??? (Add yourself or ping us ;)
+* Johannes 'ijon' Rundfeldt <ijon@hackerfleet.org>
+* Heiko 'riot' Weinen <riot@hackerfleet.org>
+* Fabulous icons by iconmonstr.com and Hackerfleet contributors
+* Tumbeasts from http://theoatmeal.com/pl/state_web_winter/tumblr for the error page (CC-BY)
+
+Missing? (Add yourself or ping us ;)
+

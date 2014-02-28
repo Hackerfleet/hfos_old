@@ -5,6 +5,8 @@ from mako.exceptions import TemplateLookupException
 
 from weatherscraper.logging import log
 
+import os
+
 class SimpleTemplater(object):
     def __init__(self, template):
         self.template = template
@@ -14,16 +16,18 @@ class SimpleTemplater(object):
 
 class MakoTemplater(object):
 
-    templatestore = TemplateLookup(directories=['/home/riot/src/c-weatherscraper/weatherscraper/templates'],
+    templatepath = os.path.abspath('templates')
+    #print(templatepath)
+    templatestore = TemplateLookup(directories=[templatepath],
                                    strict_undefined=True,
                                    input_encoding='UTF8',
                                    )
 
     def loadTemplate(self):
         try:
-            self.template = self.templatestore.get_template(self.templatename + ".html")
+            self.template = self.templatestore.get_template(self.templatename)
         except TemplateLookupException:
-            log("Can't find template '%s.html' in templatefolder." % self.templatename)
+            log("Can't find template '%s' in templatefolder." % self.templatename)
 
 
     def __init__(self, template):

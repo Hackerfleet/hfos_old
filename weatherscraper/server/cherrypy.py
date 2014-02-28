@@ -3,10 +3,13 @@ __author__ = 'riot'
 from Axon.Component import component
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
+from weatherscraper.utils.templater import MakoTemplater
+
 import cherrypy
 from cherrypy import Tool
 #import jsonpickle
 import os
+import glob
 import time
 import types
 
@@ -14,8 +17,6 @@ from weatherscraper.logging import log
 
 # TODO: other types than redirect? Make special types more clear/safe to detect (than just making them a dict)
 endpoints = {'': {'redirect': "index.html"},
-             '404': "No document found.",
-             '500': "Server error"
 }
 
 def registerEndpoint(path, content):
@@ -79,7 +80,7 @@ class WebGate(component):
 
                 return target
             else:
-                return self.endpoints['404']
+                return self.endpoints['/errors/404.html']
 
         # def defer(self, request):
         #     # TODO: Needs a timeout and error checking etc.
@@ -159,6 +160,14 @@ class WebGate(component):
         if os.path.exists(index):
             registerEndpoint("index.html", open(index, "r").read())
 
+        for templ in glob.glob('templates/errors/*.html'):
+            if os.path.exists(templ):
+                templ = templ.lstrip('templates')
+                print("Rendering error: ", templ)
+                template = MakoTemplater(templ)
+                registerEndpoint(templ, template.render({}))
+
+        print(endpoints)
         self.clients = []
 
         #self.defers = {} # Schema: {msg.recipient: {ref:clientref,msg:msg}}

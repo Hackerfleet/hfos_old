@@ -119,7 +119,7 @@ def gribGetter():
     )
 
 
-def build_weatherScraper(interval=600, template="weather", location=None):
+def build_weatherScraper(interval=600, template="weather.html", location=None):
     """Constructs a weathersite scraper, in ijon's c-beam style"""
 
     rainradar = Pipeline(
@@ -259,7 +259,7 @@ def build_nmeaSubscribers():
 
     nmeaAnalyzer = Graphline(BP=SubscribeTo('NMEA'),
                              GPRMC=Match(lambda x: x['sen_type'] == "GPRMC"),
-                             GPRMCDT=DictTemplater(templater=MakoTemplater('navdisplay')),
+                             GPRMCDT=DictTemplater(templater=MakoTemplater('navdisplay.html')),
                              GPRMCPT=PureTransformer(lambda x: ("navdisplay.html", x)),
                              SDDBT=Match(lambda x: x['sen_type'] == "SDDBT"),
                              SDDBTPT=PureTransformer(lambda x: ("GEIL! TIEFENDATEN", x)),
@@ -323,7 +323,7 @@ def build_nmeaSubscribers():
 def build_about():
     log("AboutPage: preparing")
     aboutPageBuilder = Graphline(DS=DataSource([{}]),
-                                 DT=DictTemplater(templater=MakoTemplater('about')),
+                                 DT=DictTemplater(templater=MakoTemplater('about.html')),
                                  PT=PureTransformer(lambda x: ["about.html", x]),
                                  WS=WebStore(),
                                  linkages={

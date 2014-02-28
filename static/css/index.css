@@ -32,11 +32,15 @@ img { width: 150px }
 a:link, a:visited, a:active {
     color: white;
     text-decoration: none;
+    -o-transition:.5s;
+    -ms-transition:.5s;
+    -moz-transition:.5s;
+    -webkit-transition:.5s;
 }
 
 a:hover {
     color: #a2c1dc ;
-    text-decoration: underline;
+    /*text-decoration: underline;*/
 }
 
 .grid {
@@ -44,7 +48,8 @@ a:hover {
 }
 
 .item {
-    width: 100%;
+    width: 33%;
+    height: 33%;
 }
 
 .grid:after {
