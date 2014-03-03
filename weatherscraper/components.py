@@ -28,7 +28,7 @@ from weatherscraper.utils.match import Match
 from weatherscraper.utils.dict import DictTemplater
 from weatherscraper.parsers.nmea import NMEAParser
 from weatherscraper.utils.templater import MakoTemplater
-from weatherscraper.server.cherrypy import WebStore, WebGate
+#from weatherscraper.server.cherrypy import WebStore, WebGate
 from weatherscraper.logging import log
 
 
@@ -119,71 +119,71 @@ def gribGetter():
     )
 
 
-def build_weatherScraper(interval=600, template="weather.html", location=None):
-    """Constructs a weathersite scraper, in ijon's c-beam style"""
-
-    rainradar = Pipeline(
-        TriggeredSource("http://wind.met.fu-berlin.de/loops/radar_100/R.NEW.gif"),
-        HTTPGetter(),
-        PureTransformer(function=lambda x: ["images/rainradar.gif", x]),
-    )
-
-    nasa_sdo = Pipeline(
-        siteScraper("http://sdo.gsfc.nasa.gov/data/",
-                    filterclass=NasaSDOFilter()
-        ),
-        HTTPGetter(),
-        PureTransformer(function=lambda x: ["images/nasa_sdo.jpg", x]),
-    )
-
-    w24 = Pipeline(
-        siteScraper("http://www.wetter24.de/wetter/berlin-alexanderplatz/10389.html",
-                    filterclass=Wetter24Filter(),
-                    decode=False
-        ),
-        PureTransformer(function=addtime),
-        DictTemplater(templater=MakoTemplater(template)),
-        PureTransformer(function=lambda x: [template + ".html", x]),
-    )
-
-    Getter = Graphline(RR=rainradar,
-                               NSDO=nasa_sdo,
-                               W24=w24,
-                               SPLIT=Fanout(['rainradar', 'nasa_sdo', 'w24']),
-                               linkages={
-                                   ("self", "inbox"): ("SPLIT", "inbox"),
-                                   ("SPLIT", "rainradar"): ("RR", "inbox"),
-                                   ("SPLIT", "nasa_sdo"): ("NSDO", "inbox"),
-                                   ("SPLIT", "w24"): ("W24", "inbox"),
-                                   ("RR", "outbox"): ("self", "outbox"),
-                                   ("NSDO", "outbox"): ("self", "outbox"),
-                                   ("W24", "outbox"): ("self", "outbox"),
-
-                               }
-    )
-
-    if location:
-        filewriter = Graphline(DS=DataSource([True]),
-                               IG=Getter,
-                               LOCN=PureTransformer(function=lambda x: [location + "/" + x[0], x[1]]),
-                               WFW=WholeFileWriter(),
-                               #CE=ConsoleEchoer(),
-                               linkages={
-                                   ("DS", "outbox"): ("IG", "inbox"),
-                                   ("IG", "outbox"): ("LOCN", "inbox"),
-                                   ("LOCN", "outbox"): ("WFW", "inbox")
-                               }
-        ).activate()
-    else:
-        webwriter = Graphline(SC=SimpleClock(interval),
-                              IG=Getter,
-                              WG=WebStore(),
-                              #CE=ConsoleEchoer(),
-                              linkages={
-                                  ("SC", "outbox"): ("IG", "inbox"),
-                                  ("IG", "outbox"): ("WG", "inbox")
-                              }
-        ).activate()
+# def build_weatherScraper(interval=600, template="weather.html", location=None):
+#     """Constructs a weathersite scraper, in ijon's c-beam style"""
+#
+#     rainradar = Pipeline(
+#         TriggeredSource("http://wind.met.fu-berlin.de/loops/radar_100/R.NEW.gif"),
+#         HTTPGetter(),
+#         PureTransformer(function=lambda x: ["images/rainradar.gif", x]),
+#     )
+#
+#     nasa_sdo = Pipeline(
+#         siteScraper("http://sdo.gsfc.nasa.gov/data/",
+#                     filterclass=NasaSDOFilter()
+#         ),
+#         HTTPGetter(),
+#         PureTransformer(function=lambda x: ["images/nasa_sdo.jpg", x]),
+#     )
+#
+#     w24 = Pipeline(
+#         siteScraper("http://www.wetter24.de/wetter/berlin-alexanderplatz/10389.html",
+#                     filterclass=Wetter24Filter(),
+#                     decode=False
+#         ),
+#         PureTransformer(function=addtime),
+#         DictTemplater(templater=MakoTemplater(template)),
+#         PureTransformer(function=lambda x: [template + ".html", x]),
+#     )
+#
+#     Getter = Graphline(RR=rainradar,
+#                                NSDO=nasa_sdo,
+#                                W24=w24,
+#                                SPLIT=Fanout(['rainradar', 'nasa_sdo', 'w24']),
+#                                linkages={
+#                                    ("self", "inbox"): ("SPLIT", "inbox"),
+#                                    ("SPLIT", "rainradar"): ("RR", "inbox"),
+#                                    ("SPLIT", "nasa_sdo"): ("NSDO", "inbox"),
+#                                    ("SPLIT", "w24"): ("W24", "inbox"),
+#                                    ("RR", "outbox"): ("self", "outbox"),
+#                                    ("NSDO", "outbox"): ("self", "outbox"),
+#                                    ("W24", "outbox"): ("self", "outbox"),
+#
+#                                }
+#     )
+#
+#     if location:
+#         filewriter = Graphline(DS=DataSource([True]),
+#                                IG=Getter,
+#                                LOCN=PureTransformer(function=lambda x: [location + "/" + x[0], x[1]]),
+#                                WFW=WholeFileWriter(),
+#                                #CE=ConsoleEchoer(),
+#                                linkages={
+#                                    ("DS", "outbox"): ("IG", "inbox"),
+#                                    ("IG", "outbox"): ("LOCN", "inbox"),
+#                                    ("LOCN", "outbox"): ("WFW", "inbox")
+#                                }
+#         ).activate()
+#     else:
+#         webwriter = Graphline(SC=SimpleClock(interval),
+#                               IG=Getter,
+#                               WG=WebStore(),
+#                               #CE=ConsoleEchoer(),
+#                               linkages={
+#                                   ("SC", "outbox"): ("IG", "inbox"),
+#                                   ("IG", "outbox"): ("WG", "inbox")
+#                               }
+#         ).activate()
 
 
 def build_nmeaPublisher(debug=True):
@@ -257,6 +257,7 @@ def build_nmeaSubscribers():
                      ConsoleEchoer()
     )  # .activate()
 
+    # TODO: refactor for WebUI
     nmeaAnalyzer = Graphline(BP=SubscribeTo('NMEA'),
                              GPRMC=Match(lambda x: x['sen_type'] == "GPRMC"),
                              GPRMCDT=DictTemplater(templater=MakoTemplater('navdisplay.html')),
@@ -264,7 +265,7 @@ def build_nmeaSubscribers():
                              SDDBT=Match(lambda x: x['sen_type'] == "SDDBT"),
                              SDDBTPT=PureTransformer(lambda x: ("GEIL! TIEFENDATEN", x)),
                              UNCAUGHT=ConsoleEchoer(),
-                             WS=WebStore(),
+#                             WS=WebStore(),
                              linkages={
                                  ("BP", "outbox"): ("GPRMC", "inbox"),
                                  ("GPRMC", "outbox"): ("SDDBT", "inbox"),
@@ -320,29 +321,6 @@ def build_nmeaSubscribers():
     # ).activate()
 
 
-def build_about():
-    log("AboutPage: preparing")
-    aboutPageBuilder = Graphline(DS=DataSource([{}]),
-                                 DT=DictTemplater(templater=MakoTemplater('about.html')),
-                                 PT=PureTransformer(lambda x: ["about.html", x]),
-                                 WS=WebStore(),
-                                 linkages={
-                                     ("DS", "outbox"): ("DT", "inbox"),
-                                     ("DT", "outbox"): ("PT", "inbox"),
-                                     ("PT", "outbox"): ("WS", "inbox"),
-                                 }
-    ).activate()
-    log("NavDisplay: active")
-
-
-def build_webgate():
-    log("WebGate: preparing")
-    webgate = Pipeline(WebGate(),
-                       ConsoleEchoer()
-    ).activate()
-    log("WebGate: active")
-
-
 def build_ticktock():
     ticktock = Pipeline(SimpleClock(0.5),
                         ConsoleEchoer()
@@ -351,9 +329,8 @@ def build_ticktock():
 
 def build_system(online=True, debug=True):
     #build_ticktock()
-    build_webgate()
-    build_about()
+    #build_webgate() # TODO: Refactor whole starter for new WebUI
     build_nmeaSubscribers()
     build_nmeaPublisher(debug)
-    if online:
-        build_weatherScraper()
+    #if online:
+    #    build_weatherScraper()

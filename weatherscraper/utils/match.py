@@ -40,10 +40,10 @@ class Match(component):
 
             while self.dataReady("inbox"):
                 data = self.recv("inbox")
-
-
+                log("[MATCHER] Data:", data)
                 if self.function(data):
+                    log("[MATCHER] MATCH!")
                     self.send(data, "match")
                 else:
-
+                    log("[MATCHER] Tried to match '%s' with '%s'" % (data, self.function))
                     self.send(data, "outbox")

@@ -80,7 +80,7 @@ class SerialReader(threadedcomponent):
                                       )
                                       
             self.port.flush()
-            ("YAY!")
+
             return True
         
         except Exception as error:

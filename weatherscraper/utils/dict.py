@@ -4,6 +4,8 @@ from Axon.Component import component
 from Axon.AdaptiveCommsComponent import AdaptiveCommsComponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
+from weatherscraper.logging import log
+
 class TupleToDict(component):
     """
     Converts incoming tuples into dictionaries according
@@ -79,6 +81,7 @@ class DictCollator(component):
                 self.pause()
                 yield 1
             data = self.recv("inbox")
+            log("Whoa:", data)
 
             if type(data) == dict:
                 self.collation.update(data)
@@ -100,6 +103,7 @@ class WaitForDict(component):
     def __init__(self, keys):
         super(WaitForDict, self).__init__()
         self.keys = keys
+        self.data = {}
 
     def finished(self):
         while self.dataReady("control"):
@@ -115,9 +119,17 @@ class WaitForDict(component):
         while not self.finished():
             if self.dataReady("inbox"):
                 data = self.recv("inbox")
+                #log("[WFD]: data:", str(data)[:23])
 
-                if type(data) == dict and all(k in data for k in self.keys):
-                    self.send(data, "outbox")
+                if type(data) == dict:
+                    self.data.update(data)
+                    if all(k in self.data for k in self.keys):
+                        #log("[WFD] Yup, transmitting.")
+                        self.send(self.data, "outbox")
+                        self.data = {}
+                else:
+                    pass
+                    #log("[WFD] nope: ", self.keys, data.keys())
             self.pause()
             yield 1
 
@@ -146,8 +158,15 @@ class DictTemplater(AdaptiveCommsComponent):
         """Main loop."""
 
         while not self.finished():
+            while not self.anyReady():
+                yield 1
+
+            if self.dataReady("control"):
+                log("[DT]: control message:", self.recv("control"))
+
             if self.dataReady("inbox"):
                 data = self.recv("inbox")
+                log("[DT] Incoming: ", data)
                 if self.update:
                     self.values.update(data)
                 else:
@@ -157,6 +176,56 @@ class DictTemplater(AdaptiveCommsComponent):
 
             self.pause()
             yield 1
+
+
+
+
+
+class ToNamedDict(AdaptiveCommsComponent):
+    """Converts the input into a dictionary, then sends on.
+    """
+
+    # TODO: Is this component really necessary?!
+
+    def __init__(self, keys):
+        super(ToNamedDict, self).__init__()
+        self.keys = keys
+        self.namedDict = {}
+        for key in keys:
+            name = self.addInbox(key)
+            if name != key:
+                log("[TND]: Can't assign boxname '%s' != '%s'" % (key, name))
+
+    def finished(self):
+        while self.dataReady("control"):
+            msg = self.recv("control")
+            if type(msg) in (producerFinished, shutdownMicroprocess):
+                self.send(msg, "signal")
+                return True
+        return False
+
+    def main(self):
+        """Main loop."""
+
+        while not self.finished():
+            while not self.anyReady():
+                yield 1
+
+            for key in self.keys:
+                if self.dataReady(key):
+                    log("[TND]: Received key '%s'" % key)
+                    self.namedDict[key] = self.recv(key)
+
+            if set(self.namedDict.keys()) == set(self.keys):
+                log("[TND]: Received all keys. Punching out '%s'." % self.namedDict.keys())
+                self.send(self.namedDict, "outbox")
+                self.namedDict = {}
+            else:
+                log("[TND]: I have '%s' - i need '%s'" % (self.namedDict.keys(), self.keys))
+
+            self.pause()
+            yield 1
+
 
 
 
@@ -261,14 +330,22 @@ class DictSplitter(AdaptiveCommsComponent):
         """Main loop."""
 
         while not self.finished():
-            while self.dataReady("inbox"):
-                data = self.recv("inbox")
+            while not self.anyReady():
+                self.pause()
+                yield 1
 
+            if self.dataReady("inbox"):
+                data = self.recv("inbox")
+                log("[DS] Incoming: ", data)
                 if type(data) == dict:
-                    #print("Input: '%s'" % data)
-                    for key in self.keys:
-                        if key in data:
+                    log("[DS] Input: '%s'" % data)
+                    for key in data.keys():
+                        if key in self.keys:
+                            log("[DS] Sending '%s' to %s" % (data[key], key))
                             self.send(data[key], key)
+                        else:
+                            log("[DS] Don't know where to send {%s:%s}" % (key, data[key]))
+                            log(self.outboxes)
 
                     rest = {}
                     for key in data:
