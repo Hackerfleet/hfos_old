@@ -1,7 +1,15 @@
+@font-face {
+    font-family: "Clear Sans";
+    src: url(/static/fonts/clearsans/ClearSans-Regular.ttf) format("truetype");
+}
+p.customfont {
+    font-family: "Clear Sans", Verdana, Tahoma;
+}
+
 body {
     background-color: #4385BF;
     color: black;
-    font-family: helvetica;
+    font-family: "Clear Sans";
 }
 
 #content {
