@@ -21,6 +21,7 @@
 from setuptools import setup
 import os
 
+# TODO: rebuild the package finder using setuptools & pkg_resources
 
 def is_package(path):
     return (
@@ -72,11 +73,14 @@ current weather situation for a given area on web clients.
                           'https://github.com/Hackerfleet/pynmea/archive/master.zip#egg=Pynmea-0.3.0',
                           'https://github.com/ri0t/jsonpickle/archive/master.zip#egg=jsonpickle-0.1'
                          ],
+      # These versions are not strictly checked, older ones may or may not work.
       install_requires = ['CherryPy>=3.2.2',
                           'Axon>=1.7.0',
                           'Kamaelia>=1.1.2',
                           'Pynmea>=0.3.0',
                           'Mako>=0.9.1',
-                          'jsonpickle>=0.1'
+                          'jsonpickle>=0.1',
+                          'pymongo>=2.6.3'
                           ]
+
       )

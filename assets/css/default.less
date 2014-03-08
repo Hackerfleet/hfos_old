@@ -1,6 +1,20 @@
+@color1: #414141;
+@color2: #515151;
+@color3: #616161;
+@color4: #3a75a8;
+@color5: #4385bf;
+@color6: #5a94c8;
+@color7: #71a4d0;
+@color8: #89b3d9;
+
+@color_text: black;
+@color_link: white;
+@color_inactive: @color3;
+@color_hilight: @color8;
+
 @font-face {
     font-family: "Clear Sans";
-    src: url(/static/fonts/clearsans/ClearSans-Regular.ttf) format("truetype");
+    src: url(/assets/fonts/clearsans/ClearSans-Regular.ttf) format("truetype");
 }
 p.customfont {
     font-family: "Clear Sans", Verdana, Tahoma;
@@ -8,7 +22,7 @@ p.customfont {
 
 body {
     background-color: #4385BF;
-    color: black;
+    color: @color_text;
     font-family: "Clear Sans";
 }
 
@@ -38,7 +52,7 @@ img { width: 150px }
 }
 
 a:link, a:visited, a:active {
-    color: white;
+    color: @color_link;
     text-decoration: none;
     -o-transition:.5s;
     -ms-transition:.5s;
@@ -47,7 +61,7 @@ a:link, a:visited, a:active {
 }
 
 a:hover {
-    color: #a2c1dc ;
+    color: @color_hilight ;
     /*text-decoration: underline;*/
 }
 

@@ -151,12 +151,12 @@ def createPage(place="./"):
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <script src="./static/jquery.min.js"></script>
-    <script src="./static/bootstrap-dropdown.js"></script>
-    <link href="./static/cyborg.css" rel="stylesheet" type="text/css">
-    <script src="./static/bootstrap.js"></script>
-    <link href="https://c-beam.cbrp3.c-base.org/static/c-base-bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="https://c-beam.cbrp3.c-base.org/static/c-base-bootstrap/css/bootstrap.custom.css" rel="stylesheet">
+    <script src="./assets/jquery.min.js"></script>
+    <script src="./assets/bootstrap-dropdown.js"></script>
+    <link href="./assets/cyborg.css" rel="stylesheet" type="text/css">
+    <script src="./assets/bootstrap.js"></script>
+    <link href="https://c-beam.cbrp3.c-base.org/assets/c-base-bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="https://c-beam.cbrp3.c-base.org/assets/c-base-bootstrap/css/bootstrap.custom.css" rel="stylesheet">
     <!-- link rel="shortcut icon" href="ico/favicon.ico" -->
 </head>
 <body>
@@ -188,7 +188,7 @@ def createPage(place="./"):
 computer says this is the footer and noooooo 
     </footer> 
   </div> <!-- container --> 
-<script src="./static/html5slider.js"></script>
+<script src="./assets/html5slider.js"></script>
 </body></html> 
  """)
     fobj.close()

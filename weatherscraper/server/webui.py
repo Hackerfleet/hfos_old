@@ -40,7 +40,7 @@ from weatherscraper.utils.dict import WaitForDict
 from weatherscraper.utils.selector import PipeSelector
 from weatherscraper.logging import log
 
-# TODO: Evaluate, the static page Store
+# TODO: Evaluate, the assets page Store
 # * does it really still makes sense?
 # * can this be done better?
 endpoints = {'': {'redirect': "index.html"},
@@ -177,7 +177,7 @@ class WebGate(component):
 
         def registerStaticEndpoint(self, path, content):
             # TODO: Unused, as of right now. Maybe it will serve some purpose?
-            log("[WC] Registering static endpoint: '%s'." % path)
+            log("[WC] Registering assets endpoint: '%s'." % path)
             self.endpoints[path] = content
             return True
 
@@ -233,7 +233,7 @@ class WebGate(component):
         super(WebGate, self).__init__()
         self.debug = True
         self.port = 8055
-        self.staticdir = os.path.join(os.path.dirname(__file__), '../../static')
+        self.assetdir = os.path.join(os.path.dirname(__file__), '../../assets')
         self.serverenabled = True
 
         self.loader = None
@@ -275,8 +275,8 @@ class WebGate(component):
     def _readTemplates(self):
         # TODO: Fix up to new system, check if necessary or simplification possible (better kick this out!)
         try:
-            self.loader = open(os.path.join(self.staticdir, "index.html")).read()
-            self.header = open(os.path.join(self.staticdir, "header.html")).read()
+            self.loader = open(os.path.join(self.assetdir, "index.html")).read()
+            self.header = open(os.path.join(self.assetdir, "header.html")).read()
         except Exception as e:
             log("[WG]ERR:" + str(e))
 
@@ -295,17 +295,17 @@ class WebGate(component):
         })
 
         if self.debug:
-            log("[WG]:Enabling debug (autoreload) mode for staticdir '%s'" % self.staticdir)
+            log("[WG]:Enabling debug (autoreload) mode for assetsdir '%s'" % self.assetdir)
 
-            for folder, subs, files in os.walk(self.staticdir):
+            for folder, subs, files in os.walk(self.assetdir):
                 for filename in files:
                     log("[WG]DEBUG:Autoreload enabled for: '%s'" % str(filename))
                     cherrypy.engine.autoreload.files.add(filename)
 
         cherrypy.tools.clientconnect = Tool('on_start_resource', self._ev_client_connect)
-        config = {'/static':
+        config = {'/assets':
                       {'tools.staticdir.on': True,
-                       'tools.staticdir.dir': self.staticdir},
+                       'tools.staticdir.dir': self.assetdir},
         }
 
         self._readTemplates()
@@ -341,6 +341,9 @@ def build_urls():
         )
         return staticTemplater
 
+    def build_errorTemplater():
+        return build_staticTemplater("errors/404.html")
+
     def build_indexTemplater():
         return build_staticTemplater("index.html")
 
@@ -370,6 +373,7 @@ def build_urls():
         (lambda x: x['recipient'] in ('index.html', ''), build_indexTemplater),
         (lambda x: x['recipient'] == 'about.html', build_aboutTemplater),
         (lambda x: x['recipient'] == 'navdisplay.html', build_navdispTemplater),
+        #(lambda x: str(x['recipient']).startswith("/assets/css"), build_scssParser)
     ]
 
     return urls
