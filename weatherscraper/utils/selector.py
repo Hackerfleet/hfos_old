@@ -29,7 +29,7 @@ from Kamaelia.Chassis.Pipeline import Pipeline
 from Kamaelia.Util.DataSource import DataSource
 from Kamaelia.Util.Console import ConsoleEchoer
 
-from weatherscraper.logging import log
+from weatherscraper.logging import log, debug, warn
 
 
 class PipeSelector(AdaptiveCommsComponent):
@@ -63,9 +63,10 @@ class PipeSelector(AdaptiveCommsComponent):
                 "signal": "Shutdown signalling",
     }
 
-    def __init__(self, routes):
+    def __init__(self, routes, defaultpipe=None):
         super(PipeSelector, self).__init__()
         self.routes = routes  # [(condition, pipeline), ...]
+        self.defaultpipe = defaultpipe
 
 
     def finished(self):
@@ -76,6 +77,7 @@ class PipeSelector(AdaptiveCommsComponent):
                 return True
         return False
 
+
     def main(self):
         """Main loop."""
 
@@ -85,60 +87,79 @@ class PipeSelector(AdaptiveCommsComponent):
                 yield 1
             data = self.recv("inbox")
 
-            #log("[PS] data: ", data)
+            log("[PS] data: ", data,lvl=debug)
+
+            direction = hit = False
+
 
             for condition, pipegen in self.routes:
                 if condition(data):
-                    #log("[PS] Hit. Creating pipe.")
+                    hit = True
+                    direction = pipegen
 
-                    pipe = pipegen()
+            if not hit:
+                if self.defaultpipe:
+                    log("[PS] No hit, running through defaultpipe.",lvl=debug)
+                    direction = self.defaultpipe
 
-                    self.addOutbox(pipe.name)
-                    self.addOutbox(pipe.name + "signal")
-                    self.addInbox(pipe.name + "control")
-                    self.addInbox(pipe.name + "inbox")
+            if direction:
+                log("[PS] Generating pipe", lvl=debug)
+                pipe = direction()
 
-                    thetolink = self.link((self, pipe.name), (pipe, "inbox"))
-                    thefromlink = self.link((pipe, "outbox"), (self, pipe.name + "inbox"))
-                    thetosignal = self.link((self, pipe.name + "signal"), (pipe, "control"))
-                    thefromsignal = self.link((pipe, "signal"), (self, pipe.name + "control"))
+                log("[PS] Generating boxes.",lvl=debug)
 
-                    #log("[PS] Transmitting data to pipe:", data)
-                    self.send(data, pipe.name)
-                    pipe.activate()
-                    self.send(producerFinished, pipe.name + "signal")
+                self.addOutbox(pipe.name)
+                self.addOutbox(pipe.name + "signal")
+                self.addInbox(pipe.name + "control")
+                self.addInbox(pipe.name + "inbox")
 
-                    def clearLinks():
-                        #log("[PS] Unlinking..")
+                log("[PS] Generating links.",lvl=debug)
 
-                        self.unlink(pipe, thetolink)
-                        self.unlink(pipe, thefromlink)
-                        self.unlink(pipe, thetosignal)
-                        self.unlink(pipe, thefromsignal)
+                thetolink = self.link((self, pipe.name), (pipe, "inbox"))
+                thefromlink = self.link((pipe, "outbox"), (self, pipe.name + "inbox"))
+                thetosignal = self.link((self, pipe.name + "signal"), (pipe, "control"))
+                thefromsignal = self.link((pipe, "signal"), (self, pipe.name + "control"))
 
-                    begin = time.time()
-                    #component(pipe)._callOnCloseDown.append(clearLinks)
-                    #while (not component(pipe)._isStopped()) and (time.time() < begin + 5):
-                    #    yield 1
+                log("[PS] Transmitting data to pipe:", data, lvl=debug)
 
-                    while (not self.dataReady(pipe.name + "inbox")) and (time.time() < begin + 1):
-                        yield 1
+                self.send(data, pipe.name)
+                pipe.activate()
+                self.send(producerFinished, pipe.name + "signal")
 
-                    if self.dataReady(pipe.name + "inbox"):
-                        self.send(self.recv(pipe.name + "inbox"), "outbox")
-                    else:
-                        log("[PS] WARNING: Pipe didn't respond in time: ", pipe.name, pipe)
+                def clearLinks():
+                    #log("[PS] Unlinking..")
 
-                    #log("[PS] Pipe sent signal:", self.recv(pipe.name+"control")
-                    #)
-                    clearLinks()
-                    component(pipe).closeDownComponent()
-                    self.deleteOutbox(pipe.name)
-                    self.deleteOutbox(pipe.name + "signal")
-                    self.deleteInbox(pipe.name + "control")
-                    self.deleteInbox(pipe.name + "inbox")
+                    self.unlink(pipe, thetolink)
+                    self.unlink(pipe, thefromlink)
+                    self.unlink(pipe, thetosignal)
+                    self.unlink(pipe, thefromsignal)
 
-                    #log("[PS] Done.")
+                begin = time.time()
+                #component(pipe)._callOnCloseDown.append(clearLinks)
+                #while (not component(pipe)._isStopped()) and (time.time() < begin + 5):
+                #    yield 1
+
+                while (not self.dataReady(pipe.name + "inbox")) and (time.time() < begin + 1):
+                    yield 1
+
+                if self.dataReady(pipe.name + "inbox"):
+                    self.send(self.recv(pipe.name + "inbox"), "outbox")
+                else:
+                    log("[PS] WARNING: Pipe didn't respond in time: ", pipe.name, pipe, lvl=warn)
+
+                #log("[PS] Pipe sent signal:", self.recv(pipe.name+"control")
+                #)
+                clearLinks()
+                component(pipe).closeDownComponent()
+                self.deleteOutbox(pipe.name)
+                self.deleteOutbox(pipe.name + "signal")
+                self.deleteInbox(pipe.name + "control")
+                self.deleteInbox(pipe.name + "inbox")
+
+                log("[PS] Done.",lvl=debug)
+
+            else:
+                log("[PS] No match, no default",lvl=warn)
 
 
 def testPipeSelector():

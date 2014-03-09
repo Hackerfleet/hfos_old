@@ -38,7 +38,7 @@ from cherrypy import Tool
 from weatherscraper.utils.templater import MakoTemplater
 from weatherscraper.utils.dict import WaitForDict
 from weatherscraper.utils.selector import PipeSelector
-from weatherscraper.logging import log
+from weatherscraper.logging import log, debug, warn
 
 # TODO: Evaluate, the assets page Store
 # * does it really still makes sense?
@@ -91,11 +91,9 @@ class WebGate(component):
     #################### WebClient ####################
 
     class WebClient(threadedcomponent):
-        def __init__(self, gateway=None, loader=None, header=None, footer=None):
+        def __init__(self, gateway):
             super(WebGate.WebClient, self).__init__()
             self.gateway = gateway
-            self.loader = loader
-            self.header = header
             self.endpoints = {}
             self.responses = {}
 
@@ -123,7 +121,7 @@ class WebGate(component):
             remote = body._get_dict()['remote']
             #log(body._get_dict().keys())
 
-            log("[WC]: Client '%s' accesses recipient: '%s'" % (remote.ip, recipient))
+            log("[WC] Client '%s' request to url: '%s'" % (remote.ip, recipient))
 
             msg = {'client': remote,
                    'recipient': recipient,
@@ -159,7 +157,7 @@ class WebGate(component):
             body = jsonpickle.decode(rawbody)
             log(body)
 
-            log("[WC]: Client '%s' accesses recipient: '%s'" % (remote.ip, recipient))
+            log("[WC] Client '%s' RPC request to url: '%s'" % (remote.ip, recipient))
 
             msg = {'client': remote,
                    'recipient': recipient,
@@ -207,7 +205,7 @@ class WebGate(component):
             del (self.responses[request['recipient']])
             del (self.gateway.defers[request['recipient']])
 
-            log("[WC]: Delivering response. Took '%f' seconds." % (time.time() - response['timestamp']))
+            log("[WC] Delivering response. Took '%f' seconds." % (time.time() - response['timestamp']), lvl=debug)
             return response['response']
 
     #################### /WebClient ####################
@@ -220,7 +218,7 @@ class WebGate(component):
             client.responses[msg['recipient']] = msg
 
     def transmit(self, msg, clientref):
-        log("[WG]: Transmitting on behalf of client '%s'" % (clientref.name))
+        log("[WG] Transmitting on behalf of client '%s'" % (clientref.name), lvl=debug)
         #log("[WG]DEBUG:Message:'%s'" % msg)
         self.defers[msg['recipient']] = {'ref': clientref, 'msg': str(msg)}
         self.send(msg, "outbox")
@@ -231,13 +229,13 @@ class WebGate(component):
 
     def __init__(self):
         super(WebGate, self).__init__()
+        # TODO: Why no init args?
         self.debug = True
         self.port = 8055
+        # TODO: Fix assets dir relativity over whole project
         self.assetdir = os.path.join(os.path.dirname(__file__), '../../assets')
         self.serverenabled = True
 
-        self.loader = None
-        self.header = None
         self.clients = []
         self.defers = {}  # Schema: {msg.recipient: {ref:clientref,msg:msg}}
 
@@ -245,7 +243,7 @@ class WebGate(component):
         if self.serverenabled:
             self._start_Engine()
         else:
-            log("[WG]WARN:WebGate not enabled!")
+            log("[WG] WebGate not enabled!", lvl=warn)
 
         finished = False
         while not finished:  # TODO: determine and ensure component lifetime
@@ -256,7 +254,7 @@ class WebGate(component):
                 data = self.recv("inbox")
                 #print("[WG] Data incoming:", data)
                 if len(self.defers) > 1:
-                    log("[WG]WARNING: More than one defer running:", self.defers)
+                    log("[WG] More than one defer running:", self.defers, lvl=warn)
 
                 self.handleResponse(data)
 
@@ -269,16 +267,8 @@ class WebGate(component):
 
     def _ev_client_connect(self):
         # TODO: Does probably not work anymore. Evaluate need and reintegrate.
-        log("[WG]:Client connected: '%s'" % cherrypy.request)
+        log("[WG] Client connected: '%s'" % cherrypy.request)
         self.clients.append(cherrypy.request)
-
-    def _readTemplates(self):
-        # TODO: Fix up to new system, check if necessary or simplification possible (better kick this out!)
-        try:
-            self.loader = open(os.path.join(self.assetdir, "index.html")).read()
-            self.header = open(os.path.join(self.assetdir, "header.html")).read()
-        except Exception as e:
-            log("[WG]ERR:" + str(e))
 
     def _stop_Engine(self):
         self.defers = {}
@@ -295,11 +285,11 @@ class WebGate(component):
         })
 
         if self.debug:
-            log("[WG]:Enabling debug (autoreload) mode for assetsdir '%s'" % self.assetdir)
+            log("[WG] Enabling autoreload mode for assetsdir '%s'" % self.assetdir, lvl=debug)
 
             for folder, subs, files in os.walk(self.assetdir):
                 for filename in files:
-                    log("[WG]DEBUG:Autoreload enabled for: '%s'" % str(filename))
+                    log("[WG] Autoreload enabled for: '%s'" % str(filename), lvl=debug)
                     cherrypy.engine.autoreload.files.add(filename)
 
         cherrypy.tools.clientconnect = Tool('on_start_resource', self._ev_client_connect)
@@ -308,10 +298,8 @@ class WebGate(component):
                        'tools.staticdir.dir': self.assetdir},
         }
 
-        self._readTemplates()
-
         # TODO: This construct probably needs a change towards ONE client object PER client, not one for all
-        self.webclient = self.WebClient(gateway=self, loader=self.loader, header=self.header)
+        self.webclient = self.WebClient(self)
 
         cherrypy.tree.mount(self.webclient, "/", config=config)
 
@@ -321,6 +309,20 @@ class WebGate(component):
 
 # TODO: Move these to another sane place.
 
+def build_staticTemplater(url):
+    staticTemplater = Graphline(TS=TwoWaySplitter(),
+                                WFD=WaitForDict(['recipient', 'response']),
+                                PT=PureTransformer(lambda x: {'response': MakoTemplater(template=url).render(x)}),
+                                linkages={("self", "inbox"): ("TS", "inbox"),
+                                          ("TS", "outbox"): ("PT", "inbox"),
+                                          ("TS", "outbox2"): ("WFD", "inbox"),
+                                          ("PT", "outbox"): ("WFD", "inbox"),
+                                          ("WFD", "outbox"): ("self", "outbox")
+                                }
+    )
+    return staticTemplater
+
+
 def build_urls():
     """
     Builds the actual content building component generators and url filters in a way
@@ -328,21 +330,6 @@ def build_urls():
 
     """
 
-    def build_staticTemplater(url):
-        staticTemplater = Graphline(TS=TwoWaySplitter(),
-                                    WFD=WaitForDict(['recipient', 'response']),
-                                    PT=PureTransformer(lambda x: {'response': MakoTemplater(template=url).render(x)}),
-                                    linkages={("self", "inbox"): ("TS", "inbox"),
-                                              ("TS", "outbox"): ("PT", "inbox"),
-                                              ("TS", "outbox2"): ("WFD", "inbox"),
-                                              ("PT", "outbox"): ("WFD", "inbox"),
-                                              ("WFD", "outbox"): ("self", "outbox")
-                                    }
-        )
-        return staticTemplater
-
-    def build_errorTemplater():
-        return build_staticTemplater("errors/404.html")
 
     def build_indexTemplater():
         return build_staticTemplater("index.html")
@@ -384,8 +371,12 @@ def build_WebUI():
     Constructs a WebUI consiting of WebGate with WebClients and a Router (PipeSelector) with the selector's
     components being defined by the build_urls() function.
     """
+
+    def build_FailPipe():
+        return build_staticTemplater("errors/404.html")
+
     gate = Graphline(WG=WebGate(),
-                     ROUTER=PipeSelector(build_urls()),
+                     ROUTER=PipeSelector(build_urls(), defaultpipe=build_FailPipe),
                      linkages={("WG", "outbox"): ("ROUTER", "inbox"),
                                ("ROUTER", "outbox"): ("WG", "inbox")
                      }

@@ -20,19 +20,36 @@
 
 
 import time
+import sys
 
-logfile = "/var/log/c-weatherscraper/service.log"
+debug = 10
+info = 20
+warn = 30
+error = 40
+critical = 50
+off = 100
 
-start = time.time()
 count = 0
 
-def log(*what):
+logfile = "/var/log/c-weatherscraper/service.log"
+verbosity = {'global': debug,
+             'file': off,
+             'console': debug}
+
+start = time.time()
+
+
+def log(*what, lvl=info):
+    if lvl < verbosity['global']:
+        return
+
     global count
     global start
     count += 1
 
     now = time.time() - start
-    msg = "[%s] : %.5f : %s :" % ((time.asctime(),
+    msg = "[%s] : %s : %.5f : %5i :" % ((time.asctime(),
+                                         lvl,
                                          now,
                                          count)
     )
@@ -41,10 +58,15 @@ def log(*what):
         msg += " "
         msg += str(thing)
 
-    try:
-        f = open(logfile, "a")
-        f.write(msg)
-        f.flush()
-        f.close()
-    except IOError:
+    if lvl >= verbosity['file']:
+        try:
+            f = open(logfile, "a")
+            f.write(msg)
+            f.flush()
+            f.close()
+        except IOError:
+            print("Can't open logfile for writing!")
+            sys.exit(23)
+
+    if lvl >= verbosity['console']:
         print(msg)
