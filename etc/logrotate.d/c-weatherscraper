@@ -1,9 +1,0 @@
-/var/log/c-weatherscraper/*.log {
-       weekly
-       rotate 10
-       copytruncate
-       delaycompress
-       compress
-       notifempty
-       missingok
-}

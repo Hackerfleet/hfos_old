@@ -1,3 +1,9 @@
+python-hfos (0.0.1) UNRELEASED; urgency=low
+
+  * Renamed c-weatherscraper to more fitting "hfos" - Hackerfleet Operating System
+
+ -- Hackerfleet Community <packages@hackerfleet.org> Thu, 11 Mar 2014 15:29:23 +0100
+
 python-c-weatherscraper (0.0.1) UNRELEASED; urgency=low
 
   * Initial Release

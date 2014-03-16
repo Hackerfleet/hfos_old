@@ -1,0 +1,50 @@
+<%inherit file="base.html" />
+        <%block name="title">About...</%block>
+        <%block name="header">
+        <script src="assets/js/jquery.dataTables.js"></script>
+<script lang="javascript">
+    $(document).ready(function() {
+    $('#example').dataTable( {
+        "aoColumns": [
+            { "mData": "name" },
+            { "mData": "familyname"},
+            { "mData": "nick"},
+            { "mData": "bunk"}
+        ],
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "data/crew/list",
+        "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
+          oSettings.jqXHR = $.ajax( {
+            "contentType": 'application/json',
+            "dataType": 'json',
+            "type": "POST",
+            "url": sSource,
+            "data": JSON.stringify(aoData),
+            "success": fnCallback
+          } );
+          console.log( JSON.stringify(aoData) );
+          console.log( typeof aoData );
+        }
+    } );
+} );
+
+</script>
+        </%block>
+
+
+
+        <table id="example" class="display dataTable" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+            <thead>
+
+                <tr>
+                    <th>Name</th>
+                    <th>Familyname</th>
+                    <th>Nick</th>
+                    <th>Bunk</th>
+                </tr>
+
+            </thead>
+        </table>
+
+

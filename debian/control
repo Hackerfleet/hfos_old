@@ -1,15 +1,17 @@
-Source: python-c-weatherscraper
+Source: python-hfos
 Maintainer: Hackerfleet Community <packages@hackerfleet.org>
 Section: python
 Priority: optional
 Build-Depends: python3-all (>= 3.3.2) | python3-minimal (>= 3.3.2), debhelper (>= 7)
 Standards-Version: 3.9.5
 
-Package: python-c-weatherscraper
+Package: python-hfos
 Architecture: all
 Depends: ${misc:Depends}, ${python:Depends}
-Description: Python3 c-weatherscraper
+Description: Python3 hfos
  .
- This service assembles a nice html including weather relevant data.
- primarily for c-beam, ri0ts fork might evolve into some wild village.
+ This is Hackerfleet's technology demonstrator HFOS,
+ aka Hackerfleet Operating System.
+ Its a developing navigation system for maritime vessels,
+ including (soon) all relevant features and lots more.
  .

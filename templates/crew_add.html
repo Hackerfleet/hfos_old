@@ -1,0 +1,35 @@
+<%inherit file="base.html" />
+        <%block name="title">Add crewmember...</%block>
+        <%block name="header">
+
+        </%block>
+
+
+
+<div id="crew_add_form">
+
+    <form class="form-inline" role="form">
+      <div class="form-group">
+        <label class="sr-only" for="crew_name">First Name</label>
+        <input type="text" class="form-control" id="crew_name" placeholder="Enter First Name">
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="crew_lastname"></label>
+        <input type="text" class="form-control" id="crew_lastname" placeholder="Enter Last Name">
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="crew_phone"></label>
+        <input type="text" class="form-control" id="crew_phone" placeholder="Enter Phone Number">
+      </div>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox">Active Crew
+        </label>
+        <label>
+          <input type="checkbox">Network Access
+        </label>
+      </div>
+      <button type="submit" class="btn btn-default">Add crewmember</button>
+    </form>
+
+</div>

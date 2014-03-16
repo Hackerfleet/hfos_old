@@ -1,21 +1,13 @@
-c-weatherscraper
-================
-The beast evolves.
-
-This package scrapes a german website to read the current weather at the base of the main antenna of c-base. Also it
-scrapes the Website from TU and downloads the most current rainradar-image.
-
-Additionally, it provides a picture of the current solar status, to predict solar pertuberances and other space-weather
-relevant data.
-
-The output consists of weather.html and a few accompanying (mirrored!) images. The webpage can be opened in any Browser,
-or be delivered by a local webserver. Every re-run of the manual script overwrites the old weather.html with fresh new
-Data.
-
-The service currently defaults to run every 600 seconds (10 minutes), which can be configured in
-/etc/c-weatherscraper/config.json
-
-BEWARE! If the script is run more often than that, it might trigger flood-warnings on the website that we scrape.
+hfos
+====
+The Hackerfleet Operating System - Demonstrator Edition
+Warning: Do not use for navigational purposes!
+Included modules: nmea parser, webui, about
+Planned modules:
+* navigation, weather/grib charts
+* navgiation aides, planning and routing
+* crew management, safety tools
+* wireless crew network and general communications
 
 Installation
 ============
@@ -34,21 +26,15 @@ Afterwards you'll have to install the Python packages manually:
 
 Configuration
 =============
-Lives in `/etc/c-weatherscraper/config.json` after installation.
-
-`{
-  "interval": "600",
-  "place": "/tmp/"
-}`
-
-Interval:   Amount of seconds to wait before creating an updated html set
-Place:      Folder to write out the html set to.
-            Ensure write permissions for user `c-weatherscraper.c-weatherscraper`!
+Lives in `/etc/hfos/config.json` after installation, but is currently not used.
 
 Contributors
 ============
-* Johannes 'ijon' Rundfeldt <ijon@hackerfleet.org>
+Code:
 * Heiko 'riot' Weinen <riot@hackerfleet.org>
+* Johannes 'ijon' Rundfeldt <ijon@hackerfleet.org>
+
+Assets:
 * Fabulous icons by iconmonstr.com and Hackerfleet contributors
 * Tumbeasts from http://theoatmeal.com/pl/state_web_winter/tumblr for the error page (CC-BY)
 

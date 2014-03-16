@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/c-weatherscraper.iml" filepath="$PROJECT_DIR$/.idea/c-weatherscraper.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/hfos.iml" filepath="$PROJECT_DIR$/.idea/hfos.iml" />
     </modules>
   </component>
 </project>

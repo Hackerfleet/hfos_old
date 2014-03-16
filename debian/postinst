@@ -1,5 +1,5 @@
-echo "Adding c-weatherscraper user"
-sudo useradd c-weatherscraper --system --no-create-home  --home-dir /nonexistent
-sudo mkdir /var/log/c-weatherscraper
-sudo chown c-weatherscraper /var/log/c-weatherscraper
+echo "Adding hfos user"
+sudo useradd hfos --system --no-create-home  --home-dir /nonexistent
+sudo mkdir /var/log/hfos
+sudo chown hfos /var/log/hfos
 echo "done"

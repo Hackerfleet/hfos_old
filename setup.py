@@ -23,6 +23,12 @@ import os
 
 # TODO: rebuild the package finder using setuptools & pkg_resources
 
+def include_readme():
+    readme = open("README.md")
+    include = readme.readlines(10)[2:10]
+    readme.close()
+    return "".join(include)
+
 def is_package(path):
     return (
         os.path.isdir(path) and
@@ -46,32 +52,30 @@ def find_packages(path, base="" ):
 packages = find_packages(".")
 package_names = packages.keys()
 
-setup(name = "c-weatherscraper",
+setup(name = "hfos",
       version = "1.0.0",
-      description = "c-weatherscraper",
+      description = "hfos",
 
       author = "Hackerfleet Community",
       author_email = "packages@hackerfleet.org",
-      url = "https://github.com/ri0t/c-weatherscraper",
-      license ="Apache Software License",
+      url = "https://github.com/ri0t/hfos",
+      license ="GNU General Public License v3",
       packages = package_names,
       package_dir = packages,
       scripts = [
-                  'scripts/c-weatherscraper',
+                  'scripts/hfos',
                 ],
       data_files=[
-                    ('/etc/init.d', ["etc/init.d/c-weatherscraper"]),
-                    ('/etc/c-weatherscraper', ["etc/c-weatherscraper/config.json"])
+                    ('/etc/init.d', ["etc/init.d/hfos"]),
+                    ('/etc/hfos', ["etc/hfos/config.json"])
                  ],
 
-      long_description = """
-Weatherscraper grabs some relevant data from the web and assembles a well designed HTML5 page to render the
-current weather situation for a given area on web clients.
-""",
+      long_description = include_readme(),
       dependency_links = ['https://github.com/Hackerfleet/axon/archive/master.zip#egg=Axon-1.7.0',
                           'https://github.com/Hackerfleet/kamaelia/archive/master.zip#egg=Kamaelia-1.1.2',
                           'https://github.com/Hackerfleet/pynmea/archive/master.zip#egg=Pynmea-0.3.0',
-                          'https://github.com/ri0t/jsonpickle/archive/master.zip#egg=jsonpickle-0.1'
+                          'https://github.com/ri0t/jsonpickle/archive/master.zip#egg=jsonpickle-0.1',
+                          'http://downloads.sourceforge.net/project/merciless/0.4.2/Ming-0.4.2.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmerciless%2Ffiles%2F0.4.2%2F&ts=1394823237&use_mirror=optimate#egg=ming-0.4.2'
                          ],
       # These versions are not strictly checked, older ones may or may not work.
       install_requires = ['CherryPy>=3.2.2',
@@ -80,7 +84,7 @@ current weather situation for a given area on web clients.
                           'Pynmea>=0.3.0',
                           'Mako>=0.9.1',
                           'jsonpickle>=0.1',
-                          'pymongo>=2.6.3'
+                          'pymongo>=2.6.3',
                           ]
 
       )

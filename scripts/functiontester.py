@@ -24,18 +24,30 @@ __author__ = 'riot'
 from Axon.Scheduler import scheduler
 from Kamaelia.Chassis.Pipeline import Pipeline
 from Kamaelia.Util.Introspector import Introspector
+from Kamaelia.Util.DataSource import DataSource
+from Kamaelia.Util.Console import ConsoleEchoer
 from Kamaelia.Visualisation.Axon.AxonVisualiserServer import text_to_token_lists, AxonVisualiser
 
-from weatherscraper.components import build_system
+#from hfos.components import build_system
 
-from weatherscraper.server.webui import build_WebUI
+#from hfos.server.webui import build_WebUI
 
-from weatherscraper.utils.selector import testPipeSelector
+from hfos.utils.selector import testPipeSelector
+
+from hfos.database.mongo import MongoReader
+from hfos.database.migration import crew, groups
+
+def functiontest():
+    tester = Pipeline(DataSource([groups]),
+                      MongoReader(),
+                      ConsoleEchoer()
+    ).activate()
 
 if __name__ == '__main__':
     #weatherScraper()
     #build_system(online=False, debug=True)
-    build_WebUI()
+    #build_WebUI()
+    functiontest()
 
     #Pipeline(Introspector(),
     #         text_to_token_lists(),

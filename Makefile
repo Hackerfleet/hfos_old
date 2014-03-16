@@ -1,6 +1,6 @@
 PYTHON=`which python`
 DESTDIR=/
-PROJECT=c-weatherscraper
+PROJECT=hfos
 
 all:
 	@echo "make source - Create source package"
