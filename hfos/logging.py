@@ -29,12 +29,19 @@ error = 40
 critical = 50
 off = 100
 
+lvldata = {10: ['DEBUG', '\033[1;97m'],
+           20: ['INFO', '\033[1;92m'],
+           30: ['WARN', '\033[1;94m'],
+           40: ['ERROR', '\033[1;91m'],
+           50: ['CRITICAL' '\033[1;95m'],
+}
+
 count = 0
 
 logfile = "/var/log/hfos/service.log"
 verbosity = {'global': debug,
              'file': off,
-             'console': info}
+             'console': warn}
 
 start = time.time()
 
@@ -48,11 +55,10 @@ def log(*what, lvl=info):
     count += 1
 
     now = time.time() - start
-    msg = "[%s] : %s : %.5f : %5i :" % ((time.asctime(),
-                                         lvl,
+    msg = "[%s] : %5s : %.5f : %5i :" % (time.asctime(),
+                                         lvldata[lvl][0],
                                          now,
                                          count)
-    )
 
     for thing in what:
         msg += " "
@@ -69,4 +75,4 @@ def log(*what, lvl=info):
             sys.exit(23)
 
     if lvl >= verbosity['console']:
-        print(msg)
+        print(lvldata[lvl][1], str(msg), '\033[0m')

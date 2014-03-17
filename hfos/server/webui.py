@@ -40,14 +40,12 @@ from cherrypy import Tool
 
 from bson import json_util
 
-from pprint import pprint
-
 from hfos.utils.templater import MakoTemplater
 from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
 from hfos.database.mongo import MongoReader
 from hfos.database.migration import crew, groups, sensordata
-from hfos.logging import log, debug, warn
+from hfos.logging import log, debug, warn, error, critical
 
 # TODO: Evaluate, the assets page Store
 # * does it really still makes sense?
@@ -126,14 +124,49 @@ class WebGate(component):
             recipient = cherrypy.request.path_info.lstrip("/")
             if not recipient:
                 recipient = "index.html"
-            body = cherrypy.request
-            remote = body._get_dict()['remote']
-            #log(body._get_dict().keys())
+            request = cherrypy.request
+            remote = request._get_dict()['remote']
+
+            gotjson = False
+
+            if 'Content-Length' in request.headers:
+                # Seems we got something with a body
+
+                clength = request.headers['Content-Length']
+                ctype = request.headers['Content-Type']
+                log("[WC] Length: '%i' Type: '%s'" % (int(clength), ctype), lvl=debug)
+
+                if not str(ctype).startswith('application/json'):  # '; charset=UTF-8':
+                    log("[WC] Strange content type received!", lvl=error)
+                    log("[WC] '%s': '%s'" % (ctype, request._get_dict), lvl=error)
+                else:
+                    gotjson = True
+
+                # try to convert http bytes to unicode json
+                try:
+                    rawbody = cherrypy.request.body.read(int(clength))
+                    decodedbody = bytes(rawbody).decode("UTF8")
+                except:
+                    log("[WC] Input decoding failure!", lvl=critical)
+                    log("[WC] I was fed: '%s'" % rawbody)
+
+                try:
+                    body = json.loads(decodedbody)
+                except ValueError:
+                    log("[WC] JSON Decoding failed! Exception was: '%s'" % ValueError, lvl=error)
+                    log("[WC] Tried to parse '%s'" % rawbody, lvl=debug)
+                cherrypy.response.headers['Content-Type'] = 'application/json'
+            else:
+                body = ""
+
+
 
             log("[WC] Client '%s' request to url: '%s'" % (remote.ip, recipient))
+            log("[WC] Requestbody: ", request._get_dict(), lvl=debug)
 
             msg = {'client': remote,
                    'recipient': recipient,
+                   'request': request,
                    'body': body,
                    'timestamp': time.time(),
             }
@@ -141,46 +174,7 @@ class WebGate(component):
             self.gateway.transmit(msg, self)
 
             # Store defer and wait for request's response
-            return self.defer(msg)
-
-        #@cherrypy.tools.json_in()
-
-        @cherrypy.expose
-        def data(self, *args):
-            """
-            Should be doing pretty much the same thing, though de/encoding in json will be performed
-            """
-            # Inconveniently decode JSON back to an object.
-            # Actually this should be managed by cherrpy and jQuery,
-            # alas that prove difficult.
-            # Suppose this should be the same for all calls to /rpc
-
-            log("[WC] Client: ", args)
-            cl = cherrypy.request.headers['Content-Length']
-            rawbody = cherrypy.request.body.read(int(cl))
-            # TODO: the actual request has to be worked up. Right now, we're just pushing back anything we get.
-
-            recipient = cherrypy.request.path_info.lstrip("/")
-
-            body = cherrypy.request
-            remote = body._get_dict()['remote']
-
-            log("[WC] Client '%s' RPC request to url: '%s'" % (remote.ip, recipient))
-            log("[WC] Requestbody: ", body._get_dict(), lvl=debug)
-
-            msg = {'client': remote,
-                   'recipient': recipient,
-                   'body': body,
-                   'timestamp': time.time(),
-            }
-
-            self.gateway.transmit(msg, self)
-
-            cherrypy.response.headers['Content-Type'] = 'application/json'
-
-            # Store defer and wait for request's response
-            return self.defer(msg, respondjson=True)
-
+            return self.defer(msg, gotjson)
 
         def registerStaticEndpoint(self, path, content):
             # TODO: Unused, as of right now. Maybe it will serve some purpose?
@@ -391,9 +385,7 @@ def build_urls():
             WFD=WaitForDict(['recipient', 'response']),
             PT=PureTransformer(lambda x: {'response': MakoTemplater(template="navdisplay.html").render(x)},
             ),
-            CE=ConsoleEchoer(),
             linkages={("self", "inbox"): ("WFD", "inbox"),
-                      ("self", "control"): ("CE", "inbox"),
                       ("DS", "outbox"): ("PT", "inbox"),
                       ("PT", "outbox"): ("WFD", "inbox"),
                       ("WFD", "outbox"): ("self", "outbox"),
@@ -422,15 +414,15 @@ def build_urls():
 
     urls = build_staticTemplates(statics)
 
-    pprint(urls)
+    #pprint(urls)
     urls += [
         (lambda x: x['recipient'] == 'navdisplay.html', build_navdispTemplater),
-        (lambda x: str(x['recipient']).startswith('data/crew/list'), build_crewlist),
+        (lambda x: str(x['recipient']).startswith('crew/list'), build_crewlist),
         #(lambda x: str(x['recipient']).startswith("/assets/css"), build_scssParser)
     ]
 
-    print("#"*23)
-    pprint(urls)
+    #print("#"*23)
+    #pprint(urls)
 
     return urls
 
