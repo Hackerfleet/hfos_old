@@ -30,16 +30,18 @@ from Kamaelia.Visualisation.Axon.AxonVisualiserServer import text_to_token_lists
 
 #from hfos.components import build_system
 
-#from hfos.server.webui import build_WebUI
+#from hfos.server.webui import build_WebU# I
 
 from hfos.utils.selector import testPipeSelector
 
-from hfos.database.mongo import MongoReader
+from hfos.database.mongo import MongoReader, MongoFindOne
 from hfos.database.migration import crew, groups
+from hfos.utils.logger import Logger
 
 def functiontest():
-    tester = Pipeline(DataSource([groups]),
-                      MongoReader(),
+    tester = Pipeline(DataSource([0]),
+                      MongoFindOne('uid', crew),
+                      Logger(),
                       ConsoleEchoer()
     ).activate()
 

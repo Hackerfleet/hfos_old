@@ -23,10 +23,11 @@ __author__ = 'riot'
 
 import os
 import time
+import json
 
 from Axon.Component import component
 from Axon.ThreadedComponent import threadedcomponent
-from Axon.Ipc import producerFinished, shutdownMicroprocess
+from Axon.Ipc import producerFinished
 from Kamaelia.Chassis.Graphline import Graphline
 from Kamaelia.Chassis.Pipeline import Pipeline
 from Kamaelia.Util.DataSource import DataSource
@@ -34,52 +35,18 @@ from Kamaelia.Util.PureTransformer import PureTransformer
 from Kamaelia.Util.TwoWaySplitter import TwoWaySplitter
 from Kamaelia.Util.Console import ConsoleEchoer
 from Kamaelia.Util.Collate import Collate
-import jsonpickle, json
+import jsonpickle
 import cherrypy
 from cherrypy import Tool
-
 from bson import json_util
 
 from hfos.utils.templater import MakoTemplater
 from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
-from hfos.database.mongo import MongoReader
-from hfos.database.migration import crew, groups, sensordata
+from hfos.utils.logger import Logger
+from hfos.database.mongo import MongoReader, MongoFindOne
+from hfos.database.migration import crew
 from hfos.logging import log, debug, warn, error, critical
-
-# TODO: Evaluate, the assets page Store
-# * does it really still makes sense?
-# * can this be done better?
-endpoints = {'': {'redirect': "index.html"},
-}
-
-def registerEndpoint(path, content):
-    endpoints[path] = content
-
-class WebStore(component):
-
-    def finished(self):
-        while self.dataReady("control"):
-            msg = self.recv("control")
-            if type(msg) in (producerFinished, shutdownMicroprocess):
-                self.send(msg, "signal")
-                return True
-        return False
-
-
-    def main(self):
-        while not self.finished():
-            while not self.anyReady():
-                self.pause()
-                yield 1
-
-            if self.dataReady("inbox"):
-                data = self.recv("inbox")
-                endpoint, content = data
-                log("WebStore: registering endpoint '%s'" % endpoint)
-
-                registerEndpoint(endpoint, content)
-
 
 
 class WebGate(component):
@@ -88,24 +55,26 @@ class WebGate(component):
     # The Webclient objects are not registered per client
     # As such the easiest way to discern what request's response goes to where,
     # a defer mechanism is used, that just stores the request url as reference.
-    # This is very bad, as multiple requests with the same url (but e.g. different post data)
-    # will get lost or end up at strange places.
+    # This is not good, as multiple requests with the same url (but e.g. different post data)
+    # may probably get lost or end up at strange places.
     # That may not be a problem because handling such data CAN still happen at a later point
     # (i.e. in the content generating router pipe)...
-    # Still, this and having a webclient object that actually represents ONE client has to be
+    # Still, this issue and having a webclient object that actually represents ONE client has to be
     # considered for various reasons, like security, authentication etc.
 
     #################### WebClient ####################
 
     class WebClient(threadedcomponent):
         def __init__(self, gateway):
+            """
+            Actual httpd-connected client component.
+            """
             super(WebGate.WebClient, self).__init__()
             self.gateway = gateway
-            self.endpoints = {}
             self.responses = {}
 
         @cherrypy.expose
-        def default(self, *args):  # TODO: Whats *args doing here?
+        def default(self, *args):  # cherrypy needs the args, we don't
             """
             Accepts all client side requests and pushes them out of our gateway.
             To manage returning responses, a defer is created with this object as reference.
@@ -125,7 +94,8 @@ class WebGate(component):
             if not recipient:
                 recipient = "index.html"
             request = cherrypy.request
-            remote = request._get_dict()['remote']
+            remote = request.remote
+            log("[WC] Client ip: ", remote, lvl=debug)
 
             gotjson = False
 
@@ -142,11 +112,15 @@ class WebGate(component):
                 else:
                     gotjson = True
 
+                rawbody = b""
+                decodedbody = ""
+                body = ""
+
                 # try to convert http bytes to unicode json
                 try:
                     rawbody = cherrypy.request.body.read(int(clength))
                     decodedbody = bytes(rawbody).decode("UTF8")
-                except:
+                except (IOError, ValueError, TypeError):  # TODO: i certainly hope these are enough
                     log("[WC] Input decoding failure!", lvl=critical)
                     log("[WC] I was fed: '%s'" % rawbody)
 
@@ -159,10 +133,10 @@ class WebGate(component):
             else:
                 body = ""
 
-
-
             log("[WC] Client '%s' request to url: '%s'" % (remote.ip, recipient))
-            log("[WC] Requestbody: ", request._get_dict(), lvl=debug)
+
+            #from pprint import pprint
+            #pprint(request._get_dict())  # this little debugging helper is of mighty use
 
             msg = {'client': remote,
                    'recipient': recipient,
@@ -176,31 +150,23 @@ class WebGate(component):
             # Store defer and wait for request's response
             return self.defer(msg, gotjson)
 
-        def registerStaticEndpoint(self, path, content):
-            # TODO: Unused, as of right now. Maybe it will serve some purpose?
-            log("[WC] Registering assets endpoint: '%s'." % path)
-            self.endpoints[path] = content
-            return True
-
         def defer(self, request, respondjson=False):
             """
-            Handles running defers with a timeout probably unwise, since the PipeSelector (aka Router)
-            already has a timeout.
-            Which is probably bad, see hfos.utils.selector.PipeSelector for more info.
-            We can either remove it here or there, i think it makes sense to fix the pipes and the selector.
+            Handles running defers with a timeout.
+            (Probably unwise, since the PipeSelector (aka Router) already has one)
+            See hfos.utils.selector.PipeSelector for more info.
+            We can either remove it here or there
             """
 
             # Just looping around and wasting time is no good!
             while len(self.gateway.defers) > 0 and not request['recipient'] in self.responses:
-                #log("[WC]:I'm still running with: '%s'" % request)
-
                 if request['timestamp'] + 5 < time.time():
-                    #log("[WC]WARN: Response timeout for '%s'. Cleaning up!" % request)
+                    log("[WC] Response timeout for '%s'. Cleaning up!" % request, lvl=warn)
                     del (self.gateway.defers[request['recipient']])
                     return jsonpickle.encode({'error': "No response!"})
 
                 # Await response
-                time.sleep(0.002)
+                time.sleep(0.002)  # TODO: Hmm. Make this configurable, we'll probably need to tune.
 
             responseobject = self.responses[request['recipient']]
 
@@ -208,31 +174,29 @@ class WebGate(component):
             del (self.responses[request['recipient']])
             del (self.gateway.defers[request['recipient']])
 
+            # Respond
             if respondjson:
                 response = str(json.dumps(responseobject['response'], default=json_util.default)).encode("UTF8")
             else:
                 response = responseobject['response']
-            log("[WC] Delivering response. Took '%f' seconds." % (time.time() - responseobject['timestamp']), lvl=debug)
+            log("[WC] Delivering response for '%s'. Rendering time: %.0fms." % (request['recipient'],
+                                                                     (time.time() - responseobject['timestamp'])*1000))
             return response
 
     #################### /WebClient ####################
 
 
-    def handleResponse(self, msg):
+    def handle_response(self, msg):
         #log("[WG]DEBUG:Response received: '%s' Client References: '%s'" % (msg, self.defers))
         if msg['recipient'] in self.defers:
             client = self.defers[msg['recipient']]['ref']
             client.responses[msg['recipient']] = msg
 
     def transmit(self, msg, clientref):
-        log("[WG] Transmitting on behalf of client '%s'" % (clientref.name), lvl=debug)
+        log("[WG] Transmitting on behalf of client '%s'" % clientref.name, lvl=debug)
         #log("[WG]DEBUG:Message:'%s'" % msg)
         self.defers[msg['recipient']] = {'ref': clientref, 'msg': str(msg)}
         self.send(msg, "outbox")
-
-    def _registerEndpoint(self, path, content):
-        log("[WG]: Endpoint registration on '%s'" % path)
-        return self.webclient.registerStaticEndpoint(path=path, content=content)
 
     def __init__(self):
         super(WebGate, self).__init__()
@@ -248,7 +212,7 @@ class WebGate(component):
 
     def main(self):
         if self.serverenabled:
-            self._start_Engine()
+            self._start_engine()
         else:
             log("[WG] WebGate not enabled!", lvl=warn)
 
@@ -263,7 +227,7 @@ class WebGate(component):
                 if len(self.defers) > 1:
                     log("[WG] More than one defer running:", self.defers, lvl=warn)
 
-                self.handleResponse(data)
+                self.handle_response(data)
 
             if self.dataReady("control"):
                 data = self.recv("control")
@@ -277,19 +241,18 @@ class WebGate(component):
         log("[WG] Client connected: '%s'" % cherrypy.request)
         self.clients.append(cherrypy.request)
 
-    def _stop_Engine(self):
+    def _stop_engine(self):
         self.defers = {}
         cherrypy.engine.stop()
         return True  # TODO: Make sure we really stopped it..
 
-    def _start_Engine(self):
+    def _start_engine(self):
         # TODO: This needs cleanups and overhaul
         logger = cherrypy.log
         logger.logger_root = ''
 
         cherrypy.config.update({'server.socket_port': self.port,
-                                'server.socket_host': '0.0.0.0',
-        })
+                                'server.socket_host': '0.0.0.0'})
 
         if self.debug:
             log("[WG] Enabling autoreload mode for assetsdir '%s'" % self.assetdir, lvl=debug)
@@ -301,9 +264,8 @@ class WebGate(component):
 
         cherrypy.tools.clientconnect = Tool('on_start_resource', self._ev_client_connect)
         config = {
-            '/assets':
-                {'tools.staticdir.on': True,
-                 'tools.staticdir.dir': self.assetdir},
+            '/assets': {'tools.staticdir.on': True,
+                        'tools.staticdir.dir': self.assetdir},
         }
 
         # TODO: This construct probably needs a change towards ONE client object PER client, not one for all
@@ -317,7 +279,7 @@ class WebGate(component):
 
 # TODO: Move these to another sane place.
 
-def build_staticTemplater():
+def build_static_templater():
     return Graphline(TS=TwoWaySplitter(),
                      CE=ConsoleEchoer(),
                      WFD=WaitForDict(['recipient', 'response']),
@@ -326,10 +288,7 @@ def build_staticTemplater():
                                ("TS", "outbox"): ("PT", "inbox"),
                                ("TS", "outbox2"): ("WFD", "inbox"),
                                ("PT", "outbox"): ("WFD", "inbox"),
-                               ("WFD", "outbox"): ("self", "outbox")
-                     }
-    )
-
+                               ("WFD", "outbox"): ("self", "outbox")})
 
 
 def build_urls():
@@ -340,95 +299,103 @@ def build_urls():
     """
 
     def build_async_webpipe(pipe):
-            rpcpipe = Graphline(
-                PIPE=pipe,
-                PT=PureTransformer(lambda x: {'response': x}),
-                WFD=WaitForDict(['recipient', 'response']),
-                linkages={("self", "inbox"): ("WFD", "inbox"),
-                          ("PIPE", "outbox"): ("PT", "inbox"),
-                          ("PT", "outbox"): ("WFD", "inbox"),
-                          ("WFD", "outbox"): ("self", "outbox"),
-                }
-            )
-            return rpcpipe
+        """
+        Constructs a webpipe that doesn't care for browser supplied input.
+        """
 
+        rpcpipe = Graphline(
+            PIPE=pipe,
+            PT=PureTransformer(lambda x: {'response': x}),
+            WFD=WaitForDict(['recipient', 'response']),
+            linkages={("self", "inbox"): ("WFD", "inbox"),
+                      ("PIPE", "outbox"): ("PT", "inbox"),
+                      ("PT", "outbox"): ("WFD", "inbox"),
+                      ("WFD", "outbox"): ("self", "outbox")})
+        return rpcpipe
 
-    def build_staticTemplates(templates):
+    def build_static_templates(templates):
+        """
+        Finds all static templates and generates routing rules for them
+        """
 
-
+        # TODO: Fix this folder, everywhere... *sigh*
         templfolder = "templates"
         routes = []
         #print(os.path.realpath(templfolder))
         import functools
 
-        def testRecipient(data, recipient):
+        def test_recipient(data, recipient):
             return data['recipient'] == recipient
 
         for root, subFolders, files in os.walk(templfolder):
             for template in files:
-                #print(template, os.path.basename(template))
                 if template in templates:
-                    #print file
-                    cond = functools.partial(testRecipient, recipient=os.path.basename(template))
+                    cond = functools.partial(test_recipient, recipient=os.path.basename(template))
 
-                    routes.append((cond, build_staticTemplater))
+                    routes.append((cond, build_static_templater))
         return routes
 
-    def build_navdispTemplater():
-        # TODO: This is, as you can guess easily by the next import just a fake mockup but demonstrates how to get
+    def build_navdisp_templater():
+        # TODO: This is - as you can guess easily by the next import - just a fake mockup, but demonstrates how to get
         # relevant data and insert it into a Templater or do whatever with it
 
         import random
 
-        navdispTemplater = Graphline(
+        navdisp_templater = Graphline(
             DS=DataSource([{'spd_over_grnd': random.randint(0, 25), 'true_course': random.randint(0, 359)}]),
             WFD=WaitForDict(['recipient', 'response']),
-            PT=PureTransformer(lambda x: {'response': MakoTemplater(template="navdisplay.html").render(x)},
-            ),
+            PT=PureTransformer(lambda x: {'response': MakoTemplater(template="navdisplay.html").render(x)}),
             linkages={("self", "inbox"): ("WFD", "inbox"),
                       ("DS", "outbox"): ("PT", "inbox"),
                       ("PT", "outbox"): ("WFD", "inbox"),
-                      ("WFD", "outbox"): ("self", "outbox"),
-            }
-        )
-        return navdispTemplater
+                      ("WFD", "outbox"): ("self", "outbox")})
+        return navdisp_templater
 
     def build_crewlist():
         crew_list = Pipeline(DataSource([crew]),
                              MongoReader(),
+                             PureTransformer(lambda x: dict({'details': '<a href="crew/details/'+str(x['uid'])+'">Details</a>'}, **x)),
+                             Logger(name="CREWLIST", level=debug),
                              Collate(),
                              PureTransformer(lambda x: {'sEcho': 1,
-                                                         'iTotalRecords': len(x),
-                                                         'iTotalDisplayRecords': len(x),
-                                                         'aaData': x}),
+                                                        'iTotalRecords': len(x),
+                                                        'iTotalDisplayRecords': len(x),
+                                                        'aaData': x}
+                             ),
+        )
+        return build_async_webpipe(crew_list)
+
+    def build_crewdetails():
+        def get_crew_id(request):
+            return int(str(request['recipient']).lstrip('crew/details/'))
+
+        crew_list = Pipeline(PureTransformer(get_crew_id),
+                             MongoFindOne('uid', crew),
+                             Logger(name="CREWDETAILS", level=debug),
+                             Collate(),
         )
         return build_async_webpipe(crew_list)
 
 
-
     statics = ['index.html',
                'about.html',
+               'navigation.html',
                'crew_add.html',
-               'crew_list.html',
-               ]
+               'crew_list.html']
 
-    urls = build_staticTemplates(statics)
-
-    #pprint(urls)
+    urls = build_static_templates(statics)
     urls += [
-        (lambda x: x['recipient'] == 'navdisplay.html', build_navdispTemplater),
+        (lambda x: x['recipient'] == 'navdisplay.html', build_navdisp_templater),
         (lambda x: str(x['recipient']).startswith('crew/list'), build_crewlist),
+        (lambda x: str(x['recipient']).startswith('crew/details'), build_crewdetails)
         #(lambda x: str(x['recipient']).startswith("/assets/css"), build_scssParser)
     ]
 
-    #print("#"*23)
-    #pprint(urls)
-
     return urls
+
 
 def build_404template():
     return Graphline(TS=TwoWaySplitter(),
-                     CE=ConsoleEchoer(),
                      WFD=WaitForDict(['recipient', 'response']),
                      PT=PureTransformer(lambda x: {'response': MakoTemplater(template='errors/404.html').render(x)}),
                      linkages={("self", "inbox"): ("TS", "inbox"),
@@ -439,7 +406,8 @@ def build_404template():
                      }
     )
 
-def build_WebUI():
+
+def build_webui():
     """
     Constructs a WebUI consiting of WebGate with WebClients and a Router (PipeSelector) with the selector's
     components being defined by the build_urls() function.
@@ -450,4 +418,5 @@ def build_WebUI():
                      linkages={("WG", "outbox"): ("ROUTER", "inbox"),
                                ("ROUTER", "outbox"): ("WG", "inbox")
                      }
-    ).activate()
+    )
+    gate.activate()

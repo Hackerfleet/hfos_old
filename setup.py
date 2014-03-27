@@ -85,6 +85,7 @@ setup(name = "hfos",
                           'Mako>=0.9.1',
                           'jsonpickle>=0.1',
                           'pymongo>=2.6.3',
+                          'bson>=0.3.3'
                           ]
 
       )

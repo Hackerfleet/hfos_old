@@ -8,13 +8,13 @@ __status__ = "Beta"
 
 from hfos.components import build_nmeaSubscribers
 from hfos.components import build_nmeaPublisher
-from hfos.server.webui import build_WebUI
+from hfos.server.webui import build_webui
 
 
 def build_system(online=True, debug=True):
     #build_nmeaSubscribers()
     #build_nmeaPublisher(debug)
-    build_WebUI()
+    build_webui()
 
     #if online:
     #    build_weatherScraper()
