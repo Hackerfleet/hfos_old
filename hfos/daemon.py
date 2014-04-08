@@ -33,7 +33,8 @@ import time
 import atexit
 from signal import SIGTERM
 
-from hfos.logging import log, logfile
+from hfos.utils.logger import log, logfile
+
 
 class Daemon(object):
         """

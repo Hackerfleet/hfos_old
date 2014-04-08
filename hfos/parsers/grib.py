@@ -21,15 +21,14 @@
 
 __author__ = 'riot'
 
-from Axon.ThreadedComponent import threadedcomponent
-from Axon.Component import component
-from Axon.Ipc import producerFinished, shutdownMicroprocess
-from pynmea.streamer import NMEAStream
 import time
-
-from hfos.logging import log
-
 import pygrib
+
+from Axon.ThreadedComponent import threadedcomponent
+from Axon.Ipc import shutdownMicroprocess
+
+from hfos.utils.logger import log
+
 
 class GribParser(threadedcomponent):
     """Parses raw data (e.g. from a serialport) for NMEA data and

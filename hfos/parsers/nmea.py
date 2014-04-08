@@ -21,12 +21,11 @@
 
 __author__ = 'riot'
 
+import time
+
 from Axon.Component import component
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 from pynmea.streamer import NMEAStream
-import time
-
-from hfos.logging import log
 
 
 class NMEAParser(component):

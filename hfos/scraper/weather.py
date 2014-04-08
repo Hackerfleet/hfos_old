@@ -29,7 +29,8 @@ import urllib.request
 import time
 import os
 
-from hfos.logging import log
+from hfos.utils.logger import log
+
 
 def download(url, targetname):
     """Copy the contents of a file from a given URL

@@ -7,16 +7,12 @@ __license__ = "GPLv3"
 __status__ = "Beta"
 
 from Axon.Component import component
-from Axon.AdaptiveCommsComponent import AdaptiveCommsComponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
-from Kamaelia.Chassis.Pipeline import Pipeline
-from Kamaelia.Util.DataSource import DataSource
-from Kamaelia.Util.Console import ConsoleEchoer
-
-from hfos.logging import log, debug, warn
-
 from pymongo import MongoClient
 from pymongo.collection import Collection
+
+from hfos.utils.logger import log, debug
+
 
 host = 'localhost'
 port = 27017
@@ -99,3 +95,41 @@ class MongoReader(component):
             for result in col.find():
                 self.send(result, "outbox")
                 yield 1
+
+class MongoUpdateOne(component):
+    Inboxes = { "inbox"   : "Items",
+                "control" : "Shutdown signalling",
+              }
+    Outboxes = { "outbox" : "Items tagged with a sequence number, in the form (seqnum, item)",
+                 "signal" : "Shutdown signalling",
+               }
+
+    def __init__(self, collection):
+        super(MongoUpdateOne, self).__init__()
+
+        assert (type(collection) == Collection)
+        self.collection = collection
+
+
+    def finished(self):
+        while self.dataReady("control"):
+            msg = self.recv("control")
+            if type(msg) in (producerFinished, shutdownMicroprocess):
+                self.send(msg, "signal")
+                return True
+        return False
+
+    def main(self):
+        """Main loop."""
+
+        while not self.finished():
+            while self.dataReady("inbox"):
+                value = self.recv("inbox")
+                log("[MUO] Got a job:", value, lvl=debug)
+
+                result = str(self.collection.save(value))
+                log("[MUO] Result: ", result, lvl=debug)
+                self.send(result, "outbox")
+
+            self.pause()
+            yield 1

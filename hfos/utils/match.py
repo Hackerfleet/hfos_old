@@ -24,7 +24,8 @@ __author__ = 'riot'
 from Axon.Component import component
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
-from hfos.logging import log
+from hfos.utils.logger import log
+
 
 class Match(component):
     """Parses raw data (e.g. from a serialport) for NMEA data and

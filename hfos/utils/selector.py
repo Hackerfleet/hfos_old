@@ -29,7 +29,7 @@ from Kamaelia.Chassis.Pipeline import Pipeline
 from Kamaelia.Util.DataSource import DataSource
 from Kamaelia.Util.Console import ConsoleEchoer
 
-from hfos.logging import log, debug, warn
+from hfos.utils.logger import log, debug, warn
 
 
 class PipeSelector(AdaptiveCommsComponent):

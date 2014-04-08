@@ -29,7 +29,8 @@ import time
 from Axon.ThreadedComponent import threadedcomponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
-from hfos.logging import log
+from hfos.utils.logger import log
+
 
 __author__ = 'riot'
 

@@ -16,6 +16,7 @@ db = client['hfos']
 crew = db['crew']
 sensordata = db['sensordata']
 groups = db['groups']
+logbook = db['logbook']
 
 def update(collection, query, object):
     existing = collection.find_one(query)

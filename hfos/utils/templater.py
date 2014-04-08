@@ -21,12 +21,13 @@
 
 __author__ = 'riot'
 
+import os
+
 from mako.lookup import TemplateLookup
 from mako.exceptions import TemplateLookupException
 
-from hfos.logging import log
+from hfos.utils.logger import log
 
-import os
 
 class SimpleTemplater(object):
     def __init__(self, template):

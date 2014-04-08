@@ -21,13 +21,14 @@
 
 __author__ = 'riot'
 
+import time
+
 from Axon.Component import component
 from Axon.AdaptiveCommsComponent import AdaptiveCommsComponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
-from hfos.logging import log
+from hfos.utils.logger import log
 
-import time
 
 def addtime(x):
     """Helper function to insert a timestamp into a dictionary

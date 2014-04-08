@@ -22,8 +22,6 @@
 
 __author__ = 'riot'
 
-import time
-
 from Kamaelia.File.WholeFileWriter import WholeFileWriter
 from Kamaelia.File.Writing import SimpleFileWriter
 from Kamaelia.File.Reading import SimpleReader
@@ -38,18 +36,17 @@ from Kamaelia.Util.DataSource import DataSource, TriggeredSource
 from Kamaelia.Util.Filter import Filter
 from Kamaelia.Util.PureTransformer import PureTransformer
 from Kamaelia.Util.Backplane import Backplane, PublishTo, SubscribeTo
-from Kamaelia.Util.Fanout import Fanout
 
 from hfos.utils.serialport import SerialReader
 from hfos.utils.httpgetter import HTTPGetter
-from hfos.filters.webfilter import Wetter24Filter, NasaSDOFilter
 from hfos.parsers.grib import GribParser
 from hfos.utils.match import Match
 from hfos.utils.dict import DictTemplater
 from hfos.parsers.nmea import NMEAParser
 from hfos.utils.templater import MakoTemplater
+
 #from hfos.server.cherrypy import WebStore, WebGate
-from hfos.logging import log
+from hfos.utils.logger import log
 
 
 def siteScraper(url, filterclass, decode=True):

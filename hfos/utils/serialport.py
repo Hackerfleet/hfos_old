@@ -22,11 +22,10 @@
 __author__ = 'riot'
 
 import serial
-
 from Axon.ThreadedComponent import threadedcomponent
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
-from hfos.logging import log
+from hfos.utils.logger import log
 
 class SerialReader(threadedcomponent):
     """SerialReader, either listening, writing or even both!"""

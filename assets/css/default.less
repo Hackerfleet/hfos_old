@@ -13,6 +13,9 @@
 @color_hilight: @color8;
 @color_background: @color5;
 
+@navbar_height: 23px;
+
+
 @font-face {
     font-family: "Clear Sans";
     src: url(/assets/fonts/clearsans/ClearSans-Regular.ttf) format("truetype");
@@ -25,6 +28,7 @@ body {
     background-color: #4385BF;
     color: @color_text;
     font-family: "Clear Sans";
+    padding-top: @navbar_height;
 }
 
 .jumbotron {
@@ -108,5 +112,5 @@ a:hover {
 }
 
 .navbar-inner {
-    min-height: 23px; /* change value here*/
+    min-height: (@navbar_height + 10); /* change value here*/
 }

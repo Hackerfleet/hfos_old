@@ -44,9 +44,9 @@ from hfos.utils.templater import MakoTemplater
 from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
 from hfos.utils.logger import Logger
-from hfos.database.mongo import MongoReader, MongoFindOne
-from hfos.database.migration import crew
-from hfos.logging import log, debug, warn, error, critical
+from hfos.database.mongo import MongoReader, MongoFindOne, MongoUpdateOne
+from hfos.database.migration import crew, logbook
+from hfos.utils.logger import log, debug, warn, error, critical
 
 
 class WebGate(component):
@@ -298,6 +298,26 @@ def build_urls():
 
     """
 
+    def build_sync_webpipe(pipe, name=""):
+        """
+        Constructs a webpipe that does care for browser supplied input.
+        """
+
+        rpcpipe = Graphline(
+            TS=TwoWaySplitter(),
+            PIPE=pipe,
+            #PT=PureTransformer(lambda x: {'response': x}),
+            WFD=WaitForDict(['recipient', 'response']),
+            linkages={("self", "inbox"): ("TS", "inbox"),
+                      ("TS", "outbox"): ("WFD", "inbox"),
+                      ("TS", "outbox2"): ("PIPE", "inbox"),
+                      ("PIPE", "outbox"): ("WFD", "inbox"),
+                      #("PT", "outbox"): ("WFD", "inbox"),
+                      ("WFD", "outbox"): ("self", "outbox")})
+        if name:
+            rpcpipe.name = name
+        return rpcpipe
+
     def build_async_webpipe(pipe):
         """
         Constructs a webpipe that doesn't care for browser supplied input.
@@ -352,9 +372,13 @@ def build_urls():
         return navdisp_templater
 
     def build_crewlist():
+        def set_detail_link(data):
+            data['name'] = '<a href="crew/details/'+str(data['uid'])+'">' + data['name'] + '</a>'
+            return data
+
         crew_list = Pipeline(DataSource([crew]),
                              MongoReader(),
-                             PureTransformer(lambda x: dict({'details': '<a href="crew/details/'+str(x['uid'])+'">Details</a>'}, **x)),
+                             PureTransformer(set_detail_link),
                              Logger(name="CREWLIST", level=debug),
                              Collate(),
                              PureTransformer(lambda x: {'sEcho': 1,
@@ -365,30 +389,72 @@ def build_urls():
         )
         return build_async_webpipe(crew_list)
 
-    def build_crewdetails():
-        def get_crew_id(request):
-            return int(str(request['recipient']).lstrip('crew/details/'))
+    def build_logbook_list():
+        def set_detail_link(data):
+            data['no'] = '<a href="crew/details/'+str(data['uid'])+'">' + data['no'] + '</a>'
+            return data
 
-        crew_list = Pipeline(PureTransformer(get_crew_id),
-                             MongoFindOne('uid', crew),
-                             Logger(name="CREWDETAILS", level=debug),
+        crew_list = Pipeline(DataSource([logbook]),
+                             MongoReader(),
+                             PureTransformer(set_detail_link),
+                             Logger(name="LOGBOOKLIST", level=debug),
                              Collate(),
+                             PureTransformer(lambda x: {'sEcho': 1,
+                                                        'iTotalRecords': len(x),
+                                                        'iTotalDisplayRecords': len(x),
+                                                        'aaData': x}
+                             ),
         )
         return build_async_webpipe(crew_list)
+
+
+    def build_crewdetails():
+        def get_crew_id(request):
+            try:
+                return int(str(request['recipient']).lstrip('crew/details/'))
+            except:
+                return -1
+
+        crew_details = Pipeline(PureTransformer(get_crew_id),
+                             MongoFindOne('uid', crew),
+                             Logger(name="CREWDETAILS", level=debug),
+                             PureTransformer(lambda x: {'response': MakoTemplater(template="crew_add.html").render(x)}),
+        )
+        return build_sync_webpipe(crew_details)
+
+    def build_crewstore():
+        def get_crew_id(request):
+            log(request['body'], lvl=critical)
+
+            return int(str(request['recipient']).lstrip('crew/store/'))
+
+        crew_store = Pipeline(Logger(name="CREWSTORE INPUT", level=debug),
+                              PureTransformer(lambda x: x['body']),
+                              MongoUpdateOne(crew),
+                             #Collate(),
+                             Logger(name="CREWDETAILS DATA", level=debug),
+                             PureTransformer(lambda x: {'response': x}),
+                             Logger(name="CREWDETAILS PAGE", level=debug),
+        )
+        return build_sync_webpipe(crew_store)
 
 
     statics = ['index.html',
                'about.html',
                'navigation.html',
+               'communication.html',
+               'settings.html',
                'crew_add.html',
-               'crew_list.html']
+               'crew_list.html',
+               'logbook.html']
 
     urls = build_static_templates(statics)
     urls += [
         (lambda x: x['recipient'] == 'navdisplay.html', build_navdisp_templater),
         (lambda x: str(x['recipient']).startswith('crew/list'), build_crewlist),
-        (lambda x: str(x['recipient']).startswith('crew/details'), build_crewdetails)
-        #(lambda x: str(x['recipient']).startswith("/assets/css"), build_scssParser)
+        (lambda x: str(x['recipient']).startswith('crew/details'), build_crewdetails),
+        (lambda x: str(x['recipient']).startswith('crew/store'), build_crewstore),
+        (lambda x: str(x['recipient']).startswith('logbook/list'), build_logbook_list),
     ]
 
     return urls
