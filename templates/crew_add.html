@@ -6,30 +6,69 @@
 
 
 
-<div id="crew_add_form">
+<div class="jumbotron" id="crew_details_form">
 
-    <form class="form-inline" role="form">
-      <div class="form-group">
-        <label class="sr-only" for="crew_name">{$name}</label>
-        <input type="text" class="form-control" id="crew_name" placeholder="Enter First Name">
-      </div>
-      <div class="form-group">
-        <label class="sr-only" for="crew_lastname">{$familyname}</label>
-        <input type="text" class="form-control" id="crew_lastname" placeholder="Enter Last Name">
-      </div>
-      <div class="form-group">
-        <label class="sr-only" for="crew_phone">{$phone}</label>
-        <input type="text" class="form-control" id="crew_phone" placeholder="Enter Phone Number">
-      </div>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox">s Paid
-        </label>
-        <label>
-          <input type="checkbox">Network Access
-        </label>
-      </div>
-      <button type="submit" class="btn btn-default">Add crewmember</button>
+    <form id="crew_details" action="/crew/store/${uid}">
+        <input type="text" name="name" value="${name}">
+        <input type="text" name="familyname" value="${familyname}">
+        <input type="text" name="phone" value="${phone}">
+        <input type="checkbox" name="fees_paid" ${'checked="checked"' if fees_paid else ''}">Fees Paid
+        <input type="checkbox" name="netaccess">Network Access
+        <button type="submit" class="btn btn-default">Store crewmember</button>
     </form>
 
 </div>
+
+    <script lang="javascript">
+jQuery.fn.serializeObject = function() {
+  var arrayData, objectData;
+  arrayData = this.serializeArray();
+  objectData = {};
+
+
+  $.each(arrayData, function() {
+    var value;
+
+    if (this.value != null) {
+      value = this.value;
+    } else {
+      value = '';
+    }
+
+    if (objectData[this.name] != null) {
+      if (!objectData[this.name].push) {
+        objectData[this.name] = [objectData[this.name]];
+      }
+
+      objectData[this.name].push(value);
+    } else {
+      objectData[this.name] = value;
+    }
+  });
+
+  return objectData;
+};
+
+
+// this is the id of the form
+var frm = $('#crew_details');
+
+frm.submit(function(ev) {
+
+
+    $.ajax({
+           type: "POST",
+           url: frm.attr('action'),
+           contentType: 'application/json',
+           dataType: 'json',
+           data: JSON.stringify(frm.serializeObject()), // serializes the form's elements.
+           success: function(data)
+           {
+               alert(data); // show response from the php script.
+           }
+         });
+
+    ev.preventDefault();
+});
+
+    </script>
