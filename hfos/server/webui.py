@@ -44,7 +44,7 @@ from hfos.utils.templater import MakoTemplater
 from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
 from hfos.utils.logger import Logger
-from hfos.database.mongo import MongoReader, MongoFindOne, MongoUpdateOne
+from hfos.database.mongo import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
 from hfos.database.migration import crew, logbook
 from hfos.utils.logger import log, debug, warn, error, critical
 
@@ -102,34 +102,44 @@ class WebGate(component):
             if 'Content-Length' in request.headers:
                 # Seems we got something with a body
 
-                clength = request.headers['Content-Length']
+                clength = int(request.headers['Content-Length'])
                 ctype = request.headers['Content-Type']
-                log("[WC] Length: '%i' Type: '%s'" % (int(clength), ctype), lvl=debug)
+                log("[WC] Something with a body. Length: ", clength, lvl=debug)
 
                 if not str(ctype).startswith('application/json'):  # '; charset=UTF-8':
                     log("[WC] Strange content type received!", lvl=error)
                     log("[WC] '%s': '%s'" % (ctype, request._get_dict), lvl=error)
                 else:
+                    log("[WC] Received json.", lvl=debug)
                     gotjson = True
 
-                rawbody = b""
-                decodedbody = ""
-                body = ""
 
-                # try to convert http bytes to unicode json
+                rawbody = b""
+                body = ""
+                decodedbody = ""
+
                 try:
                     rawbody = cherrypy.request.body.read(int(clength))
                     decodedbody = bytes(rawbody).decode("UTF8")
+                    log("[WC] Decoded successfully: ", decodedbody, lvl=debug)
                 except (IOError, ValueError, TypeError):  # TODO: i certainly hope these are enough
                     log("[WC] Input decoding failure!", lvl=critical)
                     log("[WC] I was fed: '%s'" % rawbody)
 
-                try:
-                    body = json.loads(decodedbody)
-                except ValueError:
-                    log("[WC] JSON Decoding failed! Exception was: '%s'" % ValueError, lvl=error)
-                    log("[WC] Tried to parse '%s'" % rawbody, lvl=debug)
-                cherrypy.response.headers['Content-Type'] = 'application/json'
+                if clength > 0:
+                    log("[WC] Length: '%i' Type: '%s'" % (int(clength), ctype), lvl=debug)
+
+                    # try to convert http bytes to unicode json
+
+                    try:
+                        body = json.loads(decodedbody)
+                        log("[WC] Decoded")
+                    except ValueError:
+                        log("[WC] JSON Decoding failed! Exception was: '%s'" % ValueError, lvl=error)
+                        log("[WC] Tried to parse '%s'" % rawbody, lvl=debug)
+                else:
+                   log("[WC] No body content.")
+                   body = None
             else:
                 body = ""
 
@@ -144,9 +154,11 @@ class WebGate(component):
                    'body': body,
                    'timestamp': time.time(),
             }
-
+            log("[WC] Outbound message: ", msg, lvl=debug)
             self.gateway.transmit(msg, self)
 
+            if gotjson:
+                cherrypy.response.headers['Content-Type'] = 'application/json'
             # Store defer and wait for request's response
             return self.defer(msg, gotjson)
 
@@ -407,6 +419,22 @@ def build_urls():
         )
         return build_async_webpipe(crew_list)
 
+    def build_logbook_latest():
+        def get_logbook_subfield(request):
+
+            try:
+                return str(request['recipient']).lstrip('logbook/latest/')
+            except:
+                return None
+
+        logbook_latest = Pipeline(PureTransformer(get_logbook_subfield),
+                                  Logger(name="LOGBOOKLATEST", level=critical),
+                                  MongoTail(logbook),
+                                  PureTransformer(lambda x: {'response': x}),
+                                  Logger(name="LOGBOOKLATEST", level=debug),
+        )
+        return build_sync_webpipe(logbook_latest)
+
 
     def build_crewdetails():
         def get_crew_id(request):
@@ -455,6 +483,7 @@ def build_urls():
         (lambda x: str(x['recipient']).startswith('crew/details'), build_crewdetails),
         (lambda x: str(x['recipient']).startswith('crew/store'), build_crewstore),
         (lambda x: str(x['recipient']).startswith('logbook/list'), build_logbook_list),
+        (lambda x: str(x['recipient']).startswith('logbook/latest'), build_logbook_latest)
     ]
 
     return urls

@@ -8,6 +8,7 @@ __status__ = "Beta"
 
 from hfos.components import build_nmeaSubscribers
 from hfos.components import build_nmeaPublisher
+from hfos.utils.tape import build_tapeplayback
 from hfos.server.webui import build_webui
 
 
@@ -15,6 +16,7 @@ def build_system(online=True, debug=True):
     #build_nmeaSubscribers()
     #build_nmeaPublisher(debug)
     build_webui()
+    build_tapeplayback()
 
     #if online:
     #    build_weatherScraper()

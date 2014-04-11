@@ -8,7 +8,13 @@
         }
         html, body, #map {
             padding-top: 23px;
-            height: 100%;
+            height: 99%;
+        }
+        #button-wrapper {
+            position: absolute;
+            bottom: 0%;
+            width: 100%;
+            border: 0px;
         }
     </style>
 
@@ -17,11 +23,13 @@
     <%block name="header">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="/assets/js/leaflet.js"></script>
+    <script src="/assets/js/Leaflet.transformmarker.js"></script>
     </%block>
 
 
- <div id="map"></div>
+ <div id="map">
 
+ </div>
 
 <script lang="javascript">
 /*
@@ -41,7 +49,41 @@ $.ajax({
 */
 
 
-        var map = L.map('map').setView([52.513, 13.41998], 13);
+        L.RotatedMarker = L.Marker.extend({
+          options: { angle: 0 },
+          _setPos: function(pos) {
+            L.Marker.prototype._setPos.call(this, pos);
+            if (L.DomUtil.TRANSFORM) {
+              // use the CSS transform rule if available
+              this._icon.style[L.DomUtil.TRANSFORM] += ' rotate(' + this.options.angle + 'deg)';
+            } else if (L.Browser.ie) {
+              // fallback for IE6, IE7, IE8
+              var rad = this.options.angle * L.LatLng.DEG_TO_RAD,
+              costheta = Math.cos(rad),
+              sintheta = Math.sin(rad);
+              this._icon.style.filter += ' progid:DXImageTransform.Microsoft.Matrix(sizingMethod=\'auto expand\', M11=' +
+                costheta + ', M12=' + (-sintheta) + ', M21=' + sintheta + ', M22=' + costheta + ')';
+            }
+          }
+        });
+        L.rotatedMarker = function(pos, options) {
+            return new L.RotatedMarker(pos, options);
+        };
+
+
+
+        var VesselIcon = L.icon({
+            iconUrl: '/assets/icons/vessel.png',
+            //shadowUrl: 'leaf-shadow.png',
+
+            iconSize:     [25, 25], // size of the icon
+            //shadowSize:   [50, 64], // size of the shadow
+            iconAnchor:   [12, 12], // point of the icon which will correspond to marker's location
+            //shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+
+        var map = L.map('map').setView([52.513, 13.41998], 16);
 
         var openStreetMapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
         var openStreetMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -72,5 +114,58 @@ $.ajax({
 
         map.on('click', onMapClick);
 
+        var Follow = true;
+        var Coords = [0,0];
+        var Course = 90;
+
+        VesselMarker = L.rotatedMarker(Coords, {icon: VesselIcon}).addTo(map);
+
+        $(document).ready(function(){
+            UpdateMapMarker();
+        });
+
+        function ToggleFollow(){
+            Follow = !Follow;
+            if (Follow) {
+                $('folow').addClass('active');
+            } else {
+                $('follow').removeClass('active');
+            }
+            console.log("Toggled follow mode.");
+        }
+
+        function UpdateMapMarker(){
+            console.log("Getting current Vessel position");
+            $.ajax({
+                type: "POST",
+                url: "logbook/latest",
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (response) {
+                    Coords = response.coords;
+                    Course = response.course;
+                    console.log("Coords: " + Coords + " Course:" + Course);
+
+                }
+            });
+            VesselMarker.setLatLng(Coords);
+            VesselMarker.options.angle = Course;
+            VesselMarker.update();
+            if(Follow){
+                map.panTo(Coords);
+            } else {
+                console.log("Follow mode not active");
+            }
+
+            setTimeout(function(){
+                UpdateMapMarker();}, 5000);
+        }
+
 
 </script>
+
+    <div id="button-wrapper">
+        <input type="button" class="btn btn-xs btn-default active" id="follow" value="Follow" onClick="ToggleFollow()" class="btnStyle span3" />
+        <input type="button" class="btn btn-xs btn-default active" disabled="disabled" id="sealayer" value="Seamarks" class="btnStyle span3" />
+        <input type="button" class="btn btn-xs btn-default active" disabled="disabled"  id="osmlayer" value="OSM" class="btnStyle span3" />
+    </div>

@@ -8,15 +8,25 @@
 
 <div class="jumbotron" id="crew_details_form">
 
-    <form id="crew_details" action="/crew/store/${uid}">
-        <input type="text" name="name" value="${name}">
-        <input type="text" name="familyname" value="${familyname}">
-        <input type="text" name="phone" value="${phone}">
-        <input type="checkbox" name="fees_paid" ${'checked="checked"' if fees_paid else ''}">Fees Paid
-        <input type="checkbox" name="netaccess">Network Access
-        <button type="submit" class="btn btn-default">Store crewmember</button>
-    </form>
-
+    <div class="well">
+        <form id="crew_details" class="form-inline" action="/crew/store/${uid}">
+            <div class="form-group">
+                <input type="text" name="name" value="${name}">
+                <input type="text" name="familyname" value="${familyname}">
+            </div>
+            <div class="form-group">
+                <input type="text" name="phone" value="${phone}">
+            </div>
+            <div class="form-group">
+                <input type="checkbox" name="fees_paid" ${'checked="checked"' if fees_paid else ''}">Fees Paid
+                <input type="checkbox" name="netaccess">Network Access
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Store crewmember</button>
+            </div>
+        </form>
+    </div>
+</div>
 </div>
 
     <script lang="javascript">
