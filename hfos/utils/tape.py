@@ -20,6 +20,8 @@ from hfos.database.migration import logbook
 from hfos.database.migrations.initial import frames
 from hfos.utils.logger import Logger, critical, log, info
 
+import time
+
 class TriggeredDataSource(component):
     def __init__(self, messages):
         super(TriggeredDataSource, self).__init__()
@@ -47,5 +49,6 @@ def build_tapeplayback():
     playback = Pipeline(SimpleClock(3),
                         Logger(name="TAPEPLAYBACK", level=info),
         TriggeredDataSource(frames),
+        PureTransformer(lambda x: dict({'time': time.time()}, **x)),
         MongoUpdateOne(logbook)
     ).activate()

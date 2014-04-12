@@ -205,14 +205,14 @@ sailor6 = {'username': 'grace',
 }
 
 
-frames = [{'no': 1, 'coords': [54.1779, 7.889], 'course': 320},
-          {'no': 2, 'coords': [54.1785, 7.890], 'course': 30},
-          {'no': 3, 'coords': [54.1786, 7.8904], 'course': 45},
-          {'no': 4, 'coords': [54.1787, 7.8908], 'course': 60},
-          {'no': 5, 'coords': [54.1787, 7.8914], 'course': 70},
-          {'no': 6, 'coords': [54.1787, 7.8926], 'course': 90},
-          {'no': 7, 'coords': [54.1787, 7.8941], 'course': 90},
-          {'no': 8, 'coords': [54.1786, 7.8956], 'course': 110}]
+frames = [{'no': 1, 'coords': [54.1779, 7.889], 'course': 320, 'speed': 1.4},
+          {'no': 2, 'coords': [54.1785, 7.890], 'course': 30, 'speed': 2},
+          {'no': 3, 'coords': [54.1786, 7.8904], 'course': 45, 'speed': 4},
+          {'no': 4, 'coords': [54.1787, 7.8908], 'course': 60, 'speed': 5.5},
+          {'no': 5, 'coords': [54.1787, 7.8914], 'course': 70, 'speed': 6},
+          {'no': 6, 'coords': [54.1787, 7.8926], 'course': 90, 'speed': 6},
+          {'no': 7, 'coords': [54.1787, 7.8941], 'course': 90, 'speed': 10},
+          {'no': 8, 'coords': [54.1786, 7.8956], 'course': 110, 'speed': 15}]
 
 
 

@@ -8,11 +8,15 @@
         "aoColumns": [
             { "mData": "no" },
             { "mData": "time"},
-            { "mData": "event"},
+            { "mData": "coords"},
+            { "mData": "course"},
+            { "mData": "speed"},
+
         ],
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "logbook/list",
+        "aaSorting": [[1, 'asc']],
         "fnServerData": function ( sSource, aoData, fnCallback, oSettings ) {
           oSettings.jqXHR = $.ajax( {
             "contentType": 'application/json',
@@ -28,26 +32,6 @@
         "fnRowCallback": function( nRow, aData, iDisplayIndex,iDisplayIndexFull) {
                 console.log( JSON.stringify(aData));
                 $(nRow).children().each(function(index, td) {
-                            console.log("#######" + JSON.stringify(nRow));
-                            if(index == 5)  {
-
-                                if ($(td).html() === "EVA") {
-                                    $(td).css("background-color", "#AA0000");
-                                }
-                                else if ($(td).html() === "Bridge") {
-                                    $(td).css("background-color", "#00AA00");
-                                }
-                                else if ($(td).html() === "Machine Room") {
-                                    $(td).css("background-color", "#00AA00");
-                                }
-                                else if ($(td).html() === "Bunk") {
-                                    $(td).css("background-color", "#005555");
-                                } else {
-                                    //$(td).css("background-color", "#FF3229");
-                                }
-
-
-                            }
                 });
 
         return nRow;
@@ -58,16 +42,20 @@
 </script>
         </%block>
     <div class="jumbotron" id="content">
+        <div class="well">
         <table id="logbook" class="display dataTable" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
             <thead>
 
                 <tr>
                     <th>No</th>
                     <th>Time</th>
-                    <th>Event</th>
+                    <th>Coordinates</th>
+                    <th>Course</th>
+                    <th>Speed</th>
                 </tr>
 
             </thead>
         </table>
+        </div>
     </div>
 

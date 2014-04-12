@@ -23,6 +23,7 @@ __author__ = 'riot'
 
 import os
 import time
+import datetime
 import json
 
 from Axon.Component import component
@@ -403,12 +404,19 @@ def build_urls():
 
     def build_logbook_list():
         def set_detail_link(data):
-            data['no'] = '<a href="crew/details/'+str(data['uid'])+'">' + data['no'] + '</a>'
+            no = str(data['no'])
+            data['no'] = '<a href="logbook/details/' + no + '">' + no + '</a>'
+            return data
+
+        def set_datetime(data):
+            datestr = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data['time']))
+            data['time'] = datestr
             return data
 
         crew_list = Pipeline(DataSource([logbook]),
                              MongoReader(),
                              PureTransformer(set_detail_link),
+                             PureTransformer(set_datetime),
                              Logger(name="LOGBOOKLIST", level=debug),
                              Collate(),
                              PureTransformer(lambda x: {'sEcho': 1,

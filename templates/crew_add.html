@@ -9,6 +9,7 @@
 <div class="jumbotron" id="crew_details_form">
 
     <div class="well">
+        <h2>Crew details for ${name}</h2>
         <form id="crew_details" class="form-inline" action="/crew/store/${uid}">
             <div class="form-group">
                 <input type="text" name="name" value="${name}">
@@ -22,6 +23,7 @@
                 <input type="checkbox" name="netaccess">Network Access
             </div>
             <div class="form-group">
+                <button type="submit" class="btn btn-danger">Delete crewmember</button>
                 <button type="submit" class="btn btn-default">Store crewmember</button>
             </div>
         </form>
