@@ -18,7 +18,7 @@ from Kamaelia.Util.Clock import SimpleClock
 from hfos.database.mongo import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
 from hfos.database.migration import logbook
 from hfos.database.migrations.initial import frames
-from hfos.utils.logger import Logger, critical, log
+from hfos.utils.logger import Logger, critical, log, info
 
 class TriggeredDataSource(component):
     def __init__(self, messages):
@@ -44,8 +44,8 @@ class TriggeredDataSource(component):
 
 def build_tapeplayback():
     logbook.drop()
-    playback = Pipeline(SimpleClock(10),
-                        Logger(name="[TAPEPLAYBACK]", level=critical),
+    playback = Pipeline(SimpleClock(3),
+                        Logger(name="TAPEPLAYBACK", level=info),
         TriggeredDataSource(frames),
         MongoUpdateOne(logbook)
     ).activate()

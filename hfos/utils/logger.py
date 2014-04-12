@@ -45,7 +45,7 @@ count = 0
 logfile = "/var/log/hfos/service.log"
 verbosity = {'global': debug,
              'file': off,
-             'console': debug}
+             'console': info}
 
 start = time.time()
 
@@ -118,6 +118,6 @@ class Logger(component):
 
             while self.dataReady("inbox"):
                 data = self.recv("inbox")
-                print("#"*55)
+                #print("#"*55)
                 log("[%s] %s" % (self.name, str(data)), lvl=self.level)
                 self.send(data, "outbox")
