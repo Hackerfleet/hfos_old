@@ -1,6 +1,13 @@
 <%inherit file="base.html" />
     <%block name="css">
     <link rel="stylesheet" href="/assets/css/leaflet.css" />
+    <link rel="stylesheet" href="/assets/css/L.Control.Pan.css" />
+    <!--[if lt IE 9]>
+    <link rel="stylesheet" href="/assets/css/L.Control.Pan.ie.css"/>
+    <![endif]-->
+    <link rel="stylesheet" href="/assets/css/L.Control.Zoomslider.css"/>
+
+
     <style type="text/css">
         body {
             padding: 0px;
@@ -16,6 +23,15 @@
             width: 100%;
             border: 0px;
         }
+
+        .leaflet-container .leaflet-control-mouseposition {
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 5px #bbb;
+            padding: 0 5px;
+            margin:0;
+            color: #333;
+            font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+        }
     </style>
 
     </%block>
@@ -24,6 +40,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="/assets/js/leaflet.js"></script>
     <script src="/assets/js/Leaflet.transformmarker.js"></script>
+    <script src="/assets/js/L.Terminator.js"></script>
+    <script src="/assets/js/L.Graticule.js"></script>
+    <script src="/assets/js/L.Control.MousePosition.js"></script>
+    <script src="/assets/js/L.Control.Pan.js"></script>
+    <script src="/assets/js/L.Control.Zoomslider.js"></script>
     </%block>
 
 
@@ -83,7 +104,22 @@ $.ajax({
             popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
 
-        var map = L.map('map').setView([52.513, 13.41998], 16);
+        var map = L.map('map', {
+            center: [52.513, 13.41998],
+            zoom: 16,
+            maxZoom: 17,
+            minZoom: 3,
+            zoomControl: false,
+            zoomsliderControl: true,
+        });
+
+        Terminator = L.terminator().addTo(map);
+
+        GraticuleOne = L.graticule({ style: { color: '#55A', weight: 1, dashArray: '.'}, interval: 1 }).addTo(map);
+
+        MousePosition = L.control.mousePosition().addTo(map);
+
+        L.control.pan().addTo(map);
 
         var openStreetMapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
         var openStreetMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -158,7 +194,7 @@ $.ajax({
             }
 
             setTimeout(function(){
-                UpdateMapMarker();}, 1500);
+                UpdateMapMarker();}, 3000);
         }
 
 
