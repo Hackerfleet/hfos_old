@@ -34,8 +34,8 @@ from Kamaelia.Visualisation.Axon.AxonVisualiserServer import text_to_token_lists
 
 from hfos.utils.selector import testPipeSelector
 
-from hfos.database.mongo import MongoReader, MongoFindOne
-from hfos.database.migration import crew, groups
+from hfos.database.mongoadaptors import MongoReader, MongoFindOne
+from hfos.database.mongo import crew, groups
 from hfos.utils.logger import Logger
 
 def functiontest():

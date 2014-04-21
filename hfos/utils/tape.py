@@ -15,40 +15,49 @@ from Kamaelia.Util.Console import ConsoleEchoer
 from Kamaelia.Util.Collate import Collate
 from Kamaelia.Util.Clock import SimpleClock
 
-from hfos.database.mongo import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
-from hfos.database.migration import logbook
+from hfos.database.mongoadaptors import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
+from hfos.database.mongo import logbook
 from hfos.database.migrations.initial import frames
 from hfos.utils.logger import Logger, critical, log, info
 
 import time
 
 class TriggeredDataSource(component):
-    def __init__(self, messages):
+    def __init__(self, messages, loop):
         super(TriggeredDataSource, self).__init__()
         self.messages = messages
-        log(messages)
-        log(len(messages))
+        self.counter = 0
+        self.loop = loop
+
+        log("[TDS] Playing back %i messages." % len(messages), lvl=info)
+
 
     def main(self):
 
-        while len(self.messages) > 0:
+        while len(self.messages) > 0 or self.loop:
             while not self.dataReady("inbox"):
                         self.pause()
                         yield 1
 
             self.recv("inbox")
-            self.send(self.messages.pop(0), "outbox")
+            if self.loop:
+                msg = self.messages[self.counter]
+                self.counter += 1
+                self.counter %= len(self.messages)
+            else:
+                msg = self.messages.pop(0)
+            self.send(msg, "outbox")
             yield 1
 
         yield 1
         self.send(producerFinished(self), "signal")
         return
 
-def build_tapeplayback():
+def build_tapeplayback(loop=False, delay=3):
     logbook.drop()
-    playback = Pipeline(SimpleClock(3),
-                        Logger(name="TAPEPLAYBACK", level=info),
-        TriggeredDataSource(frames),
+    playback = Pipeline(SimpleClock(delay),
+        TriggeredDataSource(frames, loop=loop),
+        Logger(name="TAPEPLAYBACK", level=info),
         PureTransformer(lambda x: dict({'time': time.time()}, **x)),
         MongoUpdateOne(logbook)
     ).activate()

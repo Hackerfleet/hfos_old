@@ -1,0 +1,55 @@
+<%inherit file="base.html" />
+        <%block name="title">Switchboard...</%block>
+        <%block name="header">
+        <link href="/assets/css/bootstrap-switch.min.css" rel="stylesheet">
+        <script src="/assets/js/bootstrap-switch.min.js"></script>
+
+        <script lang="javascript">
+            $.fn.bootstrapSwitch.defaults.size = 'small';
+        </script>
+        </%block>
+
+    <div class="jumbotron" id="content">
+        <div class="well">
+
+            <!--
+            switch_default = {
+                    'name': '',
+                    'status': False,
+                    'methods': {'read': None, 'write': None}
+                }
+            -->
+            <div id="switches">
+            % for switch in data:
+                <div id="switch_${switch['id']}">
+                    <input type="checkbox" name="${switch['id']}" checked>
+                    <label>${switch['name']}</label>
+                </div>
+            % endfor
+            </div>
+        </div>
+    </div>
+
+    <script lang="javascript">
+        % for switch in data:
+            sw = $("[name='${switch['id']}']");
+            sw.bootstrapSwitch();
+
+            sw.on('switchChange.bootstrapSwitch', function(event, state) {
+              sw_name = this.name;
+
+              $.ajax({
+                type: "POST",
+                url: "switches/" + sw_name,
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify({"toggle": state}),
+                success: function (response) {
+                    console.log(response);
+
+                }
+              });
+            });
+
+        % endfor
+    </script>

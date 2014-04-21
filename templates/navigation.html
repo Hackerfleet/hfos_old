@@ -15,15 +15,12 @@
         }
         html, body, #map {
             padding-top: 23px;
-            height: 99%;
+            height: 100%;
         }
-        #button-wrapper {
-            position: absolute;
-            bottom: 0%;
-            width: 100%;
-            border: 0px;
+        body {
+            padding-top: 50px;
+            padding-bottom: 50px;
         }
-
         .leaflet-container .leaflet-control-mouseposition {
             background-color: rgba(255, 255, 255, 0.7);
             box-shadow: 0 0 5px #bbb;
@@ -45,29 +42,38 @@
     <script src="/assets/js/L.Control.MousePosition.js"></script>
     <script src="/assets/js/L.Control.Pan.js"></script>
     <script src="/assets/js/L.Control.Zoomslider.js"></script>
+
+    <script lang="javascript">
+    </script>
+
     </%block>
 
 
- <div id="map">
+    <div id="map">
 
- </div>
+    </div>
+    <div id="button-wrapper" class="navbar navbar-default navbar-fixed-bottom">
+        <input type="checkbox" id="cb_follow" checked><label>Follow</label>
+    </div>
+
+
 
 <script lang="javascript">
-/*
-$(document).ready(function() {
-$.ajax({
-    type: "POST",
-    url: "navigation/map",
-    contentType: 'application/json',
-    dataType: 'json',
-    success: function (response) {
+    /* // Howto include a geojson layer:
+    $(document).ready(function() {
+        $.ajax({
+            type: "POST",
+            url: "navigation/map",
+            contentType: 'application/json',
+            dataType: 'json',
+            success: function (response) {
 
-        geojsonLayer = L.geoJson(response, {}).addTo(map);
-    }
-});
+                geojsonLayer = L.geoJson(response, {}).addTo(map);
+            }
+        });
 
-} );
-*/
+    } );
+    */
 
 
         L.RotatedMarker = L.Marker.extend({
@@ -113,7 +119,7 @@ $.ajax({
             zoomsliderControl: true,
         });
 
-        Terminator = L.terminator().addTo(map);
+        Terminator = L.terminator(); //.addTo(map);
 
         GraticuleOne = L.graticule({ style: { color: '#55A', weight: 1, dashArray: '.'}, interval: 1 }).addTo(map);
 
@@ -122,24 +128,33 @@ $.ajax({
         L.control.pan().addTo(map);
 
         var openStreetMapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+        var seamarksUrl = 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
+        var sportsUrl = 'http://tiles.openseamap.org/sport/{z}/{x}/{y}.png';
+
         var openStreetMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
-
-        L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAttribution}).addTo(map);
-
         var OpenSeaMapAttribution = 'Map data &copy; 2012 OpenSeaMap contributors';
 
-        var seamarksUrl = 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
-        L.tileLayer(seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}).addTo(map);
+        var osmlayer       = L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAttribution}).addTo(map);
+            seamarkslayer  = L.tileLayer(seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}).addTo(map);
+            sportslayer    = L.tileLayer(sportsUrl, {minZoom: 8, maxZoom: 18, attribution: OpenSeaMapAttribution});
+            cloudmadelayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+                maxZoom: 18,
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+            });
 
-        var sportsUrl = 'http://tiles.openseamap.org/sport/{z}/{x}/{y}.png';
-        L.tileLayer(sportsUrl, {minZoom: 8, maxZoom: 18, attribution: OpenSeaMapAttribution}).addTo(map);
+        var baseMaps = {
+            "Default": osmlayer,
+            "Cloudmade": cloudmadelayer,
+        }
 
+        var overlayMaps = {
+            "Seamarks": seamarkslayer,
+            "Sports": sportslayer,
+            "Terminator": Terminator,
+            "Grid 1°": GraticuleOne,
+        }
 
-/*        L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-        }).addTo(map);
-*/
+        L.control.layers(baseMaps, overlayMaps).addTo(map);
 
         function onMapClick(e) {
             popup
@@ -150,25 +165,15 @@ $.ajax({
 
         map.on('click', onMapClick);
 
-        var Follow = true;
+        var Follow = false;
         var Coords = [0,0];
-        var Course = 90;
+        var Course = 0;
 
         VesselMarker = L.rotatedMarker(Coords, {icon: VesselIcon}).addTo(map);
 
         $(document).ready(function(){
             UpdateMapMarker();
         });
-
-        function ToggleFollow(){
-            Follow = !Follow;
-            if (Follow) {
-                $('folow').addClass('active');
-            } else {
-                $('follow').removeClass('active');
-            }
-            console.log("Toggled follow mode.");
-        }
 
         function UpdateMapMarker(){
             console.log("Getting current Vessel position");
@@ -187,10 +192,9 @@ $.ajax({
             VesselMarker.setLatLng(Coords);
             VesselMarker.options.angle = Course;
             VesselMarker.update();
-            if(Follow){
+
+            if($("#cb_follow").is(':checked')){
                 map.panTo(Coords);
-            } else {
-                console.log("Follow mode not active");
             }
 
             setTimeout(function(){
@@ -200,8 +204,3 @@ $.ajax({
 
 </script>
 
-    <div id="button-wrapper">
-        <input type="button" class="btn btn-xs btn-default active" id="follow" value="Follow" onClick="ToggleFollow()" class="btnStyle span3" />
-        <input type="button" class="btn btn-xs btn-default active" disabled="disabled" id="sealayer" value="Seamarks" class="btnStyle span3" />
-        <input type="button" class="btn btn-xs btn-default active" disabled="disabled"  id="osmlayer" value="OSM" class="btnStyle span3" />
-    </div>

@@ -52,10 +52,14 @@ class MakoTemplater(object):
             log("Can't find template '%s' in templatefolder." % self.templatename)
 
 
-    def __init__(self, template):
+    def __init__(self, template, usedict=True):
         self.templatename = template
+        self.usedict = usedict
         self.loadTemplate()
 
     def render(self, input):
         self.loadTemplate()
-        return self.template.render(**input).encode("UTF-8")
+        if self.usedict:
+            return self.template.render(**input).encode("UTF-8")
+        else:
+            return self.template.render(data=input).encode("UTF-8")

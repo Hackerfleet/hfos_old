@@ -1,22 +1,67 @@
 <%inherit file="base.html" />
-        <%block name="title">Welcome!</%block>
-        <%block name="header">
-        </%block>
+<%block name="title">Welcome!</%block>
+<%block name="header">
+        <style  type="text/css">
 
-<div class="jumbotron" id="content" >
-    <div class="legrid">
-        <div class="col-md-4">
-            <div class="item navdisplay"><a href="/navdisplay.html"><img src="/assets/icons/iconmonstr-compass-6-icon.svg" type="image/svg+xml" style="fill: white;" />Navigation Display</a></div>
+        .menu-label {
+              display: block;
+              margin-left: auto;
+              margin-right: auto;
+        }
+        </style>
+</%block>
 
-            <div class="item communication"><a href="/communication.html"><img src="/assets/icons/iconmonstr-radio-tower-icon.svg" type="image/svg+xml" />Communication</a></div>
+<div class="jumbotron" id="content">
+    <div class="container well" id="menu">
+        <div class="col-md-4">
+            <div class="menu-item" id="navdisplay">
+                <a href="/navdisplay.html">
+                    <img src="/assets/icons/iconmonstr-compass-6-icon.svg" type="image/svg+xml" style="fill: white;"/>
+                    <div class="menu-label">Navigation Display</div>
+                </a>
+            </div>
+            <div class="menu-item" id="switchboard">
+                <a href="/switchboard.html">
+                    <img src="/assets/icons/iconmonstr-control-panel-icon.svg" type="image/svg+xml"
+                         style="fill: white;"/>
+                    <div class="menu-label">Switchboard</div>
+                </a>
+            </div>
+            <div class="menu-item" id="communication">
+                <a href="/communication.html">
+                    <img src="/assets/icons/iconmonstr-radio-tower-icon.svg" type="image/svg+xml"/>
+                    <div class="menu-label">Communication</div>
+                </a>
+            </div>
         </div>
         <div class="col-md-4">
-            <div class="item weather"><a href="/weather.html"><img src="/assets/icons/iconmonstrandhackerfleet-weather-icon.svg" type="image/svg+xml" />Weather</a></div>
-            <div class="item logbook"><a href="/logbook.html"><img src="/assets/icons/iconmonstr-printer-icon.svg" type="image/svg+xml" />Logbook</a></div>
+            <div id="item weather">
+                <a href="/weather.html">
+                    <img src="/assets/icons/iconmonstrandhackerfleet-weather-icon.svg" type="image/svg+xml"/>
+                    <div class="menu-label">Weather</div>
+                </a>
+            </div>
+            <div class="menu-item" id="logbook">
+                <a href="/logbook.html">
+                    <img src="/assets/icons/iconmonstr-printer-icon.svg" type="image/svg+xml"/>
+                    <div class="menu-label">Logbook</div>
+                </a>
+            </div>
         </div>
         <div class="col-md-4">
-            <div class="item navigation"><a href="/navigation.html"><img src="/assets/icons/iconmonstr-map-2-icon.svg" type="image/svg+xml" />Navigation Planning</a></div>
-            <div class="item settings"><a href="/settings.html"><img src="/assets/icons/iconmonstr-wrench-4-icon.svg" type="image/svg+xml" />Settings</a></div>
+            <div class="menu-item" id="navigation">
+                <a href="/navigation.html">
+                    <img src="/assets/icons/iconmonstr-map-2-icon.svg" type="image/svg+xml"/>
+                    <div class="menu-label">Navigation</div>
+                </a>
+            </div>
+            <div class="menu-item" id="settings">
+                <a href="/settings.html">
+                    <img src="/assets/icons/iconmonstr-wrench-4-icon.svg" type="image/svg+xml"/>
+                    <div class="menu-label">Settings</div>
+                </a>
+            </div>
         </div>
+
     </div>
 </div>

@@ -23,7 +23,6 @@ __author__ = 'riot'
 
 import os
 import time
-import datetime
 import json
 
 from Axon.Component import component
@@ -45,8 +44,8 @@ from hfos.utils.templater import MakoTemplater
 from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
 from hfos.utils.logger import Logger
-from hfos.database.mongo import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
-from hfos.database.migration import crew, logbook
+from hfos.database.mongoadaptors import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
+from hfos.database.mongo import crew, logbook, switches
 from hfos.utils.logger import log, debug, warn, error, critical
 
 
@@ -114,7 +113,6 @@ class WebGate(component):
                     log("[WC] Received json.", lvl=debug)
                     gotjson = True
 
-
                 rawbody = b""
                 body = ""
                 decodedbody = ""
@@ -139,8 +137,8 @@ class WebGate(component):
                         log("[WC] JSON Decoding failed! Exception was: '%s'" % ValueError, lvl=error)
                         log("[WC] Tried to parse '%s'" % rawbody, lvl=debug)
                 else:
-                   log("[WC] No body content.")
-                   body = None
+                    log("[WC] No body content.")
+                    body = None
             else:
                 body = ""
 
@@ -193,7 +191,8 @@ class WebGate(component):
             else:
                 response = responseobject['response']
             log("[WC] Delivering response for '%s'. Rendering time: %.0fms." % (request['recipient'],
-                                                                     (time.time() - responseobject['timestamp'])*1000))
+                                                                                (time.time() - responseobject[
+                                                                                    'timestamp']) * 1000))
             return response
 
     #################### /WebClient ####################
@@ -386,7 +385,7 @@ def build_urls():
 
     def build_crewlist():
         def set_detail_link(data):
-            data['name'] = '<a href="crew/details/'+str(data['uid'])+'">' + data['name'] + '</a>'
+            data['name'] = '<a href="crew/details/' + str(data['uid']) + '">' + data['name'] + '</a>'
             return data
 
         crew_list = Pipeline(DataSource([crew]),
@@ -452,9 +451,10 @@ def build_urls():
                 return -1
 
         crew_details = Pipeline(PureTransformer(get_crew_id),
-                             MongoFindOne('uid', crew),
-                             Logger(name="CREWDETAILS", level=debug),
-                             PureTransformer(lambda x: {'response': MakoTemplater(template="crew_add.html").render(x)}),
+                                MongoFindOne('uid', crew),
+                                Logger(name="CREWDETAILS", level=debug),
+                                PureTransformer(
+                                    lambda x: {'response': MakoTemplater(template="crew_add.html").render(x)}),
         )
         return build_sync_webpipe(crew_details)
 
@@ -467,10 +467,30 @@ def build_urls():
         crew_store = Pipeline(Logger(name="CREWSTORE INPUT", level=debug),
                               PureTransformer(lambda x: x['body']),
                               MongoUpdateOne(crew),
-                             #Collate(),
-                             Logger(name="CREWDETAILS DATA", level=debug),
-                             PureTransformer(lambda x: {'response': x}),
-                             Logger(name="CREWDETAILS PAGE", level=debug),
+                              #Collate(),
+                              Logger(name="CREWDETAILS DATA", level=debug),
+                              PureTransformer(lambda x: {'response': x}),
+                              Logger(name="CREWDETAILS PAGE", level=debug),
+        )
+        return build_sync_webpipe(crew_store)
+
+    def build_switchboard():
+        switchboard = Pipeline(DataSource([switches]),
+                               MongoReader(),
+                               Collate(),
+                               Logger(name="SWITCHBOARD", level=debug),
+                               PureTransformer(lambda x: MakoTemplater(template="switchboard.html", usedict=False).render(x)),
+                               Logger(name="SWITCHBOARD_OUTPUT", level=warn)
+        )
+        return build_async_webpipe(switchboard)
+
+    def build_switch_handler():
+        def get_switch_id(request):
+            log(request['body'], lvl=critical)
+
+            return int(str(request['recipient']).lstrip('switches/'))
+
+        crew_store = Pipeline(Logger(name="SWITCHCONTROL", level=debug),
         )
         return build_sync_webpipe(crew_store)
 
@@ -482,11 +502,14 @@ def build_urls():
                'settings.html',
                'crew_add.html',
                'crew_list.html',
-               'logbook.html']
+               'logbook.html',
+    ]
 
     urls = build_static_templates(statics)
     urls += [
         (lambda x: x['recipient'] == 'navdisplay.html', build_navdisp_templater),
+        (lambda x: x['recipient'] == 'switchboard.html', build_switchboard),
+        (lambda x: str(x['recipient']).startswith('switches/'), build_switch_handler),
         (lambda x: str(x['recipient']).startswith('crew/list'), build_crewlist),
         (lambda x: str(x['recipient']).startswith('crew/details'), build_crewdetails),
         (lambda x: str(x['recipient']).startswith('crew/store'), build_crewstore),
