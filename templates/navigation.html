@@ -13,12 +13,14 @@
             padding: 0px;
             margin: 0px;
         }
+
         html, body, #map {
             padding-top: 23px;
             height: 100%;
         }
+
         body {
-            padding-top: 50px;
+            padding-top: 23px;
             padding-bottom: 50px;
         }
         .leaflet-container .leaflet-control-mouseposition {
@@ -35,16 +37,6 @@
     <%block name="title">Navigation...</%block>
     <%block name="header">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <script src="/assets/js/leaflet.js"></script>
-    <script src="/assets/js/Leaflet.transformmarker.js"></script>
-    <script src="/assets/js/L.Terminator.js"></script>
-    <script src="/assets/js/L.Graticule.js"></script>
-    <script src="/assets/js/L.Control.MousePosition.js"></script>
-    <script src="/assets/js/L.Control.Pan.js"></script>
-    <script src="/assets/js/L.Control.Zoomslider.js"></script>
-
-    <script lang="javascript">
-    </script>
 
     </%block>
 
@@ -56,7 +48,14 @@
         <input type="checkbox" id="cb_follow" checked><label>Follow</label>
     </div>
 
-
+<%block name="footerscripts">
+<script src="/assets/js/leaflet.js"></script>
+<script src="/assets/js/Leaflet.transformmarker.js"></script>
+<script src="/assets/js/L.Terminator.js"></script>
+<script src="/assets/js/L.Graticule.js"></script>
+<script src="/assets/js/L.Control.MousePosition.js"></script>
+<script src="/assets/js/L.Control.Pan.js"></script>
+<script src="/assets/js/L.Control.Zoomslider.js"></script>
 
 <script lang="javascript">
     /* // Howto include a geojson layer:
@@ -203,4 +202,4 @@
 
 
 </script>
-
+</%block>

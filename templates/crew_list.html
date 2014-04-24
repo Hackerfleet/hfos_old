@@ -1,7 +1,28 @@
 <%inherit file="base.html" />
-        <%block name="title">Crew list...</%block>
-        <%block name="header">
-        <script src="/assets/js/jquery.dataTables.js"></script>
+    <%block name="title">Crew list...</%block>
+    <%block name="header">
+    </%block>
+<div class="jumbotron">
+    <h2>Crew List</h2>
+    <div class="well" id="content">
+        <table id="crew_list" class="display dataTable" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
+            <thead>
+
+                <tr>
+                    <th>Name</th>
+                    <th>Familyname</th>
+                    <th>Nick</th>
+                    <th>Bunk</th>
+                    <th>Location</th>
+                </tr>
+
+            </thead>
+        </table>
+    </div>
+</div>
+
+<%block name="footerscripts">
+<script src="/assets/js/jquery.dataTables.js"></script>
 <script lang="javascript">
     $(document).ready(function() {
     $('#crew_list').dataTable( {
@@ -58,22 +79,4 @@
 } );
 
 </script>
-        </%block>
-    <div class="jumbotron">
-    <div class="well" id="content">
-        <table id="crew_list" class="display dataTable" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%;">
-            <thead>
-
-                <tr>
-                    <th>Name</th>
-                    <th>Familyname</th>
-                    <th>Nick</th>
-                    <th>Bunk</th>
-                    <th>Location</th>
-                </tr>
-
-            </thead>
-        </table>
-    </div>
-    </div>
-
+</%block>

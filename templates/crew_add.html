@@ -7,9 +7,8 @@
 
 
 <div class="jumbotron" id="crew_details_form">
-
+    <h2>Crew Details: ${name}</h2>
     <div class="well">
-        <h2>Crew details for ${name}</h2>
         <form id="crew_details" class="form-inline" action="/crew/store/${uid}">
             <div class="form-group">
                 <input type="text" name="name" value="${name}">
@@ -31,6 +30,7 @@
 </div>
 </div>
 
+<%block name="footerscripts">
     <script lang="javascript">
 jQuery.fn.serializeObject = function() {
   var arrayData, objectData;
@@ -84,3 +84,4 @@ frm.submit(function(ev) {
 });
 
     </script>
+</%block>

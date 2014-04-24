@@ -1,15 +1,10 @@
 <%inherit file="base.html" />
         <%block name="title">Switchboard...</%block>
         <%block name="header">
-        <link href="/assets/css/bootstrap-switch.min.css" rel="stylesheet">
-        <script src="/assets/js/bootstrap-switch.min.js"></script>
-
-        <script lang="javascript">
-            $.fn.bootstrapSwitch.defaults.size = 'small';
-        </script>
         </%block>
 
     <div class="jumbotron" id="content">
+        <H2>Switchboard</H2>
         <div class="well">
 
             <!--
@@ -29,6 +24,14 @@
             </div>
         </div>
     </div>
+
+<%block name="footerscripts">
+    <link href="/assets/css/bootstrap-switch.min.css" rel="stylesheet">
+    <script src="/assets/js/bootstrap-switch.min.js"></script>
+
+    <script lang="javascript">
+        $.fn.bootstrapSwitch.defaults.size = 'small';
+    </script>
 
     <script lang="javascript">
         % for switch in data:
@@ -53,3 +56,4 @@
 
         % endfor
     </script>
+</%block>
