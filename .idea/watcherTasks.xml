@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectTasksOptions">
     <TaskOptions isEnabled="true">
-      <option name="arguments" value="$FileParentDir$/less/$FileName$ $FileParentDir$/assets/css/$FileNameWithoutExtension$.css" />
+      <option name="arguments" value="$FilePath$ $ProjectFileDir$/assets/css/$FileNameWithoutExtension$.css" />
       <option name="checkSyntaxErrors" value="true" />
       <option name="description" value="Watches less files and precomlinwhaterpiles them to css" />
       <option name="exitCodeBehavior" value="ERROR" />
@@ -18,7 +18,7 @@
       <option name="program" value="/usr/local/bin/lessc" />
       <option name="scopeName" value="LESS Stylesheets" />
       <option name="trackOnlyRoot" value="false" />
-      <option name="workingDir" value="$USER_HOME$/STUFF/FLEET/WEB/PROJECT_PLANET/site/assets/css" />
+      <option name="workingDir" value="$ProjectFileDir$/assets/css" />
       <envs />
     </TaskOptions>
   </component>

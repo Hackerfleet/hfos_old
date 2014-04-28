@@ -50,6 +50,9 @@
 
 <%block name="footerscripts">
 <script src="/assets/js/leaflet.js"></script>
+<script src="/assets/js/leaflet-omnivore.min.js"></script>
+<script src="/assets/js/togeojson.js"></script>
+<script src="/assets/js/leaflet.filelayer.js"></script>
 <script src="/assets/js/Leaflet.transformmarker.js"></script>
 <script src="/assets/js/L.Terminator.js"></script>
 <script src="/assets/js/L.Graticule.js"></script>
@@ -154,6 +157,18 @@
         }
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+        var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
+
+        L.Control.FileLayerLoad.LABEL = '<i class="fa fa-folder-open"></i>';
+        L.Control.fileLayerLoad({
+            fitBounds: true,
+            layerOptions: {style: style,
+                           pointToLayer: function (data, latlng) {
+                              return L.circleMarker(latlng, {style: style});
+                           }},
+        }).addTo(map);
+
 
         function onMapClick(e) {
             popup

@@ -210,13 +210,16 @@ class WebGate(component):
         self.defers[msg['recipient']] = {'ref': clientref, 'msg': str(msg)}
         self.send(msg, "outbox")
 
-    def __init__(self):
+    def __init__(self, assetdir=None):
         super(WebGate, self).__init__()
         # TODO: Why no init args?
         self.debug = True
         self.port = 8055
         # TODO: Fix assets dir relativity over whole project
-        self.assetdir = os.path.join(os.path.dirname(__file__), '../../assets')
+        if not assetdir:
+            self.assetdir = os.path.join(os.path.dirname(__file__), '../../assets')
+        else:
+            self.assetdir = assetdir
         self.serverenabled = True
 
         self.clients = []
