@@ -72,7 +72,7 @@ class PipeSelector(AdaptiveCommsComponent):
     def finished(self):
         while self.dataReady("control"):
             msg = self.recv("control")
-            if type(msg) in (shutdownMicroprocess):
+            if type(msg) in (shutdownMicroprocess, producerFinished):
                 self.send(msg, "signal")
                 return True
         return False

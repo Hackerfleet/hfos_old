@@ -306,13 +306,21 @@ def insert_crew():
 # LOGBOOK
 
 frames = [{'no': 1, 'coords': [54.1779, 7.889], 'course': 320, 'speed': 1.4},
-          {'no': 2, 'coords': [54.1785, 7.890], 'course': 30, 'speed': 2},
+          {'no': 2, 'coords': [54.1785, 7.890], 'course': 35, 'speed': 2},
           {'no': 3, 'coords': [54.1786, 7.8904], 'course': 45, 'speed': 4},
-          {'no': 4, 'coords': [54.1787, 7.8908], 'course': 60, 'speed': 5.5},
+          {'no': 4, 'coords': [54.1787, 7.8908], 'course': 65, 'speed': 5.5},
           {'no': 5, 'coords': [54.1787, 7.8914], 'course': 70, 'speed': 6},
-          {'no': 6, 'coords': [54.1787, 7.8926], 'course': 90, 'speed': 6},
-          {'no': 7, 'coords': [54.1787, 7.8941], 'course': 90, 'speed': 10},
-          {'no': 8, 'coords': [54.1786, 7.8956], 'course': 110, 'speed': 15}]
+          {'no': 6, 'coords': [54.1783, 7.8930], 'course': 90, 'speed': 6},
+          {'no': 7, 'coords': [54.1785, 7.8941], 'course': 90, 'speed': 10},
+          {'no': 8, 'coords': [54.1786, 7.8956], 'course': 110, 'speed': 15},
+          {'no': 9, 'coords': [54.17808, 7.8978], 'course': 140, 'speed': 15},
+          {'no': 10, 'coords': [54.17713, 7.8990], 'course': 160, 'speed': 10},
+          {'no': 11, 'coords': [54.1753, 7.9021], 'course': 200, 'speed': 8},
+          {'no': 12, 'coords': [54.1737, 7.9016], 'course': 210, 'speed': 9},
+          {'no': 13, 'coords': [54.1717, 7.9003], 'course': 230, 'speed': 9.5},
+          {'no': 14, 'coords': [54.1715, 7.8981], 'course': 300, 'speed': 9.5},
+          {'no': 15, 'coords': [54.173, 7.8963], 'course': 320, 'speed': 5},
+          ]
 
 
 def insert_logbook():

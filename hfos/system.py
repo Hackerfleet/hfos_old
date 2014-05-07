@@ -16,7 +16,7 @@ def build_system(online=True, debug=True):
     #build_nmeaSubscribers()
     #build_nmeaPublisher(debug)
     build_webui()
-    build_tapeplayback()
+    #build_tapeplayback()
 
     #if online:
     #    build_weatherScraper()

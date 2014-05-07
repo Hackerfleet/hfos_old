@@ -56,7 +56,7 @@ class MongoFindOne(component):
             value = self.recv("inbox")
 
             result = self.collection.find_one({self.key: value})
-            log("FOO\n", value, "BAR\n", result)
+            log("[MFO] Request response for {'%s': %s}:" % (self.key, value), result)
             self.send(result, "outbox")
             yield 1
 

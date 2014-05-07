@@ -45,7 +45,7 @@ from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
 from hfos.utils.logger import Logger
 from hfos.database.mongoadaptors import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
-from hfos.database.mongo import crew, logbook, switches
+from hfos.database.mongo import crew, logbook, switches, routes
 from hfos.utils.logger import log, debug, warn, error, critical
 
 
@@ -388,7 +388,10 @@ def build_urls():
 
     def build_crewlist():
         def set_detail_link(data):
-            data['name'] = '<a href="crew/details/' + str(data['uid']) + '">' + data['name'] + '</a>'
+            if 'uid' in data and 'name' in data:
+                data['name'] = '<a href="crew/details/' + str(data['uid']) + '">' + data['name'] + '</a>'
+            else:
+                log("[CREW] List: Entry without uid/name found: '%s'" % data, lvl=warn)
             return data
 
         crew_list = Pipeline(DataSource([crew]),
@@ -406,13 +409,20 @@ def build_urls():
 
     def build_logbook_list():
         def set_detail_link(data):
-            no = str(data['no'])
+            if 'no' in data:
+                no = str(data['no'])
+            else:
+                log("[LOGBOOK] List: No id for entry found! '%s'" % data, lvl=warn)
+                no = "NaN"
             data['no'] = '<a href="logbook/details/' + no + '">' + no + '</a>'
             return data
 
         def set_datetime(data):
-            datestr = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data['time']))
-            data['time'] = datestr
+            if 'time' in data:
+                datestr = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(data['time']))
+                data['time'] = datestr
+            else:
+                log("[LOGBOOK] List: No time for entry found! '%s'" % data, lvl=warn)
             return data
 
         crew_list = Pipeline(DataSource([logbook]),
@@ -498,6 +508,40 @@ def build_urls():
         return build_sync_webpipe(crew_store)
 
 
+    def build_route_service():
+        def get_route_id(request):
+            try:
+                return int(str(request['recipient']).lstrip('route/get/'))
+            except:
+                return -1
+
+        def build_get():
+            route_details = Pipeline(PureTransformer(get_route_id),
+                                    MongoFindOne('id', routes),
+                                    Logger(name="ROUTE-GET", level=debug),
+                                    PureTransformer(
+                                        lambda x: {'response': x}),
+            )
+            return build_sync_webpipe(route_details)
+
+        def build_store():
+            route_details = Pipeline(PureTransformer(lambda x: x['body']),
+                                     Logger(name="ROUTE-STORE-OBJ", level=critical),
+                                    MongoUpdateOne(routes),
+                                    Logger(name="ROUTE-STORE-RES", level=critical),
+                                    PureTransformer(
+                                        lambda x: {'response': x}),
+            )
+            return build_sync_webpipe(route_details)
+
+
+        actions = [
+            (lambda x: str(x['recipient']).startswith('route/get/'), build_get),
+            (lambda x: str(x['recipient']).startswith('route/store/'), build_store),
+        ]
+        router = PipeSelector(routes=actions)
+        return router
+
     statics = ['index.html',
                'about.html',
                'navigation.html',
@@ -517,7 +561,8 @@ def build_urls():
         (lambda x: str(x['recipient']).startswith('crew/details'), build_crewdetails),
         (lambda x: str(x['recipient']).startswith('crew/store'), build_crewstore),
         (lambda x: str(x['recipient']).startswith('logbook/list'), build_logbook_list),
-        (lambda x: str(x['recipient']).startswith('logbook/latest'), build_logbook_latest)
+        (lambda x: str(x['recipient']).startswith('logbook/latest'), build_logbook_latest),
+        (lambda x: str(x['recipient']).startswith('route/'), build_route_service),
     ]
 
     return urls

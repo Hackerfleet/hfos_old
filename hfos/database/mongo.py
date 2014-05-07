@@ -21,6 +21,7 @@ crew = db['crew']
 sensordata = db['sensordata']
 groups = db['groups']
 logbook = db['logbook']
+routes = db['routes']
 
 def insert(collection, object):
     obj_id = collection.insert(object)  # Hmhmho. How useful.

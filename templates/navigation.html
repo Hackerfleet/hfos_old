@@ -1,6 +1,7 @@
 <%inherit file="base.html" />
     <%block name="css">
     <link rel="stylesheet" href="/assets/css/leaflet.css" />
+    <link rel="stylesheet" href="/assets/css/leaflet.contextmenu.css"/>
     <link rel="stylesheet" href="/assets/css/L.Control.Pan.css" />
     <!--[if lt IE 9]>
     <link rel="stylesheet" href="/assets/css/L.Control.Pan.ie.css"/>
@@ -44,16 +45,35 @@
     <div id="map">
 
     </div>
-    <div id="button-wrapper" class="navbar navbar-default navbar-fixed-bottom">
-        <input type="checkbox" id="cb_follow" checked><label>Follow</label>
+    <div id="button-wrapper" class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav navbar-center">
+                    <li id="nav-cb_follow">
+                        <input type="checkbox" id="cb_follow"><label>Follow</label>
+                    </li>
+                    <li id="nav-cb_update">
+                        <input type="checkbox" id="cb_update"><label>Update</label>
+                    </li>
+                    <li id="nav-cb_identify">
+                        <input type="checkbox" id="cb_identify"><label>Identify</label>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
     </div>
 
 <%block name="footerscripts">
 <script src="/assets/js/leaflet.js"></script>
+<script src="/assets/js/leaflet-providers.js"></script>
 <script src="/assets/js/leaflet-omnivore.min.js"></script>
 <script src="/assets/js/togeojson.js"></script>
+<script src="/assets/js/leaflet.restoreview.js"></script>
+<script src="/assets/js/leaflet.contextmenu.js"></script>
+<script src="/assets/js/Mixin.ContextMenu.js"></script>
 <script src="/assets/js/leaflet.filelayer.js"></script>
 <script src="/assets/js/Leaflet.transformmarker.js"></script>
+<script src="/assets/js/leaflet-editable-polyline.js"></script>
 <script src="/assets/js/L.Terminator.js"></script>
 <script src="/assets/js/L.Graticule.js"></script>
 <script src="/assets/js/L.Control.MousePosition.js"></script>
@@ -99,7 +119,13 @@
             return new L.RotatedMarker(pos, options);
         };
 
+        var Coords = [0,0];
+        var Course = 0;
+        var editingRoute = false;
+        var routeLayers = {}
+        var cm;
 
+        L.Polyline.include(L.Mixin.ContextMenu);
 
         var VesselIcon = L.icon({
             iconUrl: '/assets/icons/vessel.png',
@@ -112,14 +138,106 @@
             popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
 
+        var Routes = {};
+        var route;
+        var waypoints;
+
+        function centerMap (e) {
+            console.log(e.latlng);
+            map.panTo(e.latlng);
+        }
+
+        function zoomIn (e) {
+            map.zoomIn();
+        }
+
+        function zoomOut (e) {
+            map.zoomOut();
+        }
+
+        function centerVessel (e) {
+            map.panTo(Coords);
+        }
+
+        function closeRoute (e) {
+            console.log("Closing route editor");
+
+            var points = route.getPoints();
+            console.log(points);
+            waypoints = [];
+            points.forEach(function(point) {
+                console.log(point);
+                waypoints.push(point.getLatLng());
+            });
+            $.ajax({
+                type: "POST",
+                url: '/route/store/', // missing: route id or "new"
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(waypoints),
+                success: function(data)
+                {
+                    alert(data);
+                }
+            });
+            map.removeLayer(route);
+
+            editingRoute = false;
+            waypointline = L.polyline(waypoints, {color: 'black'}).addTo(map);
+        }
+
+        function startRoute (e) {
+            if (editingRoute) {
+                alert('Cannot edit two routes at one time! Close the current route first.');
+            } else {
+                console.log(Coords);
+                var startcoords = e.latlng;
+                console.log(startcoords);
+
+                route = L.Polyline.PolylineEditor([
+                    Coords,
+                    [startcoords.lat, startcoords.lng]
+                ],{
+                    weight: 5
+                }).addTo(map);
+                editingRoute = true;
+            }
+        }
+
         var map = L.map('map', {
-            center: [52.513, 13.41998],
             zoom: 16,
             maxZoom: 17,
             minZoom: 3,
             zoomControl: false,
             zoomsliderControl: true,
+            contextmenu: true,
+            contextmenuWidth: 140,
+            contextmenuItems: [{
+                text: 'Start new route',
+                callback: startRoute
+            }, {
+                text: 'Close route',
+                callback: closeRoute
+            }, '-', {
+                text: 'Center map on Vessel',
+                callback: centerVessel
+            }, {
+                text: 'Center map here',
+                callback: centerMap
+            }, '-', {
+                text: 'Zoom in',
+                icon: '/assets/images/zoom-in.png',
+                callback: zoomIn
+            }, {
+                text: 'Zoom out',
+                icon: '/assets/images/zoom-out.png',
+                callback: zoomOut
+            }]
         });
+
+        if (!map.restoreView()) {
+            map.setView([52.513, 13.41998], 16);
+        }
 
         Terminator = L.terminator(); //.addTo(map);
 
@@ -139,24 +257,37 @@
         var osmlayer       = L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAttribution}).addTo(map);
             seamarkslayer  = L.tileLayer(seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}).addTo(map);
             sportslayer    = L.tileLayer(sportsUrl, {minZoom: 8, maxZoom: 18, attribution: OpenSeaMapAttribution});
-            cloudmadelayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
-                maxZoom: 18,
-                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-            });
+        //    cloudmadelayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+        //        maxZoom: 18,
+        //        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+        //    });
 
-        var baseMaps = {
+
+        var baseLayers = {
             "Default": osmlayer,
-            "Cloudmade": cloudmadelayer,
+            //"Cloudmade": cloudmadelayer,
         }
 
-        var overlayMaps = {
+        var overlayLayers = {
             "Seamarks": seamarkslayer,
             "Sports": sportslayer,
             "Terminator": Terminator,
             "Grid 1°": GraticuleOne,
+            'OpenWeatherMap Clouds': L.tileLayer.provider('OpenWeatherMap.Clouds'),
+            'OpenWeatherMap CloudsClassic': L.tileLayer.provider('OpenWeatherMap.CloudsClassic'),
+            'OpenWeatherMap Precipitation': L.tileLayer.provider('OpenWeatherMap.Precipitation'),
+            'OpenWeatherMap PrecipitationClassic': L.tileLayer.provider('OpenWeatherMap.PrecipitationClassic'),
+            'OpenWeatherMap Rain': L.tileLayer.provider('OpenWeatherMap.Rain'),
+            'OpenWeatherMap RainClassic': L.tileLayer.provider('OpenWeatherMap.RainClassic'),
+            'OpenWeatherMap Pressure': L.tileLayer.provider('OpenWeatherMap.Pressure'),
+            'OpenWeatherMap PressureContour': L.tileLayer.provider('OpenWeatherMap.PressureContour'),
+            'OpenWeatherMap Wind': L.tileLayer.provider('OpenWeatherMap.Wind'),
+            'OpenWeatherMap Temperature': L.tileLayer.provider('OpenWeatherMap.Temperature'),
+            'OpenWeatherMap Snow': L.tileLayer.provider('OpenWeatherMap.Snow')
         }
+        jQuery.extend(overlayLayers, routeLayers);
 
-        L.control.layers(baseMaps, overlayMaps).addTo(map);
+        var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
 
         var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
 
@@ -169,19 +300,19 @@
                            }},
         }).addTo(map);
 
+        var courseplot = L.polyline([], {color: 'red'}).addTo(map);
 
         function onMapClick(e) {
-            popup
-                .setLatLng(e.latlng)
-                .setContent("You clicked the map at " + e.latlng.toString())
-                .openOn(map);
+            if($("#cb_identify").is(':checked')){
+
+                var popup = L.popup()
+                    .setLatLng(e.latlng)
+                    .setContent("Here is: " + e.latlng.toString())
+                    .openOn(map);
+                }
         }
 
         map.on('click', onMapClick);
-
-        var Follow = false;
-        var Coords = [0,0];
-        var Course = 0;
 
         VesselMarker = L.rotatedMarker(Coords, {icon: VesselIcon}).addTo(map);
 
@@ -190,25 +321,36 @@
         });
 
         function UpdateMapMarker(){
-            console.log("Getting current Vessel position");
-            $.ajax({
-                type: "POST",
-                url: "logbook/latest",
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (response) {
-                    Coords = response.coords;
-                    Course = response.course;
-                    console.log("Coords: " + Coords + " Course:" + Course);
+            if($("#cb_update").is(':checked')){
+                console.log("Getting current Vessel position");
+                $.ajax({
+                    type: "POST",
+                    url: "logbook/latest",
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (response) {
+                        Coords = response.coords;
+                        Course = response.course;
+                        console.log("Coords: " + Coords + " Course:" + Course);
 
-                }
-            });
-            VesselMarker.setLatLng(Coords);
-            VesselMarker.options.angle = Course;
-            VesselMarker.update();
+                        courseplot.addLatLng(Coords);
+                        plotted = courseplot.getLatLngs()
+
+                        if (plotted.length > 50) {
+                            courseplot.spliceLatLngs(0, 1);
+                        }
+
+                        VesselMarker.setLatLng(Coords);
+                        VesselMarker.options.angle = Course;
+                        VesselMarker.update();
+
+                    }
+                });
+
+            }
 
             if($("#cb_follow").is(':checked')){
-                map.panTo(Coords);
+                centerVessel();
             }
 
             setTimeout(function(){

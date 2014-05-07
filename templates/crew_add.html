@@ -73,10 +73,10 @@ frm.submit(function(ev) {
            url: frm.attr('action'),
            contentType: 'application/json',
            dataType: 'json',
-           data: JSON.stringify(frm.serializeObject()), // serializes the form's elements.
+           data: JSON.stringify(frm.serializeObject()),
            success: function(data)
            {
-               alert(data); // show response from the php script.
+               alert(data);
            }
          });
 
