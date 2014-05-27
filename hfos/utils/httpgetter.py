@@ -19,10 +19,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+try:
+    # We'll just play 3.x
+    import urllib.request
+    import urllib.error
+except ImportError:
+    # Ah, nope, oldie but goldie..
+    import urllib2 as urllib
 
-
-import urllib.request
-import urllib.error
 import socket
 import time
 

@@ -50,9 +50,13 @@ verbosity = {'global': debug,
 start = time.time()
 
 
-def log(*what, lvl=info):
-    if lvl < verbosity['global']:
-        return
+def log(*what, **kwargs):
+    if 'lvl' in kwargs:
+        lvl = kwargs['lvl']
+        if lvl < verbosity['global']:
+            return
+    else:
+        lvl = info
 
     global count
     global start

@@ -81,23 +81,6 @@
 <script src="/assets/js/L.Control.Zoomslider.js"></script>
 
 <script lang="javascript">
-    /* // Howto include a geojson layer:
-    $(document).ready(function() {
-        $.ajax({
-            type: "POST",
-            url: "navigation/map",
-            contentType: 'application/json',
-            dataType: 'json',
-            success: function (response) {
-
-                geojsonLayer = L.geoJson(response, {}).addTo(map);
-            }
-        });
-
-    } );
-    */
-
-
         L.RotatedMarker = L.Marker.extend({
           options: { angle: 0 },
           _setPos: function(pos) {
