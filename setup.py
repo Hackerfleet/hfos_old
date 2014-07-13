@@ -18,8 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from setuptools import setup
 import os
+
+from setuptools import setup
+
 
 # TODO: rebuild the package finder using setuptools & pkg_resources
 
@@ -29,18 +31,20 @@ def include_readme():
     readme.close()
     return "".join(include)
 
+
 def is_package(path):
     return (
         os.path.isdir(path) and
         os.path.isfile(os.path.join(path, '__init__.py'))
-        )
+    )
 
-def find_packages(path, base="" ):
+
+def find_packages(path, base=""):
     """ Find all packages in path """
     packages = {}
     for item in os.listdir(path):
         dir = os.path.join(path, item)
-        if is_package( dir ):
+        if is_package(dir):
             if base:
                 module_name = "%(base)s.%(item)s" % vars()
             else:
@@ -49,43 +53,42 @@ def find_packages(path, base="" ):
             packages.update(find_packages(dir, module_name))
     return packages
 
+
 packages = find_packages(".")
 package_names = packages.keys()
 
-setup(name = "hfos",
-      version = "1.0.0",
-      description = "hfos",
+setup(name="hfos",
+      version="1.0.0",
+      description="hfos",
 
-      author = "Hackerfleet Community",
-      author_email = "packages@hackerfleet.org",
-      url = "https://github.com/ri0t/hfos",
-      license ="GNU General Public License v3",
-      packages = package_names,
-      package_dir = packages,
-      scripts = [
-                  'scripts/hfos',
-                ],
+      author="Hackerfleet Community",
+      author_email="packages@hackerfleet.org",
+      url="https://github.com/ri0t/hfos",
+      license="GNU General Public License v3",
+      packages=package_names,
+      package_dir=packages,
+      scripts=[
+          'scripts/hfos',
+      ],
       data_files=[
-                    ('/etc/init.d', ["etc/init.d/hfos"]),
-                    ('/etc/hfos', ["etc/hfos/config.json"])
-                 ],
+          ('/etc/init.d', ["etc/init.d/hfos"]),
+          ('/etc/hfos', ["etc/hfos/config.json"])
+      ],
 
-      long_description = include_readme(),
-      dependency_links = ['https://github.com/Hackerfleet/axon/archive/master.zip#egg=Axon-1.7.0',
-                          'https://github.com/Hackerfleet/kamaelia/archive/master.zip#egg=Kamaelia-1.1.2',
-                          'https://github.com/Hackerfleet/pynmea/archive/master.zip#egg=Pynmea-0.3.0',
-                          'https://github.com/ri0t/jsonpickle/archive/master.zip#egg=jsonpickle-0.1',
-                          'http://downloads.sourceforge.net/project/merciless/0.4.2/Ming-0.4.2.tar.gz?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmerciless%2Ffiles%2F0.4.2%2F&ts=1394823237&use_mirror=optimate#egg=ming-0.4.2'
-                         ],
+      long_description=include_readme(),
+      dependency_links=['https://github.com/Hackerfleet/axon/archive/master.zip#egg=Axon-1.7.0',
+                        'https://github.com/Hackerfleet/kamaelia/archive/master.zip#egg=Kamaelia-1.1.2.1',
+                        'https://github.com/Hackerfleet/pynmea/archive/master.zip#egg=Pynmea-0.3.0',
+                        ],
+
       # These versions are not strictly checked, older ones may or may not work.
-      install_requires = ['CherryPy>=3.2.2',
-                          'Axon>=1.7.0',
-                          'Kamaelia>=1.1.2',
-                          'Pynmea>=0.3.0',
-                          'Mako>=0.9.1',
-                          'jsonpickle>=0.1',
-                          'pymongo>=2.6.3',
-                          'bson>=0.3.3'
-                          ]
+      install_requires=['CherryPy==3.3.0',
+                        'Axon==1.7.0',
+                        'Kamaelia==1.1.2.1',
+                        'Pynmea==0.3.1',
+                        'Mako==0.9.1',
+                        'pymongo==2.6.3',
+                        'bson==0.3.3'
+      ]
 
-      )
+)
