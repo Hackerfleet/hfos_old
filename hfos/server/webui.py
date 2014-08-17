@@ -252,10 +252,9 @@ def build_urls():
 
             return int(str(request['recipient']).lstrip('switches/'))
 
-        crew_store = Pipeline(Logger(name="SWITCHCONTROL", level=debug),
+        switch_handler = Pipeline(Logger(name="SWITCHCONTROL", level=debug),
         )
-        return build_sync_webpipe(crew_store)
-
+        return build_sync_webpipe(switch_handler)
 
     def build_route_service():
         def get_route_id(request):

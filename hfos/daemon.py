@@ -58,7 +58,7 @@ class Daemon(object):
                 Programming in the UNIX Environment" for details (ISBN 0201563177)
                 http://www.erlenstar.demon.co.uk/unix/faq_2.html#SEC16
                 """
-                log("Trying to daemonize")
+                #log("Trying to daemonize")
                 try:
                         pid = os.fork()
                         if pid > 0:
@@ -73,7 +73,7 @@ class Daemon(object):
                 os.setsid()
                 os.umask(0)
 
-                log("Second fork")
+                #log("Second fork")
                 # do second fork
                 try:
                         pid = os.fork()
@@ -84,7 +84,7 @@ class Daemon(object):
                         sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
                         sys.exit(1)
 
-                log("Redirecting standard file descriptors")
+                #log("Redirecting standard file descriptors")
                 sys.stdout.flush()
                 sys.stderr.flush()
                 si = open(self.stdin, 'r')
@@ -94,21 +94,23 @@ class Daemon(object):
                 os.dup2(so.fileno(), sys.stdout.fileno())
                 os.dup2(se.fileno(), sys.stderr.fileno())
 
-                log("Writing pidfile")
+                #log("Writing pidfile")
                 atexit.register(self.delpid)
                 pid = str(os.getpid())
                 pidfile = open(self.pidfile, 'w+')
                 pidfile.write("%s\n" % pid)
                 pidfile.close()
 
-                log("Transferring ownerships")
+                #log("Transferring ownerships")
                 os.chown(self.pidfile, self.uid, self.gid)
+                if not os.path.exists(logfile):
+                    open(logfile, "w").close()
                 os.chown(logfile, self.uid, self.gid)
 
-                log("Dropping privs")
+                #log("Dropping privs")
                 self.drop_privileges()
 
-                log("Done! :)")
+                #log("Done! :)")
 
         def drop_privileges(self):
             if os.getuid() != 0:

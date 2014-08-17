@@ -82,12 +82,13 @@ setup(name="hfos",
                         ],
 
       # These versions are not strictly checked, older ones may or may not work.
-      install_requires=['CherryPy==3.3.0',
-                        'Axon==1.7.0',
-                        'Kamaelia==1.1.2.1',
-                        'Pynmea==0.3.1',
-                        'Mako==0.9.1',
-                        'pymongo==2.6.3',
+      # TODO: This is messed up, see #4
+      install_requires=[#'CherryPy==3.3.0',
+                        #'Axon==1.7.0',
+                        #'Kamaelia==1.1.2.1',
+                        #'Pynmea==0.3.1',
+                        #'Mako==0.9.1',
+                        #'pymongo==2.6.3',
                         'bson==0.3.3'
       ]
 

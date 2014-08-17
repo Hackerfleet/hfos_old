@@ -6,7 +6,7 @@ import json
 from Axon.Scheduler import scheduler
 
 from hfos.daemon import Daemon
-from utils.logger import log
+from hfos.utils.logger import log
 from hfos.system import build_system
 
 

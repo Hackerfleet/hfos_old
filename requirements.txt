@@ -1,0 +1,8 @@
+--index-url https://pypi.python.org/simple/
+
+-e git+https://github.com/Hackerfleet/axon.git#egg=Axon
+-e git+https://github.com/Hackerfleet/kamaelia.git#egg=Kamaelia
+-e git+https://github.com/Hackerfleet/pynmea.git#egg=Pynmea
+# -e git+https://github.com/ri0t/jsonpickle.git#egg=jsonpickle
+
+-e .
