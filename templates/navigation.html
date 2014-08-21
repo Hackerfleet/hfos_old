@@ -32,6 +32,10 @@
             color: #333;
             font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
         }
+
+        .filelayer-icon {
+            margin-top: 5px;
+        }
     </style>
 
     </%block>
@@ -274,7 +278,7 @@
 
         var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
 
-        L.Control.FileLayerLoad.LABEL = '<i class="fa fa-folder-open"></i>';
+        L.Control.FileLayerLoad.LABEL = '<i class="fa fa-folder-open filelayer-icon"></i>';
         L.Control.fileLayerLoad({
             fitBounds: true,
             layerOptions: {style: style,
