@@ -41,7 +41,8 @@ Installation
 Before doing anything with HFOS, be sure you have all the dependencies installed via your distribution's package manager.
 For Debian Unstable use this:
 
-    sudo apt-get install mongodb python3.4 python3-pip python3-grib python3-bson python3-pymongo python3-serial
+    sudo apt-get install mongodb python3.4 python3-pip python3-grib \
+                         python3-bson python3-pymongo python3-serial
 
 If you want (and can), install the mongo and bson extensions:
 
@@ -72,7 +73,7 @@ Currently it is set up to serve only on http://localhost:8055 - so point your br
 Debian PKG Generation
 ---------------------
 
-*Outdated* Debian instructions:
+*Outdated - these do not work without some additional work* Debian instructions:
 
 If you're using Debian, we provide a skeleton to build a cleanly installable dpkg package:
 
@@ -80,12 +81,6 @@ If you're using Debian, we provide a skeleton to build a cleanly installable dpk
     dpkg-buildpackage`
 
 Run buildpackage in the top source directory to generate a debian package.
-
-~~Afterwards you'll have to install the Python packages manually:~~
-
-    ~~sudo python3 setup.py install~~
-
-~~(This maybe a bug in upstream debian skeleton, will be vanquished soon)~~
 
 
 Configuration
@@ -112,3 +107,4 @@ Assets:
 
 Missing? Add yourself or ping us ;)
 
+:boat: :+1:
