@@ -10,7 +10,7 @@ Included modules
 
 * webui
 * nmea bus parser
-* online-only moving seamap incl.
+* online-only (yet) moving seamap incl.
  * openseamap
  * openstreetmap
  * openweathermap
@@ -78,7 +78,7 @@ Debian PKG Generation
 If you're using Debian, we provide a skeleton to build a cleanly installable dpkg package:
 
     sudo apt-get install dpkg-dev
-    dpkg-buildpackage`
+    dpkg-buildpackage
 
 Run buildpackage in the top source directory to generate a debian package.
 
