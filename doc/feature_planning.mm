@@ -40,8 +40,7 @@
       See the links below for more information.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1408801202714" FOLDED="true" ID="ID_643117516" MODIFIED="1408817132175" TEXT="Contact">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
@@ -73,8 +72,7 @@
       This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.&#160;&#160;This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.&#160;&#160;See the GNU General Public License for more details.&#160;&#160;You should have received a copy of the GNU General Public License along with this program.&#160;&#160;If not, see &lt;http://www.gnu.org/licenses/&gt;.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 </node>
@@ -115,22 +113,22 @@
 <font NAME="ProggyCleanTT" SIZE="16"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476030903" ID="ID_896501247" MODIFIED="1408817162038" POSITION="right" TEXT="Software">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476030903" FOLDED="true" ID="ID_896501247" MODIFIED="1411998624699" POSITION="right" TEXT="Software">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="Te X Gyre Heros" SIZE="24"/>
 <icon BUILTIN="full-2"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476271338" ID="ID_1895255297" MODIFIED="1408817165859" TEXT="Client">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476271338" FOLDED="true" ID="ID_1895255297" MODIFIED="1411998622204" TEXT="Client">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476582674" FOLDED="true" ID="ID_1487974381" MODIFIED="1408816778228" TEXT="Ship">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476582674" FOLDED="true" ID="ID_1487974381" MODIFIED="1411909418941" TEXT="Ship">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371476625754" ID="ID_1457455571" MODIFIED="1408816054386" TEXT="Nautical Situation">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371476625754" ID="ID_1457455571" MODIFIED="1411909393857" TEXT="Nautical Situation">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -314,7 +312,7 @@
 </node>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371476632078" ID="ID_1917836403" MODIFIED="1408816054383" TEXT="Static">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371476632078" ID="ID_1917836403" MODIFIED="1411909406952" TEXT="Static">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -416,7 +414,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476637955" ID="ID_866067498" MODIFIED="1408816054382" TEXT="Weather">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476637955" FOLDED="true" ID="ID_866067498" MODIFIED="1409568344189" TEXT="Weather">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -462,12 +460,12 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476504836" FOLDED="true" ID="ID_897879612" MODIFIED="1408816765736" TEXT="Map">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476504836" FOLDED="true" ID="ID_897879612" MODIFIED="1411998619516" TEXT="Map">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277393307" ID="ID_1995146513" MODIFIED="1408816054381" TEXT="Moving map">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277393307" FOLDED="true" ID="ID_1995146513" MODIFIED="1411909422104" TEXT="Moving map">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -497,13 +495,13 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408795535412" ID="ID_541525250" MODIFIED="1408816054381" TEXT="Navigation aides">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408795535412" FOLDED="true" ID="ID_541525250" MODIFIED="1411998596456" TEXT="Navigation aides">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_160371136" ENDARROW="Default" ENDINCLINATION="346;0;" ID="Arrow_ID_1079785094" STARTARROW="None" STARTINCLINATION="346;0;"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408794981457" ID="ID_1888773575" MODIFIED="1408816054381" TEXT="Bearings">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408794981457" ID="ID_1888773575" MODIFIED="1411909963526" TEXT="Bearings">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -533,7 +531,7 @@
 </node>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476606251" ID="ID_79875366" MODIFIED="1408816054381" TEXT="Routes">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476606251" FOLDED="true" ID="ID_79875366" MODIFIED="1411909427896" TEXT="Routes">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -584,7 +582,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408795552769" ID="ID_1235783604" MODIFIED="1408816054380" TEXT="Atoms">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408795552769" FOLDED="true" ID="ID_1235783604" MODIFIED="1411909430240" TEXT="Atoms">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
@@ -645,7 +643,7 @@
 </node>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408794983986" ID="ID_327634158" MODIFIED="1408816054379" TEXT="Geographic alerts/notes">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408794983986" FOLDED="true" ID="ID_327634158" MODIFIED="1411913103623" TEXT="Geographic alerts/notes">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_160371136" ENDARROW="Default" ENDINCLINATION="322;0;" ID="Arrow_ID_242361393" STARTARROW="None" STARTINCLINATION="322;0;"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
@@ -684,7 +682,7 @@
 <font NAME="ProggyCleanTT" SIZE="16"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408794408763" ID="ID_716982724" MODIFIED="1408816054379" TEXT="Views">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408794408763" FOLDED="true" ID="ID_716982724" MODIFIED="1411909437582" TEXT="Views">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_160371136" ENDARROW="Default" ENDINCLINATION="316;0;" ID="Arrow_ID_444676139" STARTARROW="None" STARTINCLINATION="316;0;"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
@@ -716,7 +714,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408794831455" ID="ID_385593960" MODIFIED="1408816054378" TEXT="Toolbar">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408794831455" FOLDED="true" ID="ID_385593960" MODIFIED="1411998613524" TEXT="Toolbar">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
@@ -852,7 +850,7 @@
 </node>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371478010812" ID="ID_1164532768" MODIFIED="1408816054376" TEXT="Layer selection">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371478010812" FOLDED="true" ID="ID_1164532768" MODIFIED="1411998614805" TEXT="Layer selection">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_745049261" ENDARROW="None" ENDINCLINATION="515;0;" ID="Arrow_ID_1606037835" STARTARROW="Default" STARTINCLINATION="515;0;"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
@@ -869,6 +867,20 @@
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="go"/>
+</node>
+<node COLOR="#cccc00" CREATED="1411909661198" FOLDED="true" ID="ID_139206422" MODIFIED="1411909865010" TEXT="Other Vessels">
+<icon BUILTIN="full-1"/>
+<icon BUILTIN="prepare"/>
+<node COLOR="#cccc00" CREATED="1411909674698" ID="ID_942869214" MODIFIED="1411909715862" TEXT="OSDM Data">
+<icon BUILTIN="full-1"/>
+<icon BUILTIN="prepare"/>
+</node>
+<node COLOR="#cccc00" CREATED="1371478018801" ID="ID_1231512637" MODIFIED="1411909705617" TEXT="AIS Data">
+<edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
+<font NAME="ProggyCleanTT" SIZE="16"/>
+<icon BUILTIN="full-3"/>
+<icon BUILTIN="prepare"/>
+</node>
 </node>
 <node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371478020825" ID="ID_5862248" MODIFIED="1408816054376" TEXT="OSDM-Data">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
@@ -906,12 +918,6 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371478018801" ID="ID_1231512637" MODIFIED="1408816054376" TEXT="AIS-Data">
-<edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
-<font NAME="ProggyCleanTT" SIZE="16"/>
-<icon BUILTIN="full-3"/>
-<icon BUILTIN="stop"/>
-</node>
 <node BACKGROUND_COLOR="#467aa9" COLOR="#33cc00" CREATED="1408793737352" ID="ID_836716128" MODIFIED="1408816054376" TEXT="Terminator (Sunlight) View">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
@@ -919,7 +925,7 @@
 <icon BUILTIN="go"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408795764639" ID="ID_469843640" MODIFIED="1408816054375" TEXT="Navigation cues">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408795764639" FOLDED="true" ID="ID_469843640" MODIFIED="1411998615381" TEXT="Navigation cues">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-3"/>
@@ -967,7 +973,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408793540226" ID="ID_1799175016" MODIFIED="1408816054375" TEXT="Geodata upload">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408793540226" FOLDED="true" ID="ID_1799175016" MODIFIED="1411998616004" TEXT="Geodata upload">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_625123716" ENDARROW="Default" ENDINCLINATION="209;0;" ID="Arrow_ID_1930670318" STARTARROW="None" STARTINCLINATION="209;0;"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
@@ -989,7 +995,7 @@
 <icon BUILTIN="prepare"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408794745675" ID="ID_1239903014" MODIFIED="1408816054375" TEXT="Pop up menu">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408794745675" FOLDED="true" ID="ID_1239903014" MODIFIED="1411998616828" TEXT="Pop up menu">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-3"/>
@@ -1099,17 +1105,17 @@
 </node>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476269676" ID="ID_1598618045" MODIFIED="1408817165576" TEXT="Node">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476269676" FOLDED="true" ID="ID_1598618045" MODIFIED="1411998621268" TEXT="Node">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476394851" FOLDED="true" ID="ID_614346288" MODIFIED="1408816769244" TEXT="Data aquisition">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476394851" FOLDED="true" ID="ID_614346288" MODIFIED="1411998618638" TEXT="Data aquisition">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="prepare"/>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476386748" ID="ID_210502846" MODIFIED="1408816054371" TEXT="Vessel bus readout">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1371476386748" FOLDED="true" ID="ID_210502846" MODIFIED="1409567958615" TEXT="Vessel bus readout">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_438393459" ENDARROW="None" ENDINCLINATION="1084;0;" ID="Arrow_ID_1124202991" STARTARROW="Default" STARTINCLINATION="1084;0;"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
@@ -1140,7 +1146,7 @@
 <icon BUILTIN="prepare"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408797851850" FOLDED="true" ID="ID_449097766" MODIFIED="1408816769827" TEXT="Data handling">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408797851850" FOLDED="true" ID="ID_449097766" MODIFIED="1409568091341" TEXT="Data handling">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -1164,7 +1170,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408799042739" FOLDED="true" ID="ID_864373868" MODIFIED="1408816770723" TEXT="Data provisioning">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408799042739" FOLDED="true" ID="ID_864373868" MODIFIED="1409568326216" TEXT="Data provisioning">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -1183,7 +1189,7 @@
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="stop"/>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408799124275" ID="ID_1731237122" MODIFIED="1408816054370" TEXT="Map objects">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408799124275" ID="ID_1731237122" MODIFIED="1411913103622" TEXT="Map objects">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <arrowlink DESTINATION="ID_469843640" ENDARROW="Default" ENDINCLINATION="281;0;" ID="Arrow_ID_987682735" STARTARROW="None" STARTINCLINATION="281;0;"/>
 <arrowlink DESTINATION="ID_541525250" ENDARROW="Default" ENDINCLINATION="394;0;" ID="Arrow_ID_1251667840" STARTARROW="None" STARTINCLINATION="394;0;"/>
@@ -1246,7 +1252,7 @@
 <icon BUILTIN="full-2"/>
 <icon BUILTIN="prepare"/>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408797756125" FOLDED="true" ID="ID_387646417" MODIFIED="1408816772811" TEXT="Map Layers">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408797756125" FOLDED="true" ID="ID_387646417" MODIFIED="1409568335470" TEXT="Map Layers">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
@@ -1313,7 +1319,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408797734490" FOLDED="true" ID="ID_638154747" MODIFIED="1408816773618" TEXT="OSDM">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1408797734490" FOLDED="true" ID="ID_638154747" MODIFIED="1411909950956" TEXT="OSDM">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
@@ -1350,7 +1356,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371476258014" FOLDED="true" HGAP="19" ID="ID_814773086" MODIFIED="1408817164336" TEXT="OSDM Cloud" VSHIFT="-1">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cc0033" CREATED="1371476258014" FOLDED="true" HGAP="19" ID="ID_814773086" MODIFIED="1409568376897" TEXT="OSDM Cloud" VSHIFT="-1">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
@@ -1406,7 +1412,7 @@
 </node>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277918485" ID="ID_1370306934" MODIFIED="1408817168697" POSITION="left" TEXT="Framework">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277918485" FOLDED="true" ID="ID_1370306934" MODIFIED="1411998622996" POSITION="left" TEXT="Framework">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="Te X Gyre Heros" SIZE="24"/>
 <icon BUILTIN="full-1"/>
@@ -1417,7 +1423,7 @@
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="stop"/>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277923273" FOLDED="true" ID="ID_1664656153" MODIFIED="1408816802911" TEXT="Webclient Gateway">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277923273" FOLDED="true" ID="ID_1664656153" MODIFIED="1409568425875" TEXT="Webclient Gateway">
 <edge COLOR="#114b7f"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -1434,7 +1440,7 @@
 <icon BUILTIN="full-1"/>
 <icon BUILTIN="stop"/>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277934477" ID="ID_526952151" MODIFIED="1408816674327" TEXT="Routing">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408277934477" FOLDED="true" ID="ID_526952151" MODIFIED="1409568421923" TEXT="Routing">
 <edge COLOR="#114b7f"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -1477,7 +1483,7 @@
 <icon BUILTIN="go"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408278420151" FOLDED="true" ID="ID_1258117436" MODIFIED="1408816801063" TEXT="Database handling">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408278420151" FOLDED="true" ID="ID_1258117436" MODIFIED="1409568393422" TEXT="Database handling">
 <edge COLOR="#114b7f"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-1"/>
@@ -1529,7 +1535,7 @@
 <icon BUILTIN="prepare"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408278121974" FOLDED="true" ID="ID_1492267433" MODIFIED="1408816710650" TEXT="Cleanups &amp; Integration">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408278121974" FOLDED="true" ID="ID_1492267433" MODIFIED="1409568410037" TEXT="Cleanups &amp; Integration">
 <edge COLOR="#114b7f"/>
 <font NAME="ProggyCleanTT" SIZE="16"/>
 <icon BUILTIN="full-2"/>
@@ -1584,7 +1590,7 @@
 <icon BUILTIN="stop"/>
 </node>
 </node>
-<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408278635526" ID="ID_1519968879" MODIFIED="1408817169118" POSITION="left" TEXT="Build system">
+<node BACKGROUND_COLOR="#467aa9" COLOR="#cccc00" CREATED="1408278635526" FOLDED="true" ID="ID_1519968879" MODIFIED="1411998623676" POSITION="left" TEXT="Build system">
 <edge COLOR="#114b7f" STYLE="bezier" WIDTH="1"/>
 <font NAME="Te X Gyre Heros" SIZE="24"/>
 <icon BUILTIN="full-3"/>

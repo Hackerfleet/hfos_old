@@ -18,6 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+#
+# This is the first attempt at building a pipelined WebUI.
+# Through experience, much of this is virtually outdated and will
+# be rebuilt for the next release - hopefully 1.1.
+# (This will include parts of Kamaelia's new WebGate)
+#
+
 
 __author__ = 'riot'
 

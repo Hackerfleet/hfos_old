@@ -23,10 +23,11 @@ __author__ = 'riot'
 
 from Axon.Scheduler import scheduler
 from Kamaelia.Chassis.Pipeline import Pipeline
-from Kamaelia.Util.Introspector import Introspector
+from Kamaelia.Chassis.Graphline import Graphline
+#from Kamaelia.Util.Introspector import Introspector
 from Kamaelia.Util.DataSource import DataSource
 from Kamaelia.Util.Console import ConsoleEchoer
-from Kamaelia.Visualisation.Axon.AxonVisualiserServer import text_to_token_lists, AxonVisualiser
+#from Kamaelia.Visualisation.Axon.AxonVisualiserServer import text_to_token_lists, AxonVisualiser
 
 #from hfos.components import build_system
 
@@ -34,9 +35,13 @@ from Kamaelia.Visualisation.Axon.AxonVisualiserServer import text_to_token_lists
 
 from hfos.utils.selector import testPipeSelector
 
+from hfos.utils.validator import testValidator
+
 from hfos.database.mongoadaptors import MongoReader, MongoFindOne
 from hfos.database.mongo import crew, groups
 from hfos.utils.logger import Logger
+from hfos.system import build_system
+
 
 def functiontest():
     tester = Pipeline(DataSource([0]),
@@ -45,15 +50,19 @@ def functiontest():
                       ConsoleEchoer()
     ).activate()
 
+
 if __name__ == '__main__':
     #weatherScraper()
-    #build_system(online=False, debug=True)
+    debug = False
+    testValidator()
+    #build_system(online=False, debug=debug)
     #build_WebUI()
-    functiontest()
+    #functiontest()
 
-    #Pipeline(Introspector(),
-    #         text_to_token_lists(),
-    #         AxonVisualiser(),
-    #)#.activate()
+    if debug:
+        Pipeline(Introspector(),
+                 text_to_token_lists(),
+                 AxonVisualiser(),
+        ).activate()
 
     scheduler.run.runThreads()

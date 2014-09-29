@@ -1,32 +1,35 @@
 <%inherit file="base.html" />
-        <%block name="title">About...</%block>
-        <%block name="header">
-    <meta http-equiv="refresh" content="30" />
-    <style type="text/css">
-        #compass {
-  width: 330px;
-  height: 330px;
-  background-image:url('/assets/images/hackerfleet.svg');
-  background-size: 100% auto;
-  position: relative;
-}
-        #links {
-            text-align: left;
-            width: 20%;
-        }
+<%block name="title">About...</%block>
+<%block name="header">
+<meta http-equiv="refresh" content="30"/>
+<style type="text/css">
+    #compass {
+    width: 330px;
+    height: 330px;
+    background-image:url('/assets/images/hackerfleet.svg');
+    background-size: 100% auto;
+    position: relative;
+    }
+    #links {
+    text-align: left;
+    width: 20%;
+    }
 
-        #content {
-        color: black;
-        }
-    </style>
-        </%block>
+    #content {
+    color: black;
+    }
+</style>
+</%block>
 
 <div class="jumbotron" id="content">
     <center>
-        <a href="https://hackerfleet.org"><div id="compass"></div></a>
+        <a href="https://hackerfleet.org">
+            <div id="compass"></div>
+        </a>
 
         <div class="container">
             <H2>Hackerfleet Technology Demonstrator (Beta)</H2>
+
             <div id="links">
                 <ul>
                     <li><a href="mailto:info@hackerfleet.org">Contact</a></li>
@@ -34,8 +37,10 @@
                     <li>Bug reporting
                         <ul>
                             <li><a href="mailto:bugs@hackerfleet.org">Report via mail</a></li>
-                            <li><a href="https://github.com/hackerfleet/hfos/issues">Browse on Github</a></li>
-                            <li><a href="https://github.com/hackerfleet/hfos/issues/new">Report on Github</a></li>
+                            <li><a href="https://github.com/hackerfleet/hfos/issues" target="_blank">Browse on
+                                Github</a></li>
+                            <li><a href="https://github.com/hackerfleet/hfos/issues/new" target="_blank">Report on
+                                Github</a></li>
                         </ul>
                     </li>
                 </ul>
