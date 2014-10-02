@@ -46,6 +46,8 @@ from hfos.utils.selector import PipeSelector
 from hfos.utils.logger import Logger
 from hfos.database.mongoadaptors import MongoReader, MongoFindOne, MongoUpdateOne, MongoTail
 from hfos.database.mongo import crew, logbook, switches, routes
+from hfos.utils.tilecache import Tilecache
+
 from hfos.utils.logger import log, debug, warn, critical
 
 
@@ -297,6 +299,9 @@ def build_urls():
         router = PipeSelector(routes=actions)
         return router
 
+    def build_Tilecache():
+        return Tilecache()
+
     statics = ['index.html',
                'about.html',
                'navigation.html',
@@ -309,6 +314,7 @@ def build_urls():
 
     urls = build_static_templates(statics)
     urls += [
+        (lambda x: x['recipient'].startswith('tiles/'), build_Tilecache),
         (lambda x: x['recipient'] == 'navdisplay.html', build_navdisp_templater),
         (lambda x: x['recipient'] == 'switchboard.html', build_switchboard),
         (lambda x: str(x['recipient']).startswith('switches/'), build_switch_handler),

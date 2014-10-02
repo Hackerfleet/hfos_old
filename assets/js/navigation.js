@@ -195,14 +195,18 @@ MousePosition = L.control.mousePosition().addTo(map);
 L.control.pan().addTo(map);
 
 var openStreetMapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
+var cached_openStreetMapUrl = 'http://localhost:8055/tiles/tile.osm.org/{z}/{x}/{y}.png';
 var seamarksUrl = 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
+var cached_seamarksUrl = 'http://localhost:8055/tiles/tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
 var sportsUrl = 'http://tiles.openseamap.org/sport/{z}/{x}/{y}.png';
 
 var openStreetMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
 var OpenSeaMapAttribution = 'Map data &copy; 2012 OpenSeaMap contributors';
 
-var osmlayer       = L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAttribution}).addTo(map);
-    seamarkslayer  = L.tileLayer(seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}).addTo(map);
+var osmlayer       = L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAttribution}); // .addTo(map);
+    seamarkslayer  = L.tileLayer(seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}); //.addTo(map);
+    cached_osmlayer       = L.tileLayer(cached_openStreetMapUrl, {attribution: openStreetMapAttribution}).addTo(map);
+    cached_seamarkslayer  = L.tileLayer(cached_seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}); // .addTo(map);
     sportslayer    = L.tileLayer(sportsUrl, {minZoom: 8, maxZoom: 18, attribution: OpenSeaMapAttribution});
 //    cloudmadelayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 //        maxZoom: 18,
@@ -212,11 +216,13 @@ var osmlayer       = L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAt
 
 var baseLayers = {
     "Default": osmlayer,
+    "Cached":  cached_osmlayer,
     //"Cloudmade": cloudmadelayer,
 }
 
 var overlayLayers = {
     "Seamarks": seamarkslayer,
+    "Seamarks Cached": cached_seamarkslayer,
     "Sports": sportslayer,
     "Terminator": Terminator,
     "Grid 1°": GraticuleOne,
