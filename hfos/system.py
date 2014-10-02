@@ -10,9 +10,11 @@ from hfos.components import build_nmeaSubscribers
 from hfos.components import build_nmeaPublisher
 from hfos.utils.tape import build_tapeplayback
 from hfos.server.webui import build_webui
+from hfos.utils.mem import build_memdebugger
 
 
 def build_system(online=True, debug=True):
+    build_memdebugger()
     #build_nmeaSubscribers()
     #build_nmeaPublisher(debug)
     build_webui()
