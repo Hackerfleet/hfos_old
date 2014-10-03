@@ -14,21 +14,21 @@
 
 .leaflet-control-pan-up-wrap {
 	position:absolute;
-	left:27px;
+	left:30px;
 }
 .leaflet-control-pan-left-wrap {
 	position:absolute;
-	top:27px;
+	top:30px;
 }
 .leaflet-control-pan-right-wrap {
 	position:absolute;
-	left:54px;	
-	top:27px;
+	left:60px;
+	top:30px;
 }
 .leaflet-control-pan-down-wrap {
 	position:absolute;
-	left:27px;
-	top:54px;
+	left:60px;
+	top:30px;
 }
 
 .leaflet-control-zoom {
