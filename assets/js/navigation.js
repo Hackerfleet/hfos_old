@@ -102,6 +102,11 @@ function zoomOut (e) {
     map.zoomOut();
 }
 
+function zoomHere (e) {
+    map.panTo(e.latlng);
+    map.zoomIn();
+}
+
 function centerVessel (e) {
     map.panTo(Coords);
 }
@@ -158,7 +163,7 @@ var map = L.map('map', {
     zoomControl: false,
     zoomsliderControl: true,
     contextmenu: true,
-    contextmenuWidth: 140,
+    contextmenuWidth: 200,
     contextmenuItems: [{
         text: 'Start new route',
         callback: startRoute
@@ -179,6 +184,10 @@ var map = L.map('map', {
         text: 'Zoom out',
         icon: '/assets/images/zoom-out.png',
         callback: zoomOut
+    }, {
+        text: 'Zoom here',
+        icon: '/assets/images/zoom-here.png',
+        callback: zoomHere
     }]
 });
 
