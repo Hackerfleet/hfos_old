@@ -348,7 +348,7 @@ def build_webui():
     components being defined by the build_urls() function.
     """
 
-    gate = Graphline(WG=WebGate(assetdir="assets"),
+    gate = Graphline(WG=WebGate(assetdir=os.path.abspath("assets")),
                      ROUTER=PipeSelector(build_urls(), defaultpipe=build_404template),
                      linkages={("WG", "outbox"): ("ROUTER", "inbox"),
                                ("ROUTER", "outbox"): ("WG", "inbox")
