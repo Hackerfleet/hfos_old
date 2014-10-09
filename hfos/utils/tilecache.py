@@ -6,15 +6,16 @@ __copyright__ = "Copyright 2011-2014, Hackerfleet Community"
 __license__ = "GPLv3"
 __status__ = "Beta"
 
+import urllib.request
+import urllib.error
+import socket
+
 import os.path
 from os import makedirs
-
-import urllib.request, urllib.error, socket
-
 from Axon.Component import component
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
-from hfos.utils.logger import log, debug, error
+from hfos.utils.logger import log, debug
 
 
 class Tilecache(component):
@@ -25,7 +26,8 @@ class Tilecache(component):
                 "signal": "Shutdown signalling",
     }
 
-    def __init__(self, cachedir='/tmp/hfos-tilecache', proxy=False, useragent=False, timeout=30, postdata=None,
+    def __init__(self, cachedir='/tmp/hfos-tilecache', defaulttile="",
+                 proxy=False, useragent=False, timeout=30, postdata=None,
                  extraheaders=None, realm=False,
                  username=False, password=False, decode=False):
         super(Tilecache, self).__init__()
@@ -34,6 +36,10 @@ class Tilecache(component):
         self.timeout = timeout
         self.postdata = postdata
         self.decode = decode
+
+        defaulttilefile = open(defaulttile, "rb")
+        self.defaulttile = defaulttilefile.read()
+        defaulttilefile.close()
 
         # Configure proxy
         if proxy:
@@ -103,6 +109,7 @@ class Tilecache(component):
 
     def get_tile(self, url):
 
+        log("Getting tile: ", url, lvl=debug)
         connection = None
 
         try:
@@ -145,15 +152,17 @@ class Tilecache(component):
             #log("[TC] Request:", value, lvl=error)
             spliturl = value['recipient'].split("/")
             #log("[TC] URL split", spliturl)
-            service = spliturl[1]
-            x = spliturl[2]
-            y = spliturl[3]
-            z = spliturl[4].split('.')[0]
+            service = "/".join(spliturl[1:-3])  # get all but the coords as service
+            x = spliturl[-3]
+            y = spliturl[-2]
+            z = spliturl[-1].split('.')[0]
 
             filename = os.path.join(self.cachedir, service, x, y) + "/" + z + ".png"
             url = "http://" + service + "/" + x + "/" + y + "/" + z + ".png"
             #log("[TC] Estimated filename: ", filename, lvl=error)
             #log("[TC] Estimated URL: ", url, lvl=error)
+
+            # TODO: Clean up, restructure this
 
             if os.path.isfile(filename):
                 log("[TC] Tile in cache")
@@ -165,18 +174,23 @@ class Tilecache(component):
 
             else:
                 tile = self.get_tile(url)
-                log("[TC] Caching tile...")
                 value['response'] = tile
 
                 tilepath = os.path.dirname(filename)
-                try:
-                    makedirs(tilepath, exist_ok=True)
-                    tilefile = open(filename, "wb")
-                    tilefile.write(tile)
 
-                    tilefile.close()
-                except Exception as e:
-                    log("[TC] Badass error:", [type(e), e])
+                if tile:
+                    try:
+                        log("[TC] Caching tile...")
+                        makedirs(tilepath, exist_ok=True)
+                        tilefile = open(filename, "wb")
+                        tilefile.write(tile)
+
+                        tilefile.close()
+                    except Exception as e:
+                        log("[TC] Badass error: ", [type(e), e])
+                else:
+                    log("[TC] Got no tile, serving defaulttile.", lvl=debug)
+                    value['response'] = self.defaulttile
 
             self.send(value, "outbox")
             yield 1

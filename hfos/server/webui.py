@@ -300,7 +300,7 @@ def build_urls():
         return router
 
     def build_Tilecache():
-        return Tilecache()
+        return Tilecache(defaulttile='assets/images/tile_missing.png')
 
     statics = ['index.html',
                'about.html',
@@ -348,7 +348,7 @@ def build_webui():
     components being defined by the build_urls() function.
     """
 
-    gate = Graphline(WG=WebGate(assetdir=os.path.abspath("assets")),
+    gate = Graphline(WG=WebGate(assetdir="assets"),
                      ROUTER=PipeSelector(build_urls(), defaultpipe=build_404template),
                      linkages={("WG", "outbox"): ("ROUTER", "inbox"),
                                ("ROUTER", "outbox"): ("WG", "inbox")

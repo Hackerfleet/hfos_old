@@ -207,6 +207,8 @@ var openStreetMapUrl = 'http://{s}.tile.osm.org/{z}/{x}/{y}.png';
 var cached_openStreetMapUrl = 'http://localhost:8055/tiles/tile.osm.org/{z}/{x}/{y}.png';
 var seamarksUrl = 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
 var cached_seamarksUrl = 'http://localhost:8055/tiles/tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
+var cached_esriworldimageryUrl = 'http://localhost:8055/tiles/server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+var esriworldimageryAttribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
 var sportsUrl = 'http://tiles.openseamap.org/sport/{z}/{x}/{y}.png';
 
 var openStreetMapAttribution = '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors';
@@ -216,6 +218,7 @@ var osmlayer       = L.tileLayer(openStreetMapUrl, {attribution: openStreetMapAt
     seamarkslayer  = L.tileLayer(seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}); //.addTo(map);
     cached_osmlayer       = L.tileLayer(cached_openStreetMapUrl, {attribution: openStreetMapAttribution}).addTo(map);
     cached_seamarkslayer  = L.tileLayer(cached_seamarksUrl, {maxZoom: 16, attribution: OpenSeaMapAttribution}); // .addTo(map);
+    cached_esriworldimagerylayer    = L.tileLayer(cached_esriworldimageryUrl, {maxZoom: 16, attribution: esriworldimageryAttribution}).setOpacity(0.5);
     sportslayer    = L.tileLayer(sportsUrl, {minZoom: 8, maxZoom: 18, attribution: OpenSeaMapAttribution});
 //    cloudmadelayer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
 //        maxZoom: 18,
@@ -235,6 +238,7 @@ var overlayLayers = {
     "Sports": sportslayer,
     "Terminator": Terminator,
     "Grid 1°": GraticuleOne,
+    'Satellite by ESRI World Imagery': cached_esriworldimagerylayer,
     'OpenWeatherMap Clouds': L.tileLayer.provider('OpenWeatherMap.Clouds'),
     'OpenWeatherMap CloudsClassic': L.tileLayer.provider('OpenWeatherMap.CloudsClassic'),
     'OpenWeatherMap Precipitation': L.tileLayer.provider('OpenWeatherMap.Precipitation'),
