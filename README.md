@@ -3,26 +3,30 @@ HFOS - The Hackerfleet Operating System
 
 A modern, opensource approach to maritime navigation.
 
+This software package is supposed to run on your ship/car/plane/ufo's board computer.
+
 _Obligatory Warning_: **Do not use for navigational purposes!**
+
+_Always have up to date paper maps and know how to use them!_
 
 Included modules
 ----------------
 
-* webui
+* webui (compatible with all modern browsers)
 * nmea bus parser
-* online-only (yet) moving seamap incl.
+* offline (cached) moving seamap incl.
  * openseamap
  * openstreetmap
  * openweathermap
+ * and lots of other useful layers
 
-Planned features
-----------------
+Work in progress (1.0)
+----------------------
 
-* navigation, grib charts
-* navgiation aides, planning (and possibly routing)
-* complete offline navigation
-* datalog, navigational data exchange
-* crew management, safety tools
+* Navigation, GRIB data (in charts)
+* Navigation aides, planning
+* Datalog, automated navigational data exchange
+* Crew management, safety tools
 * wireless crew network and general communications
 
 Bugs & Discussion
@@ -31,8 +35,8 @@ Bugs & Discussion
 Please research any bugs you find via our [Github issue tracker for HFOS](https://github.com/hackerfleet/hfos/issues)
 and report them if they're still unknown.
 
-If you want to discuss Hackerfleet's technology in general incl. where we're heading, head over to our
-[Github discussion forum](https://github.com/hackerfleet/discuss/issues)
+If you want to discuss (opensource) maritime technology in general incl. where we're heading, head over to our
+[Github discussion forum](https://github.com/hackerfleet/discussion/issues)
 ...which is cleverly disguised as a Github issue tracker.
 
 Installation
@@ -67,7 +71,7 @@ Run hfos:
 
     python scripts/hfos
 
-You should see some messy info/debug output and the web engine starting up.
+You should see some info/debug output and the web engine as well as other components starting up.
 Currently it is set up to serve only on http://localhost:8055 - so point your browser there and explore HFOS.
 
 Debian PKG Generation
@@ -92,15 +96,21 @@ Lives in `/etc/hfos/config.json` after installation, but is currently not used.
 Contributors
 ============
 
-We like to hang out on irc, if you want to chat or help out, join #hackerfleet@freenode :)
+We like to hang out on irc, if you want to chat or help out, 
+join irc://freenode.org/hackerfleet :)
 
 
-Code:
+Code
+----
 
 * Heiko 'riot' Weinen <riot@hackerfleet.org>
 * Johannes 'ijon' Rundfeldt <ijon@hackerfleet.org>
 
-Assets:
+Assets
+------
+
+A boatload of other libraries like Bootstrap or Leaflet are currently hosted in this repo, 
+this will change when we're done splitting up client and node.
 
 * Fabulous icons by iconmonstr.com and Hackerfleet contributors
 * Tumbeasts from http://theoatmeal.com/pl/state_web_winter/tumblr for the error page (CC-BY)
