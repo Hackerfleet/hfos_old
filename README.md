@@ -3,6 +3,8 @@ HFOS - The Hackerfleet Operating System
 
 A modern, opensource approach to maritime navigation.
 
+This software package is supposed to run on your ship/car/plane/ufo's board computer.
+
 _Obligatory Warning_: **Do not use for navigational purposes!**
 
 Included modules
@@ -19,8 +21,8 @@ Included modules
 Work in progress (1.0)
 ----------------------
 
-* navigation, grib data (in charts)
-* Navgiation aides, planning
+* Navigation, GRIB data (in charts)
+* Navigation aides, planning
 * Datalog, automated navigational data exchange
 * Crew management, safety tools
 * wireless crew network and general communications
@@ -31,7 +33,7 @@ Bugs & Discussion
 Please research any bugs you find via our [Github issue tracker for HFOS](https://github.com/hackerfleet/hfos/issues)
 and report them if they're still unknown.
 
-If you want to discuss Hackerfleet's technology in general incl. where we're heading, head over to our
+If you want to discuss (opensource) maritime technology in general incl. where we're heading, head over to our
 [Github discussion forum](https://github.com/hackerfleet/discussion/issues)
 ...which is cleverly disguised as a Github issue tracker.
 
@@ -93,15 +95,20 @@ Contributors
 ============
 
 We like to hang out on irc, if you want to chat or help out, 
-join irc://#hackerfleet@freenode.org :)
+join irc://freenode.org/hackerfleet :)
 
 
-Code:
+Code
+----
 
 * Heiko 'riot' Weinen <riot@hackerfleet.org>
 * Johannes 'ijon' Rundfeldt <ijon@hackerfleet.org>
 
-Assets:
+Assets
+------
+
+A boatload of other libraries like Bootstrap or Leaflet are currently hosted in this repo, 
+this will change after #30 is fixed.
 
 * Fabulous icons by iconmonstr.com and Hackerfleet contributors
 * Tumbeasts from http://theoatmeal.com/pl/state_web_winter/tumblr for the error page (CC-BY)
