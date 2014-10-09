@@ -7,6 +7,8 @@ This software package is supposed to run on your ship/car/plane/ufo's board comp
 
 _Obligatory Warning_: **Do not use for navigational purposes!**
 
+_Always have up to date paper maps and know how to use them!_
+
 Included modules
 ----------------
 
@@ -108,7 +110,7 @@ Assets
 ------
 
 A boatload of other libraries like Bootstrap or Leaflet are currently hosted in this repo, 
-this will change after #30 is fixed.
+this will change when we're done splitting up client and node.
 
 * Fabulous icons by iconmonstr.com and Hackerfleet contributors
 * Tumbeasts from http://theoatmeal.com/pl/state_web_winter/tumblr for the error page (CC-BY)
