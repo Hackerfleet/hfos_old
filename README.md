@@ -8,21 +8,21 @@ _Obligatory Warning_: **Do not use for navigational purposes!**
 Included modules
 ----------------
 
-* webui
+* webui (compatible with all modern browsers)
 * nmea bus parser
-* online-only (yet) moving seamap incl.
+* offline (cached) moving seamap incl.
  * openseamap
  * openstreetmap
  * openweathermap
+ * and lots of other useful layers
 
-Planned features
-----------------
+Work in progress (1.0)
+----------------------
 
-* navigation, grib charts
-* navgiation aides, planning (and possibly routing)
-* complete offline navigation
-* datalog, navigational data exchange
-* crew management, safety tools
+* navigation, grib data (in charts)
+* Navgiation aides, planning
+* Datalog, automated navigational data exchange
+* Crew management, safety tools
 * wireless crew network and general communications
 
 Bugs & Discussion
@@ -32,7 +32,7 @@ Please research any bugs you find via our [Github issue tracker for HFOS](https:
 and report them if they're still unknown.
 
 If you want to discuss Hackerfleet's technology in general incl. where we're heading, head over to our
-[Github discussion forum](https://github.com/hackerfleet/discuss/issues)
+[Github discussion forum](https://github.com/hackerfleet/discussion/issues)
 ...which is cleverly disguised as a Github issue tracker.
 
 Installation
@@ -67,7 +67,7 @@ Run hfos:
 
     python scripts/hfos
 
-You should see some messy info/debug output and the web engine starting up.
+You should see some info/debug output and the web engine as well as other components starting up.
 Currently it is set up to serve only on http://localhost:8055 - so point your browser there and explore HFOS.
 
 Debian PKG Generation
@@ -92,7 +92,8 @@ Lives in `/etc/hfos/config.json` after installation, but is currently not used.
 Contributors
 ============
 
-We like to hang out on irc, if you want to chat or help out, join #hackerfleet@freenode :)
+We like to hang out on irc, if you want to chat or help out, 
+join irc://#hackerfleet@freenode.org :)
 
 
 Code:
