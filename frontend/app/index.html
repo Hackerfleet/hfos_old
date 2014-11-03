@@ -9,6 +9,9 @@
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -20,35 +23,36 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div class="container">
-      <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="#">Start</a></li>
-          <li><a ng-href="#/about">Funky!</a></li>
-          <li><a ng-href="#">Contact</a></li>
-        </ul>
-        <h3 class="text-muted">frontend</h3>
-      </div>
-
-      <div ng-view=""></div>
-
-      <div class="footer">
-        <p><span class="glyphicon glyphicon-heart"></span> from the Yeoman team</p>
-      </div>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="mainmenu">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/"><img src="/assets/images/hackerfleet.svg" height="23"></a>
+            </div>
+            <div class="collapse navbar-collapse" id="main-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li id="nav-"><a href="/">Home</a></li>
+                    <li id="nav-weather"><a href="/weather.html">Weather</a></li>
+                    <li id="nav-navigation"><a ng-href="#/map">Navigation</a></li>
+                    <li id="nav-crew"><a href="/crew_list.html">Crew</a></li>
+                    <li id="nav-logbook"><a href="/logbook.html">Logbook</a></li>
+                    <li id="nav-switchboard"><a href="/switchboard.html">Switchboard</a></li>
+                    <li id="nav-communication"><a href="/communication.html">Communication</a></li>
+                    <li id="nav-settings"><a href="/settings.html">Settings</a></li>
+                    <li id="nav-about"><a href="/about.html">?</a></li>
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
     </div>
 
+    <div ng-view=""></div>
 
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script>
 
     <!-- build:js(.) scripts/oldieshim.js -->
     <!--[if lt IE 9]>
@@ -68,13 +72,26 @@
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet.js"></script>
+    <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+    <script src="bower_components/leaflet-providers/leaflet-providers.js"></script>
+    <script src="bower_components/leaflet-omnivore/leaflet-omnivore.js"></script>
+    <script src="bower_components/leaflet-terminator/leaflet-terminator.js"></script>
+    <script src="bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu.js"></script>
+    <script src="bower_components/Leaflet.contextmenu/dist/leaflet.contextmenu-src.js"></script>
+    <script src="bower_components/togeojson/togeojson.js"></script>
+    <script src="bower_components/leaflet.locatecontrol/src/L.Control.Locate.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
+
+    <script src="bower_components/leaflet.Graticule/src/L.Graticule.js"></script>
+    <script src="bower_components/leaflet.contextmenu/dist/leaflet.contextmenu.js"></script>
 
         <!-- build:js({.tmp,app}) scripts/scripts.js -->
         <script src="scripts/app.js"></script>
         <script src="scripts/controllers/main.js"></script>
         <script src="scripts/controllers/about.js"></script>
+        <script src="scripts/controllers/map.js"></script>
         <!-- endbuild -->
 </body>
 </html>
