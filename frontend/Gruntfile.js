@@ -327,6 +327,12 @@ module.exports = function (grunt) {
         cwd: '<%= yeoman.app %>/styles',
         dest: '.tmp/styles/',
         src: '{,*/}*.css'
+      },
+      deploy: {
+        expand: true,
+        cwd: 'dist',
+        src: './**',
+        dest: '/var/lib/hfos/static/'
       }
     },
 
@@ -398,6 +404,16 @@ module.exports = function (grunt) {
     'filerev',
     'usemin',
     'htmlmin'
+  ]);
+
+  grunt.registerTask('install', [
+    'build',
+    'test',
+    'copy:deploy'
+  ]);
+
+  grunt.registerTask('deploy', [
+    'copy:deploy'
   ]);
 
   grunt.registerTask('default', [
