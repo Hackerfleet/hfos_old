@@ -1,11 +1,12 @@
 /* Space out content a bit */
-body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+
+html, body {
+    min-height: 100%;
+    height: 100%;
 }
 
-
-#map {
+#content, #map {
+    padding-top: 50px;
     height: 100%;
 }
 
