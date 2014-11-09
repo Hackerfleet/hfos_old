@@ -9,16 +9,35 @@
  * Controller of the frontendApp
  */
 angular.module('frontendApp')
-  .controller('MapCtrl', function ($scope) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+  .controller('MapCtrl', ["$scope", "leafletData", function ($scope, leafletData) {
+    angular.extend($scope, {
+                london: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                center: {
+                    lat: 51.505,
+                    lng: -0.09,
+                    zoom: 4
+                },
+                controls: {
+                    draw: {}
+                }
+           });
+           console.log($scope.controls.draw);
+           leafletData.getMap().then(function(map) {
+              var drawnItems = $scope.controls.draw.edit.featureGroup;
+              map.on('draw:created', function (e) {
+                var layer = e.layer;
+                drawnItems.addLayer(layer);
+                console.log(JSON.stringify(layer.toGeoJSON()));
+              });
+           });
 
     console.log('Hallo angularscope!');
 
-    $scope.init = function() {
+    $scope.init = function(scope) {
         console.log('Hello Mapviewer!');
 
         L.RotatedMarker = L.Marker.extend({
@@ -177,7 +196,7 @@ angular.module('frontendApp')
                 }).addTo(map);
                 editingRoute = true;
             }
-        }
+        };
 
         var map = L.map('map', {
             zoom: 16,
@@ -213,6 +232,8 @@ angular.module('frontendApp')
                 callback: zoomHere
             }]
         });
+
+        scope.map = map;
 
         /*if (!map.restoreView()) {
             map.setView([52.513, 13.41998], 16);
@@ -278,7 +299,7 @@ angular.module('frontendApp')
 
         jQuery.extend(overlayLayers, routeLayers);
 
-        //var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
+        var layerControl = L.control.layers(baseLayers, overlayLayers).addTo(map);
 
         var style = {color:'red', opacity: 1.0, fillOpacity: 1.0, weight: 2, clickable: false};
 
@@ -489,7 +510,10 @@ angular.module('frontendApp')
 
     $scope.$on('$viewContentLoaded', function() {
         console.log('Fertig!');
-        $scope.init();
+        /* $scope.init($scope);
+        $("#map").height($(window).height()-100).width($(window).width());
+        $scope.map.invalidateSize(); */
+
     });
 
-});
+}]);

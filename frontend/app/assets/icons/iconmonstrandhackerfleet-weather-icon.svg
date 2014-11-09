@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- License Agreement at http://iconmonstr.com/license/ -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   x="0px"
+   y="0px"
+   width="512px"
+   height="512px"
+   viewBox="0 0 512 512"
+   enable-background="new 0 0 512 512"
+   xml:space="preserve"
+   id="svg3216"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="iconmonstrandhackerfleet-weather-icon.svg"><metadata
+     id="metadata3223"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+     id="defs3221" /><sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1916"
+     inkscape:window-height="1168"
+     id="namedview3219"
+     showgrid="false"
+     inkscape:zoom="0.4609375"
+     inkscape:cx="-220.20339"
+     inkscape:cy="256"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg3216" /><path
+     d="M 214.3125 39.15625 L 214.3125 116.625 C 220.6745 115.664 227.1855 115.15625 233.8125 115.15625 C 240.7875 115.15625 247.6325 115.71925 254.3125 116.78125 L 254.3125 39.15625 L 214.3125 39.15625 z M 102.78125 85.34375 L 74.5 113.625 L 129.09375 168.21875 C 137.04475 157.42575 146.6005 147.893 157.4375 140 L 102.78125 85.34375 z M 365.8125 85.34375 L 310.75 140.4375 C 321.543 148.3875 331.0445 157.94425 338.9375 168.78125 L 394.125 113.625 L 365.8125 85.34375 z M 233.8125 145.15625 C 178.6715 145.15625 133.8125 190.01625 133.8125 245.15625 C 133.8125 262.06317 138.03119 277.9918 145.46875 291.96875 C 153.46447 255.03683 195.77387 235.4492 229.46875 254.5 C 252.43187 217.96492 289.07555 202.29353 324.8125 203.6875 C 309.02791 169.18161 274.17216 145.15625 233.8125 145.15625 z M 28.3125 225.15625 L 28.3125 265.15625 L 105.34375 265.15625 C 104.33175 258.63625 103.8125 251.95825 103.8125 245.15625 C 103.8125 238.35725 104.33175 231.67725 105.34375 225.15625 L 28.3125 225.15625 z M 386.8125 225.15625 C 400.64981 235.26542 412.24363 248.71887 419.96875 265.15625 L 440.3125 265.15625 L 440.3125 225.15625 L 386.8125 225.15625 z "
+     id="brightness-icon" /><path
+     id="cloud-4-icon-0"
+     d="m 194.14638,467.45521 29.264,-40 h 45.04103 l -29.26403,40 h -45.041 z m 126.74103,0 29.264,-40 h -45.041 l -29.264,40 h 45.041 z m 110.145,-175.269 c -10.416,-54.961 -58.666,-95.777 -115.781,-95.777 -35.098,0 -67.63103,15.285 -89.87103,41.584 -37.148,-9.906 -76.079,11.781 -86.933,48.779 -38.593004,11.336 -66.153004,47.055 -66.153004,88.463 0,48.113 37.038004,87.732 84.946004,91.859 l 29,-39.639 h -20.725 c -29.795,0 -53.222,-23.426 -53.222,-52.221 0,-34.078 27.65,-60.078 62.186,-53.816 -11.536,-39.596 44.131,-61.93 64.641,-32.348 5.157,-14.582 25.82303,-52.662 76.13103,-52.662 38.027,0 77.361,26.08 78.664,84.982 25.363,0.098 49.18,18.432 49.18,53.844 0,28.795 -23.426,52.221 -52.221,52.221 h -4.063 l -29.264,40 h 33.327 c 50.85001,0 92.221,-41.369 92.221,-92.221 -9.9e-4,-35.913 -20.45999,-67.845 -52.063,-83.048 z"
+     inkscape:connector-curvature="0" /></svg>
