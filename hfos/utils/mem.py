@@ -77,18 +77,18 @@ class MemDebugger(component):
                     mem[VmKey[:-1]] = 0.0  # invalid format?
                     # convert Vm value to bytes
                 else:
-                    mem[VmKey[:-1]] = float(nv[1]) # * self.scale[v[2]]
+                    mem[VmKey[:-1]] = round(float(nv[1]) / 1024, 2)  # * self.scale[v[2]]
             else:
                 mem[VmKey[:-1]] = 0.0
         return mem
 
     def main(self):
-        log("[MD] Reporting in with for PID ", os.getpid(), self.get_mem(), lvl=self.lvl)
+        log("[MD] Reporting in with PID ", os.getpid(), self.get_mem(), lvl=self.lvl)
         lastcheck = time.time()
         while True:
             if time.time() > self.interval + lastcheck:
                 lastcheck = time.time()
-                log("[MD] Mem report for PID ", os.getpid(), self.get_mem(), lvl=self.lvl)
+                log("[MD]", os.getpid(), self.get_mem(), lvl=self.lvl)
             yield 1
         return
 
