@@ -22,9 +22,9 @@
 import time
 import sys
 
-
 from Axon.Component import component
 from Axon.Ipc import producerFinished, shutdownMicroprocess
+import inspect
 
 debug = 10
 info = 20
@@ -37,13 +37,13 @@ lvldata = {10: ['DEBUG', '\033[1;97m'],
            20: ['INFO', '\033[1;92m'],
            30: ['WARN', '\033[1;94m'],
            40: ['ERROR', '\033[1;91m'],
-           50: ['CRITICAL','\033[1;95m'],
+           50: ['CRITICAL', '\033[1;95m'],
 }
 
 count = 0
 
 logfile = "/var/log/hfos/service.log"
-verbosity = {'global': debug,
+verbosity = {'global': info,
              'file': off,
              'console': debug}
 
@@ -63,10 +63,23 @@ def log(*what, **kwargs):
     count += 1
 
     now = time.time() - start
-    msg = "[%s] : %5s : %.5f : %5i :" % (time.asctime(),
+    msg = "[%s] : %8s : %.5f : %i :" % (time.asctime(),
                                          lvldata[lvl][0],
                                          now,
                                          count)
+    if verbosity['global'] <= debug:
+        "Automatically log the current function details."
+
+        # Get the previous frame in the stack, otherwise it would
+        # be this function!!!
+        func = inspect.currentframe().f_back.f_code
+        # Dump the message + the name of this function to the log.
+        callee = "[%.10s@%s:%i]" % (
+            func.co_name,
+            func.co_filename,
+            func.co_firstlineno
+        )
+        msg += "%-60s" % callee
 
     for thing in what:
         msg += " "
@@ -91,13 +104,13 @@ class Logger(component):
     sends single sentences out.
     """
 
-    Inboxes = { "inbox"   : "Items",
-                "control" : "Shutdown signalling",
-              }
-    Outboxes = { "outbox" : "Items not matching are sent along",
-                 "match"  : "All matches are sent this way",
-                 "signal" : "Shutdown signalling",
-               }
+    Inboxes = {"inbox": "Items",
+               "control": "Shutdown signalling",
+    }
+    Outboxes = {"outbox": "Items not matching are sent along",
+                "match": "All matches are sent this way",
+                "signal": "Shutdown signalling",
+    }
 
     def __init__(self, level=debug, name="UNNAMED"):
         super(Logger, self).__init__()
@@ -122,6 +135,6 @@ class Logger(component):
 
             while self.dataReady("inbox"):
                 data = self.recv("inbox")
-                #print("#"*55)
+                # print("#"*55)
                 log("[%s] %s" % (self.name, str(data)), lvl=self.level)
                 self.send(data, "outbox")
