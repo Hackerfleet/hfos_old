@@ -65,6 +65,7 @@ class PipeSelector(AdaptiveCommsComponent):
 
     def __init__(self, routes, defaultpipe=None):
         super(PipeSelector, self).__init__()
+        log("[PS] Initializing", lvl=debug)
         self.routes = routes  # [(condition, pipeline), ...]
         self.defaultpipe = defaultpipe
 

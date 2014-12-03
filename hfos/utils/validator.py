@@ -43,7 +43,7 @@ class Validator(component):
     Inboxes = {"inbox": "Items",
                "control": "Shutdown signalling",
     }
-    Outboxes = {"valid": "Items that have been valid successfully",
+    Outboxes = {"valid": "Items that have been validated successfully",
                 "invalid": "All the rest",
                 "signal": "Shutdown signalling",
     }
