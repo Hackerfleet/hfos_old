@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="hfos-backend" pattern="!file[hfos]:*/||file[hfos]:hfos//*" />
+</component>
