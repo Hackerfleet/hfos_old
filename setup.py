@@ -55,7 +55,10 @@ def find_packages(path, base=""):
 
 
 packages = find_packages(".")
-package_names = packages.keys()
+package_names = list(packages.keys())
+
+print(package_names)
+
 
 setup(name="hfos",
       version="0.3.0",
@@ -65,8 +68,9 @@ setup(name="hfos",
       author_email="packages@hackerfleet.org",
       url="https://github.com/hackerfleet/hfos",
       license="GNU General Public License v3",
-      packages=package_names,
+      packages=package_names + ['assets'],
       package_dir=packages,
+      package_data={'assets': ['assets/*']},
       scripts=[
           'scripts/hfos',
       ],
@@ -86,7 +90,7 @@ setup(name="hfos",
       install_requires=['CherryPy==3.3.0',
                         'Axon==1.7.0',
                         'Kamaelia==1.1.2.1',
-                        'Pynmea==0.3.1',
+                        'Pynmea==0.3.0',
                         'Mako==0.9.1',
                         'voluptuous==0.8.5',
       ]

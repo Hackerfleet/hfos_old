@@ -1,2 +1,3 @@
 recursive-include etc *
 recursive-include hfos *
+recursive-include assets *
