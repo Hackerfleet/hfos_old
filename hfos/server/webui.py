@@ -38,8 +38,8 @@ from Kamaelia.Util.PureTransformer import PureTransformer
 from Kamaelia.Util.TwoWaySplitter import TwoWaySplitter
 from Kamaelia.Util.Console import ConsoleEchoer
 from Kamaelia.Util.Collate import Collate
-from Kamaelia.Web.webgate import WebGate
 
+from hfos.server.webgate import WebGate
 from hfos.utils.templater import MakoTemplater
 from hfos.utils.dict import WaitForDict
 from hfos.utils.selector import PipeSelector
@@ -69,7 +69,7 @@ def build_urls():
     that a PipeSelector can work with.
 
     """
-
+    log("[WUI] Building web ui", lvl=critical)
     def build_sync_webpipe(pipe, name=""):
         """
         Constructs a webpipe that does care for browser supplied input.
@@ -300,7 +300,7 @@ def build_urls():
         return router
 
     def build_Tilecache():
-        return Tilecache(defaulttile='/var/lib/hfos/static/images/tile_missing.png')
+        return Tilecache(defaulttile='/var/lib/hfos/static/assets/images/tile_missing.png')
 
     statics = ['index.html',
                'about.html',
@@ -349,12 +349,12 @@ def build_webui():
     """
 
     gate = Graphline(WG=WebGate(assetdir=os.path.abspath("/var/lib/hfos/static")),
+                     # LG=Logger(level=critical, name="WUI-IN"),
                      ROUTER=PipeSelector(build_urls(), defaultpipe=build_404template),
                      linkages={("WG", "outbox"): ("ROUTER", "inbox"),
+                               #("LG", "outbox"): ("ROUTER", "inbox"),
                                ("ROUTER", "outbox"): ("WG", "inbox")
                      }
     )
-
-    gate = WebGate(assetdir="/var/lib/hfos/static")
 
     gate.activate()

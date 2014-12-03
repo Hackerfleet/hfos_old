@@ -15,7 +15,7 @@ from os import makedirs
 from Axon.Component import component
 from Axon.Ipc import producerFinished, shutdownMicroprocess
 
-from hfos.utils.logger import log, debug
+from hfos.utils.logger import log, debug, critical, error, warn
 
 
 class Tilecache(component):
@@ -26,20 +26,25 @@ class Tilecache(component):
                 "signal": "Shutdown signalling",
     }
 
-    def __init__(self, cachedir='/tmp/hfos-tilecache', defaulttile="",
-                 proxy=False, useragent=False, timeout=30, postdata=None,
+    def __init__(self, cachedir='/var/lib/hfos/tilecache', defaulttile="",
+                 proxy=False, useragent=False, timeout=15, postdata=None,
                  extraheaders=None, realm=False,
                  username=False, password=False, decode=False):
         super(Tilecache, self).__init__()
+        log("[TC] Tilecache initializing.", lvl=debug)
         self.proxy = proxy
         self.useragent = useragent
         self.timeout = timeout
         self.postdata = postdata
         self.decode = decode
+        try:
+            defaulttilefile = open(defaulttile, "rb")
+            self.defaulttile = defaulttilefile.read()
+            defaulttilefile.close()
+        except OSError as e:
+            log("[TC] Defaulttile not loaded: ", e, lvl=error)
+            self.defaulttile = None
 
-        defaulttilefile = open(defaulttile, "rb")
-        self.defaulttile = defaulttilefile.read()
-        defaulttilefile.close()
 
         # Configure proxy
         if proxy:
@@ -83,6 +88,7 @@ class Tilecache(component):
 
 
         # TODO:
+        # * Fix Mime type of outgoing response
         # ? Add layer lookup
         # # Add new caching layers to navigation.js
         # * Extrapolate filename from URL
@@ -121,7 +127,7 @@ class Tilecache(component):
                 socket.timeout,
                 UnicodeEncodeError,
                 UnicodeDecodeError) as e:
-            log("[TC] Tilegetter error: ", [type(e), e])
+            log("[TC] Tilegetter error: ", [type(e), e, url], lvl=error)
 
         content = None
 
@@ -164,6 +170,11 @@ class Tilecache(component):
 
             # TODO: Clean up, restructure this
 
+            # This check only necessary when leaflet is set continuousworld=true
+            # (And it is not checking the upper bounds for x&y which are 2^z)
+            # if (int(x) < 0 or int(y) < 0 or int(z) < 0):
+            #    log("[TC] Illegal tile requested: ", url, lvl=warn)
+            #    value['response'] = self.defaulttile
             if os.path.isfile(filename):
                 log("[TC] Tile in cache")
 
@@ -171,7 +182,6 @@ class Tilecache(component):
                 tile = tilefile.read()
                 value['response'] = tile
                 tilefile.close()
-
             else:
                 tile = self.get_tile(url)
                 value['response'] = tile
