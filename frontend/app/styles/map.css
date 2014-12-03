@@ -23,3 +23,7 @@ body {
 #bunt {
     color: red;
 }
+
+.angular-leaflet-map {
+  height: 100%;
+}
